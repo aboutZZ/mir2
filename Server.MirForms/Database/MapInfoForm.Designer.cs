@@ -56,6 +56,15 @@ namespace Server
             FileNameTextBox = new TextBox();
             label3 = new Label();
             tabPage6 = new TabPage();
+            FireWallCount = new TextBox();
+            FireWallCheckBox = new CheckBox();
+            RequiredGroupCheckBox = new CheckBox();
+            NoHeroesCheckbox = new CheckBox();
+            NoExperienceCheckbox = new CheckBox();
+            NoIntelligentCreatureCheckbox = new CheckBox();
+            RequiredGroupTextBox = new TextBox();
+            noGroupCheckbox = new CheckBox();
+            NoPetsCheckbox = new CheckBox();
             GTIndexBox = new TextBox();
             GTBox = new CheckBox();
             NoReincarnation = new CheckBox();
@@ -182,9 +191,9 @@ namespace Server
             tabPage7.SuspendLayout();
             MineZonepanel.SuspendLayout();
             SuspendLayout();
-            //
+            // 
             // MapTabs
-            //
+            // 
             MapTabs.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             MapTabs.Controls.Add(tabPage1);
             MapTabs.Controls.Add(tabPage6);
@@ -198,9 +207,9 @@ namespace Server
             MapTabs.SelectedIndex = 0;
             MapTabs.Size = new Size(630, 552);
             MapTabs.TabIndex = 8;
-            //
+            // 
             // tabPage1
-            //
+            // 
             tabPage1.Controls.Add(label48);
             tabPage1.Controls.Add(lstParticles);
             tabPage1.Controls.Add(MinimapPreview);
@@ -228,18 +237,18 @@ namespace Server
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Info";
             tabPage1.UseVisualStyleBackColor = true;
-            //
+            // 
             // label48
-            //
+            // 
             label48.AutoSize = true;
             label48.Location = new Point(451, 3);
             label48.Name = "label48";
             label48.Size = new Size(164, 15);
             label48.TabIndex = 20;
             label48.Text = "Weather (Can Select Multiple)";
-            //
+            // 
             // lstParticles
-            //
+            // 
             lstParticles.FormattingEnabled = true;
             lstParticles.ItemHeight = 15;
             lstParticles.Location = new Point(454, 21);
@@ -248,18 +257,18 @@ namespace Server
             lstParticles.Size = new Size(165, 244);
             lstParticles.TabIndex = 0;
             lstParticles.SelectedIndexChanged += lstParticles_SelectedIndexChanged;
-            //
+            // 
             // MinimapPreview
-            //
+            // 
             MinimapPreview.Location = new Point(3, 234);
             MinimapPreview.Name = "MinimapPreview";
             MinimapPreview.Size = new Size(357, 287);
             MinimapPreview.SizeMode = PictureBoxSizeMode.StretchImage;
             MinimapPreview.TabIndex = 19;
             MinimapPreview.TabStop = false;
-            //
+            // 
             // label11
-            //
+            // 
             label11.AutoSize = true;
             label11.Location = new Point(44, 209);
             label11.Margin = new Padding(4, 0, 4, 0);
@@ -267,28 +276,28 @@ namespace Server
             label11.Size = new Size(42, 15);
             label11.TabIndex = 18;
             label11.Text = "Music:";
-            //
+            // 
             // MusicTextBox
-            //
+            // 
             MusicTextBox.Location = new Point(96, 205);
             MusicTextBox.Margin = new Padding(4, 3, 4, 3);
             MusicTextBox.Name = "MusicTextBox";
             MusicTextBox.Size = new Size(107, 23);
             MusicTextBox.TabIndex = 17;
             MusicTextBox.TextChanged += MusicTextBox_TextChanged;
-            //
+            // 
             // label33
-            //
+            // 
             label33.AutoSize = true;
             label33.Location = new Point(19, 177);
             label33.Margin = new Padding(4, 0, 4, 0);
             label33.Name = "label33";
-            label33.Size = new Size(65, 15);
+            label33.Size = new Size(64, 15);
             label33.TabIndex = 16;
             label33.Text = "Mine Type:";
-            //
+            // 
             // MineComboBox
-            //
+            // 
             MineComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             MineComboBox.FormattingEnabled = true;
             MineComboBox.Location = new Point(96, 173);
@@ -297,9 +306,9 @@ namespace Server
             MineComboBox.Size = new Size(107, 23);
             MineComboBox.TabIndex = 15;
             MineComboBox.SelectedIndexChanged += MineComboBox_SelectedIndexChanged;
-            //
+            // 
             // label15
-            //
+            // 
             label15.AutoSize = true;
             label15.Location = new Point(150, 114);
             label15.Margin = new Padding(4, 0, 4, 0);
@@ -307,9 +316,9 @@ namespace Server
             label15.Size = new Size(54, 15);
             label15.TabIndex = 14;
             label15.Text = "Big Map:";
-            //
+            // 
             // BigMapTextBox
-            //
+            // 
             BigMapTextBox.Location = new Point(215, 111);
             BigMapTextBox.Margin = new Padding(4, 3, 4, 3);
             BigMapTextBox.MaxLength = 5;
@@ -317,9 +326,9 @@ namespace Server
             BigMapTextBox.Size = new Size(42, 23);
             BigMapTextBox.TabIndex = 13;
             BigMapTextBox.TextChanged += BigMapTextBox_TextChanged;
-            //
+            // 
             // LightsComboBox
-            //
+            // 
             LightsComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             LightsComboBox.FormattingEnabled = true;
             LightsComboBox.Location = new Point(96, 141);
@@ -328,9 +337,9 @@ namespace Server
             LightsComboBox.Size = new Size(107, 23);
             LightsComboBox.TabIndex = 11;
             LightsComboBox.SelectedIndexChanged += LightsComboBox_SelectedIndexChanged;
-            //
+            // 
             // label5
-            //
+            // 
             label5.AutoSize = true;
             label5.Location = new Point(44, 144);
             label5.Margin = new Padding(4, 0, 4, 0);
@@ -338,19 +347,19 @@ namespace Server
             label5.Size = new Size(42, 15);
             label5.TabIndex = 12;
             label5.Text = "Lights:";
-            //
+            // 
             // label1
-            //
+            // 
             label1.AutoSize = true;
             label1.Location = new Point(19, 21);
             label1.Margin = new Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new Size(65, 15);
+            label1.Size = new Size(66, 15);
             label1.TabIndex = 4;
             label1.Text = "Map Index:";
-            //
+            // 
             // label4
-            //
+            // 
             label4.AutoSize = true;
             label4.Location = new Point(27, 114);
             label4.Margin = new Padding(4, 0, 4, 0);
@@ -358,18 +367,18 @@ namespace Server
             label4.Size = new Size(61, 15);
             label4.TabIndex = 10;
             label4.Text = "Mini Map:";
-            //
+            // 
             // MapIndexTextBox
-            //
+            // 
             MapIndexTextBox.Location = new Point(96, 17);
             MapIndexTextBox.Margin = new Padding(4, 3, 4, 3);
             MapIndexTextBox.Name = "MapIndexTextBox";
             MapIndexTextBox.ReadOnly = true;
             MapIndexTextBox.Size = new Size(54, 23);
             MapIndexTextBox.TabIndex = 0;
-            //
+            // 
             // MiniMapTextBox
-            //
+            // 
             MiniMapTextBox.Location = new Point(96, 111);
             MiniMapTextBox.Margin = new Padding(4, 3, 4, 3);
             MiniMapTextBox.MaxLength = 5;
@@ -377,9 +386,9 @@ namespace Server
             MiniMapTextBox.Size = new Size(42, 23);
             MiniMapTextBox.TabIndex = 9;
             MiniMapTextBox.TextChanged += MiniMapTextBox_TextChanged;
-            //
+            // 
             // label2
-            //
+            // 
             label2.AutoSize = true;
             label2.Location = new Point(22, 54);
             label2.Margin = new Padding(4, 0, 4, 0);
@@ -387,27 +396,27 @@ namespace Server
             label2.Size = new Size(63, 15);
             label2.TabIndex = 6;
             label2.Text = "File Name:";
-            //
+            // 
             // MapNameTextBox
-            //
+            // 
             MapNameTextBox.Location = new Point(96, 81);
             MapNameTextBox.Margin = new Padding(4, 3, 4, 3);
             MapNameTextBox.Name = "MapNameTextBox";
             MapNameTextBox.Size = new Size(107, 23);
             MapNameTextBox.TabIndex = 2;
             MapNameTextBox.TextChanged += MapNameTextBox_TextChanged;
-            //
+            // 
             // FileNameTextBox
-            //
+            // 
             FileNameTextBox.Location = new Point(96, 51);
             FileNameTextBox.Margin = new Padding(4, 3, 4, 3);
             FileNameTextBox.Name = "FileNameTextBox";
             FileNameTextBox.Size = new Size(54, 23);
             FileNameTextBox.TabIndex = 1;
             FileNameTextBox.TextChanged += FileNameTextBox_TextChanged;
-            //
+            // 
             // label3
-            //
+            // 
             label3.AutoSize = true;
             label3.Location = new Point(16, 84);
             label3.Margin = new Padding(4, 0, 4, 0);
@@ -415,9 +424,18 @@ namespace Server
             label3.Size = new Size(69, 15);
             label3.TabIndex = 8;
             label3.Text = "Map Name:";
-            //
+            // 
             // tabPage6
-            //
+            // 
+            tabPage6.Controls.Add(FireWallCount);
+            tabPage6.Controls.Add(FireWallCheckBox);
+            tabPage6.Controls.Add(RequiredGroupCheckBox);
+            tabPage6.Controls.Add(NoHeroesCheckbox);
+            tabPage6.Controls.Add(NoExperienceCheckbox);
+            tabPage6.Controls.Add(NoIntelligentCreatureCheckbox);
+            tabPage6.Controls.Add(RequiredGroupTextBox);
+            tabPage6.Controls.Add(noGroupCheckbox);
+            tabPage6.Controls.Add(NoPetsCheckbox);
             tabPage6.Controls.Add(GTIndexBox);
             tabPage6.Controls.Add(GTBox);
             tabPage6.Controls.Add(NoReincarnation);
@@ -452,31 +470,125 @@ namespace Server
             tabPage6.TabIndex = 5;
             tabPage6.Text = "Attributes";
             tabPage6.UseVisualStyleBackColor = true;
-            //
+            // 
+            // FireWallCount
+            // 
+            FireWallCount.Location = new Point(517, 164);
+            FireWallCount.Name = "FireWallCount";
+            FireWallCount.Size = new Size(68, 23);
+            FireWallCount.TabIndex = 57;
+            FireWallCount.TextChanged += FireWallCount_TextChanged;
+            // 
+            // FireWallCheckBox
+            // 
+            FireWallCheckBox.AutoSize = true;
+            FireWallCheckBox.Location = new Point(398, 168);
+            FireWallCheckBox.Name = "FireWallCheckBox";
+            FireWallCheckBox.Size = new Size(98, 19);
+            FireWallCheckBox.TabIndex = 56;
+            FireWallCheckBox.Text = "FireWall Limit";
+            FireWallCheckBox.UseVisualStyleBackColor = true;
+            FireWallCheckBox.CheckedChanged += FireWallCheckBox_CheckedChanged;
+            // 
+            // RequiredGroupCheckBox
+            // 
+            RequiredGroupCheckBox.AutoSize = true;
+            RequiredGroupCheckBox.Location = new Point(398, 143);
+            RequiredGroupCheckBox.Margin = new Padding(4, 3, 4, 3);
+            RequiredGroupCheckBox.Name = "RequiredGroupCheckBox";
+            RequiredGroupCheckBox.Size = new Size(109, 19);
+            RequiredGroupCheckBox.TabIndex = 55;
+            RequiredGroupCheckBox.Text = "Group Required";
+            RequiredGroupCheckBox.UseVisualStyleBackColor = true;
+            RequiredGroupCheckBox.CheckedChanged += RequiredGroupCheckBox_CheckedChanged;
+            // 
+            // NoHeroesCheckbox
+            // 
+            NoHeroesCheckbox.AutoSize = true;
+            NoHeroesCheckbox.Location = new Point(203, 218);
+            NoHeroesCheckbox.Name = "NoHeroesCheckbox";
+            NoHeroesCheckbox.Size = new Size(82, 19);
+            NoHeroesCheckbox.TabIndex = 54;
+            NoHeroesCheckbox.Text = "No Heroes";
+            NoHeroesCheckbox.UseVisualStyleBackColor = true;
+            NoHeroesCheckbox.CheckedChanged += NoHeroesCheckbox_CheckedChanged;
+            // 
+            // NoExperienceCheckbox
+            // 
+            NoExperienceCheckbox.AutoSize = true;
+            NoExperienceCheckbox.Location = new Point(19, 268);
+            NoExperienceCheckbox.Name = "NoExperienceCheckbox";
+            NoExperienceCheckbox.Size = new Size(142, 19);
+            NoExperienceCheckbox.TabIndex = 53;
+            NoExperienceCheckbox.Text = "No Gained Experiance";
+            NoExperienceCheckbox.UseVisualStyleBackColor = true;
+            NoExperienceCheckbox.CheckedChanged += NoExperienceCheckbox_CheckedChanged;
+            // 
+            // NoIntelligentCreatureCheckbox
+            // 
+            NoIntelligentCreatureCheckbox.AutoSize = true;
+            NoIntelligentCreatureCheckbox.Location = new Point(203, 243);
+            NoIntelligentCreatureCheckbox.Name = "NoIntelligentCreatureCheckbox";
+            NoIntelligentCreatureCheckbox.Size = new Size(151, 19);
+            NoIntelligentCreatureCheckbox.TabIndex = 56;
+            NoIntelligentCreatureCheckbox.Text = "No Intelligent Creatures";
+            NoIntelligentCreatureCheckbox.UseVisualStyleBackColor = true;
+            NoIntelligentCreatureCheckbox.CheckedChanged += NoIntelligentCreatureCheckbox_CheckedChanged;
+            // 
+            // RequiredGroupTextBox
+            // 
+            RequiredGroupTextBox.Location = new Point(517, 139);
+            RequiredGroupTextBox.Name = "RequiredGroupTextBox";
+            RequiredGroupTextBox.Size = new Size(68, 23);
+            RequiredGroupTextBox.TabIndex = 53;
+            RequiredGroupTextBox.TextChanged += RequiredGroupTextBox_TextChanged;
+            // 
+            // noGroupCheckbox
+            // 
+            noGroupCheckbox.AutoSize = true;
+            noGroupCheckbox.Location = new Point(19, 243);
+            noGroupCheckbox.Name = "noGroupCheckbox";
+            noGroupCheckbox.Size = new Size(78, 19);
+            noGroupCheckbox.TabIndex = 51;
+            noGroupCheckbox.Text = "No Group";
+            noGroupCheckbox.UseVisualStyleBackColor = true;
+            noGroupCheckbox.CheckedChanged += noGroupCheckbox_CheckedChanged;
+            // 
+            // NoPetsCheckbox
+            // 
+            NoPetsCheckbox.AutoSize = true;
+            NoPetsCheckbox.Location = new Point(203, 193);
+            NoPetsCheckbox.Name = "NoPetsCheckbox";
+            NoPetsCheckbox.Size = new Size(67, 19);
+            NoPetsCheckbox.TabIndex = 50;
+            NoPetsCheckbox.Text = "No Pets";
+            NoPetsCheckbox.UseVisualStyleBackColor = true;
+            NoPetsCheckbox.CheckedChanged += NoPetsCheckbox_CheckedChanged;
+            // 
             // GTIndexBox
-            //
-            GTIndexBox.Location = new Point(66, 253);
+            // 
+            GTIndexBox.Location = new Point(517, 114);
             GTIndexBox.Name = "GTIndexBox";
-            GTIndexBox.Size = new Size(34, 23);
+            GTIndexBox.Size = new Size(68, 23);
             GTIndexBox.TabIndex = 49;
             GTIndexBox.TextChanged += GTIndexBox_TextChanged;
-            //
+            // 
             // GTBox
-            //
+            // 
             GTBox.AutoSize = true;
-            GTBox.Location = new Point(18, 255);
+            GTBox.Location = new Point(398, 118);
             GTBox.Margin = new Padding(4, 3, 4, 3);
             GTBox.Name = "GTBox";
-            GTBox.Size = new Size(41, 19);
+            GTBox.Size = new Size(100, 19);
             GTBox.TabIndex = 46;
-            GTBox.Text = "GT";
+            GTBox.Text = "Guild Terrority";
             GTBox.UseVisualStyleBackColor = true;
             GTBox.CheckedChanged += GTBox_CheckedChanged;
-            //
+            // 
             // NoReincarnation
-            //
+            // 
             NoReincarnation.AutoSize = true;
-            NoReincarnation.Location = new Point(18, 228);
+            NoReincarnation.Location = new Point(19, 218);
             NoReincarnation.Margin = new Padding(4, 3, 4, 3);
             NoReincarnation.Name = "NoReincarnation";
             NoReincarnation.Size = new Size(118, 19);
@@ -484,23 +596,23 @@ namespace Server
             NoReincarnation.Text = "No Reincarnation";
             NoReincarnation.UseVisualStyleBackColor = true;
             NoReincarnation.CheckedChanged += NoReincarnation_CheckedChanged;
-            //
+            // 
             // NoTownTeleportCheckbox
-            //
+            // 
             NoTownTeleportCheckbox.AutoSize = true;
-            NoTownTeleportCheckbox.Location = new Point(397, 137);
+            NoTownTeleportCheckbox.Location = new Point(19, 118);
             NoTownTeleportCheckbox.Margin = new Padding(4, 3, 4, 3);
             NoTownTeleportCheckbox.Name = "NoTownTeleportCheckbox";
-            NoTownTeleportCheckbox.Size = new Size(117, 19);
+            NoTownTeleportCheckbox.Size = new Size(115, 19);
             NoTownTeleportCheckbox.TabIndex = 44;
             NoTownTeleportCheckbox.Text = "No TownTeleport";
             NoTownTeleportCheckbox.UseVisualStyleBackColor = true;
             NoTownTeleportCheckbox.CheckedChanged += NoTownTeleportCheckbox_CheckedChanged;
-            //
+            // 
             // NoFightCheckbox
-            //
+            // 
             NoFightCheckbox.AutoSize = true;
-            NoFightCheckbox.Location = new Point(203, 158);
+            NoFightCheckbox.Location = new Point(203, 118);
             NoFightCheckbox.Margin = new Padding(4, 3, 4, 3);
             NoFightCheckbox.Name = "NoFightCheckbox";
             NoFightCheckbox.Size = new Size(72, 19);
@@ -508,11 +620,11 @@ namespace Server
             NoFightCheckbox.Text = "No Fight";
             NoFightCheckbox.UseVisualStyleBackColor = true;
             NoFightCheckbox.CheckedChanged += NoFightCheckbox_CheckedChanged;
-            //
+            // 
             // NeedBridleCheckbox
-            //
+            // 
             NeedBridleCheckbox.AutoSize = true;
-            NeedBridleCheckbox.Location = new Point(203, 185);
+            NeedBridleCheckbox.Location = new Point(203, 168);
             NeedBridleCheckbox.Margin = new Padding(4, 3, 4, 3);
             NeedBridleCheckbox.Name = "NeedBridleCheckbox";
             NeedBridleCheckbox.Size = new Size(87, 19);
@@ -520,11 +632,11 @@ namespace Server
             NeedBridleCheckbox.Text = "Need Bridle";
             NeedBridleCheckbox.UseVisualStyleBackColor = true;
             NeedBridleCheckbox.CheckedChanged += NeedBridleCheckbox_CheckedChanged;
-            //
+            // 
             // NoMountCheckbox
-            //
+            // 
             NoMountCheckbox.AutoSize = true;
-            NoMountCheckbox.Location = new Point(203, 130);
+            NoMountCheckbox.Location = new Point(203, 143);
             NoMountCheckbox.Margin = new Padding(4, 3, 4, 3);
             NoMountCheckbox.Name = "NoMountCheckbox";
             NoMountCheckbox.Size = new Size(81, 19);
@@ -532,30 +644,30 @@ namespace Server
             NoMountCheckbox.Text = "No Mount";
             NoMountCheckbox.UseVisualStyleBackColor = true;
             NoMountCheckbox.CheckedChanged += NoMountCheckbox_CheckedChanged;
-            //
+            // 
             // label19
-            //
+            // 
             label19.AutoSize = true;
-            label19.Location = new Point(394, 108);
+            label19.Location = new Point(398, 94);
             label19.Margin = new Padding(4, 0, 4, 0);
             label19.Name = "label19";
             label19.Size = new Size(88, 15);
             label19.TabIndex = 40;
             label19.Text = "Map Dark Light";
-            //
+            // 
             // MapDarkLighttextBox
-            //
-            MapDarkLighttextBox.Location = new Point(517, 105);
+            // 
+            MapDarkLighttextBox.Location = new Point(517, 89);
             MapDarkLighttextBox.Margin = new Padding(4, 3, 4, 3);
             MapDarkLighttextBox.Name = "MapDarkLighttextBox";
-            MapDarkLighttextBox.Size = new Size(56, 23);
+            MapDarkLighttextBox.Size = new Size(68, 23);
             MapDarkLighttextBox.TabIndex = 39;
             MapDarkLighttextBox.TextChanged += MapDarkLighttextBox_TextChanged;
-            //
+            // 
             // NoNamesCheckbox
-            //
+            // 
             NoNamesCheckbox.AutoSize = true;
-            NoNamesCheckbox.Location = new Point(203, 103);
+            NoNamesCheckbox.Location = new Point(203, 93);
             NoNamesCheckbox.Margin = new Padding(4, 3, 4, 3);
             NoNamesCheckbox.Name = "NoNamesCheckbox";
             NoNamesCheckbox.Size = new Size(82, 19);
@@ -563,11 +675,11 @@ namespace Server
             NoNamesCheckbox.Text = "No Names";
             NoNamesCheckbox.UseVisualStyleBackColor = true;
             NoNamesCheckbox.CheckedChanged += NoNamesCheckbox_CheckedChanged;
-            //
+            // 
             // NoDropMonsterCheckbox
-            //
+            // 
             NoDropMonsterCheckbox.AutoSize = true;
-            NoDropMonsterCheckbox.Location = new Point(203, 75);
+            NoDropMonsterCheckbox.Location = new Point(203, 68);
             NoDropMonsterCheckbox.Margin = new Padding(4, 3, 4, 3);
             NoDropMonsterCheckbox.Name = "NoDropMonsterCheckbox";
             NoDropMonsterCheckbox.Size = new Size(126, 19);
@@ -575,11 +687,11 @@ namespace Server
             NoDropMonsterCheckbox.Text = "No Drop (Monster)";
             NoDropMonsterCheckbox.UseVisualStyleBackColor = true;
             NoDropMonsterCheckbox.CheckedChanged += NoDropMonsterCheckbox_CheckedChanged;
-            //
+            // 
             // NoDropPlayerCheckbox
-            //
+            // 
             NoDropPlayerCheckbox.AutoSize = true;
-            NoDropPlayerCheckbox.Location = new Point(203, 47);
+            NoDropPlayerCheckbox.Location = new Point(203, 43);
             NoDropPlayerCheckbox.Margin = new Padding(4, 3, 4, 3);
             NoDropPlayerCheckbox.Name = "NoDropPlayerCheckbox";
             NoDropPlayerCheckbox.Size = new Size(114, 19);
@@ -587,23 +699,23 @@ namespace Server
             NoDropPlayerCheckbox.Text = "No Drop (Player)";
             NoDropPlayerCheckbox.UseVisualStyleBackColor = true;
             NoDropPlayerCheckbox.CheckedChanged += NoDropPlayerCheckbox_CheckedChanged;
-            //
+            // 
             // NoThrowItemCheckbox
-            //
+            // 
             NoThrowItemCheckbox.AutoSize = true;
             NoThrowItemCheckbox.Location = new Point(203, 20);
             NoThrowItemCheckbox.Margin = new Padding(4, 3, 4, 3);
             NoThrowItemCheckbox.Name = "NoThrowItemCheckbox";
-            NoThrowItemCheckbox.Size = new Size(106, 19);
+            NoThrowItemCheckbox.Size = new Size(105, 19);
             NoThrowItemCheckbox.TabIndex = 35;
             NoThrowItemCheckbox.Text = "No Throw Item";
             NoThrowItemCheckbox.UseVisualStyleBackColor = true;
             NoThrowItemCheckbox.CheckedChanged += NoThrowItemCheckbox_CheckedChanged;
-            //
+            // 
             // NoPositionCheckbox
-            //
+            // 
             NoPositionCheckbox.AutoSize = true;
-            NoPositionCheckbox.Location = new Point(18, 185);
+            NoPositionCheckbox.Location = new Point(19, 193);
             NoPositionCheckbox.Margin = new Padding(4, 3, 4, 3);
             NoPositionCheckbox.Name = "NoPositionCheckbox";
             NoPositionCheckbox.Size = new Size(88, 19);
@@ -611,11 +723,11 @@ namespace Server
             NoPositionCheckbox.Text = "No Position";
             NoPositionCheckbox.UseVisualStyleBackColor = true;
             NoPositionCheckbox.CheckedChanged += NoPositionCheckbox_CheckedChanged;
-            //
+            // 
             // NoDrugCheckbox
-            //
+            // 
             NoDrugCheckbox.AutoSize = true;
-            NoDrugCheckbox.Location = new Point(19, 158);
+            NoDrugCheckbox.Location = new Point(19, 168);
             NoDrugCheckbox.Margin = new Padding(4, 3, 4, 3);
             NoDrugCheckbox.Name = "NoDrugCheckbox";
             NoDrugCheckbox.Size = new Size(71, 19);
@@ -623,11 +735,11 @@ namespace Server
             NoDrugCheckbox.Text = "No Drug";
             NoDrugCheckbox.UseVisualStyleBackColor = true;
             NoDrugCheckbox.CheckedChanged += NoDrugCheckbox_CheckedChanged;
-            //
+            // 
             // NoRecallCheckbox
-            //
+            // 
             NoRecallCheckbox.AutoSize = true;
-            NoRecallCheckbox.Location = new Point(19, 130);
+            NoRecallCheckbox.Location = new Point(19, 143);
             NoRecallCheckbox.Margin = new Padding(4, 3, 4, 3);
             NoRecallCheckbox.Name = "NoRecallCheckbox";
             NoRecallCheckbox.Size = new Size(76, 19);
@@ -635,11 +747,11 @@ namespace Server
             NoRecallCheckbox.Text = "No Recall";
             NoRecallCheckbox.UseVisualStyleBackColor = true;
             NoRecallCheckbox.CheckedChanged += NoRecallCheckbox_CheckedChanged;
-            //
+            // 
             // NoEscapeCheckbox
-            //
+            // 
             NoEscapeCheckbox.AutoSize = true;
-            NoEscapeCheckbox.Location = new Point(19, 103);
+            NoEscapeCheckbox.Location = new Point(19, 93);
             NoEscapeCheckbox.Margin = new Padding(4, 3, 4, 3);
             NoEscapeCheckbox.Name = "NoEscapeCheckbox";
             NoEscapeCheckbox.Size = new Size(81, 19);
@@ -647,11 +759,11 @@ namespace Server
             NoEscapeCheckbox.Text = "No Escape";
             NoEscapeCheckbox.UseVisualStyleBackColor = true;
             NoEscapeCheckbox.CheckedChanged += NoEscapeCheckbox_CheckedChanged;
-            //
+            // 
             // NoRandomCheckbox
-            //
+            // 
             NoRandomCheckbox.AutoSize = true;
-            NoRandomCheckbox.Location = new Point(19, 75);
+            NoRandomCheckbox.Location = new Point(19, 68);
             NoRandomCheckbox.Margin = new Padding(4, 3, 4, 3);
             NoRandomCheckbox.Name = "NoRandomCheckbox";
             NoRandomCheckbox.Size = new Size(90, 19);
@@ -659,38 +771,38 @@ namespace Server
             NoRandomCheckbox.Text = "No Random";
             NoRandomCheckbox.UseVisualStyleBackColor = true;
             NoRandomCheckbox.CheckedChanged += NoRandomCheckbox_CheckedChanged;
-            //
+            // 
             // LightningTextbox
-            //
-            LightningTextbox.Location = new Point(517, 75);
+            // 
+            LightningTextbox.Location = new Point(517, 64);
             LightningTextbox.Margin = new Padding(4, 3, 4, 3);
             LightningTextbox.Name = "LightningTextbox";
-            LightningTextbox.Size = new Size(56, 23);
+            LightningTextbox.Size = new Size(68, 23);
             LightningTextbox.TabIndex = 29;
             LightningTextbox.TextChanged += LightningTextbox_TextChanged;
-            //
+            // 
             // FireTextbox
-            //
-            FireTextbox.Location = new Point(517, 47);
+            // 
+            FireTextbox.Location = new Point(517, 39);
             FireTextbox.Margin = new Padding(4, 3, 4, 3);
             FireTextbox.Name = "FireTextbox";
-            FireTextbox.Size = new Size(56, 23);
+            FireTextbox.Size = new Size(68, 23);
             FireTextbox.TabIndex = 28;
             FireTextbox.TextChanged += FireTextbox_TextChanged;
-            //
+            // 
             // NoReconnectTextbox
-            //
-            NoReconnectTextbox.Location = new Point(138, 45);
+            // 
+            NoReconnectTextbox.Location = new Point(128, 41);
             NoReconnectTextbox.Margin = new Padding(4, 3, 4, 3);
             NoReconnectTextbox.Name = "NoReconnectTextbox";
             NoReconnectTextbox.Size = new Size(56, 23);
             NoReconnectTextbox.TabIndex = 27;
             NoReconnectTextbox.TextChanged += NoReconnectTextbox_TextChanged;
-            //
+            // 
             // LightningCheckbox
-            //
+            // 
             LightningCheckbox.AutoSize = true;
-            LightningCheckbox.Location = new Point(398, 75);
+            LightningCheckbox.Location = new Point(398, 66);
             LightningCheckbox.Margin = new Padding(4, 3, 4, 3);
             LightningCheckbox.Name = "LightningCheckbox";
             LightningCheckbox.Size = new Size(77, 19);
@@ -698,11 +810,11 @@ namespace Server
             LightningCheckbox.Text = "Lightning";
             LightningCheckbox.UseVisualStyleBackColor = true;
             LightningCheckbox.CheckedChanged += LightningCheckbox_CheckedChanged;
-            //
+            // 
             // FireCheckbox
-            //
+            // 
             FireCheckbox.AutoSize = true;
-            FireCheckbox.Location = new Point(398, 47);
+            FireCheckbox.Location = new Point(398, 41);
             FireCheckbox.Margin = new Padding(4, 3, 4, 3);
             FireCheckbox.Name = "FireCheckbox";
             FireCheckbox.Size = new Size(45, 19);
@@ -710,9 +822,9 @@ namespace Server
             FireCheckbox.Text = "Fire";
             FireCheckbox.UseVisualStyleBackColor = true;
             FireCheckbox.CheckStateChanged += FireCheckbox_CheckStateChanged;
-            //
+            // 
             // FightCheckbox
-            //
+            // 
             FightCheckbox.AutoSize = true;
             FightCheckbox.Location = new Point(398, 18);
             FightCheckbox.Margin = new Padding(4, 3, 4, 3);
@@ -722,11 +834,11 @@ namespace Server
             FightCheckbox.Text = "Fight";
             FightCheckbox.UseVisualStyleBackColor = true;
             FightCheckbox.CheckedChanged += FightCheckbox_CheckedChanged;
-            //
+            // 
             // NoReconnectCheckbox
-            //
+            // 
             NoReconnectCheckbox.AutoSize = true;
-            NoReconnectCheckbox.Location = new Point(19, 47);
+            NoReconnectCheckbox.Location = new Point(19, 43);
             NoReconnectCheckbox.Margin = new Padding(4, 3, 4, 3);
             NoReconnectCheckbox.Name = "NoReconnectCheckbox";
             NoReconnectCheckbox.Size = new Size(101, 19);
@@ -734,21 +846,21 @@ namespace Server
             NoReconnectCheckbox.Text = "No Reconnect";
             NoReconnectCheckbox.UseVisualStyleBackColor = true;
             NoReconnectCheckbox.CheckedChanged += NoReconnectCheckbox_CheckedChanged;
-            //
+            // 
             // NoTeleportCheckbox
-            //
+            // 
             NoTeleportCheckbox.AutoSize = true;
             NoTeleportCheckbox.Location = new Point(19, 20);
             NoTeleportCheckbox.Margin = new Padding(4, 3, 4, 3);
             NoTeleportCheckbox.Name = "NoTeleportCheckbox";
-            NoTeleportCheckbox.Size = new Size(88, 19);
+            NoTeleportCheckbox.Size = new Size(87, 19);
             NoTeleportCheckbox.TabIndex = 21;
             NoTeleportCheckbox.Text = "No Teleport";
             NoTeleportCheckbox.UseVisualStyleBackColor = true;
             NoTeleportCheckbox.CheckedChanged += NoTeleportCheckbox_CheckedChanged;
-            //
+            // 
             // tabPage3
-            //
+            // 
             tabPage3.Controls.Add(RemoveSZButton);
             tabPage3.Controls.Add(AddSZButton);
             tabPage3.Controls.Add(SafeZoneInfoPanel);
@@ -760,9 +872,9 @@ namespace Server
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Safe Zones";
             tabPage3.UseVisualStyleBackColor = true;
-            //
+            // 
             // RemoveSZButton
-            //
+            // 
             RemoveSZButton.Location = new Point(126, 8);
             RemoveSZButton.Margin = new Padding(4, 3, 4, 3);
             RemoveSZButton.Name = "RemoveSZButton";
@@ -771,9 +883,9 @@ namespace Server
             RemoveSZButton.Text = "Remove";
             RemoveSZButton.UseVisualStyleBackColor = true;
             RemoveSZButton.Click += RemoveSZButton_Click;
-            //
+            // 
             // AddSZButton
-            //
+            // 
             AddSZButton.Location = new Point(7, 8);
             AddSZButton.Margin = new Padding(4, 3, 4, 3);
             AddSZButton.Name = "AddSZButton";
@@ -782,9 +894,9 @@ namespace Server
             AddSZButton.Text = "Add";
             AddSZButton.UseVisualStyleBackColor = true;
             AddSZButton.Click += AddSZButton_Click;
-            //
+            // 
             // SafeZoneInfoPanel
-            //
+            // 
             SafeZoneInfoPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             SafeZoneInfoPanel.Controls.Add(label12);
             SafeZoneInfoPanel.Controls.Add(SZYTextBox);
@@ -799,9 +911,9 @@ namespace Server
             SafeZoneInfoPanel.Name = "SafeZoneInfoPanel";
             SafeZoneInfoPanel.Size = new Size(230, 160);
             SafeZoneInfoPanel.TabIndex = 10;
-            //
+            // 
             // label12
-            //
+            // 
             label12.AutoSize = true;
             label12.Location = new Point(145, 29);
             label12.Margin = new Padding(4, 0, 4, 0);
@@ -809,9 +921,9 @@ namespace Server
             label12.Size = new Size(17, 15);
             label12.TabIndex = 10;
             label12.Text = "Y:";
-            //
+            // 
             // SZYTextBox
-            //
+            // 
             SZYTextBox.Location = new Point(172, 25);
             SZYTextBox.Margin = new Padding(4, 3, 4, 3);
             SZYTextBox.MaxLength = 5;
@@ -819,9 +931,9 @@ namespace Server
             SZYTextBox.Size = new Size(42, 23);
             SZYTextBox.TabIndex = 3;
             SZYTextBox.TextChanged += SZYTextBox_TextChanged;
-            //
+            // 
             // label14
-            //
+            // 
             label14.AutoSize = true;
             label14.Location = new Point(29, 59);
             label14.Margin = new Padding(4, 0, 4, 0);
@@ -829,9 +941,9 @@ namespace Server
             label14.Size = new Size(30, 15);
             label14.TabIndex = 8;
             label14.Text = "Size:";
-            //
+            // 
             // SizeTextBox
-            //
+            // 
             SizeTextBox.Location = new Point(71, 55);
             SizeTextBox.Margin = new Padding(4, 3, 4, 3);
             SizeTextBox.MaxLength = 5;
@@ -839,9 +951,9 @@ namespace Server
             SizeTextBox.Size = new Size(42, 23);
             SizeTextBox.TabIndex = 4;
             SizeTextBox.TextChanged += SizeTextBox_TextChanged;
-            //
+            // 
             // label17
-            //
+            // 
             label17.AutoSize = true;
             label17.Location = new Point(44, 29);
             label17.Margin = new Padding(4, 0, 4, 0);
@@ -849,9 +961,9 @@ namespace Server
             label17.Size = new Size(17, 15);
             label17.TabIndex = 3;
             label17.Text = "X:";
-            //
+            // 
             // SZXTextBox
-            //
+            // 
             SZXTextBox.Location = new Point(71, 25);
             SZXTextBox.Margin = new Padding(4, 3, 4, 3);
             SZXTextBox.MaxLength = 5;
@@ -859,9 +971,9 @@ namespace Server
             SZXTextBox.Size = new Size(42, 23);
             SZXTextBox.TabIndex = 2;
             SZXTextBox.TextChanged += SZXTextBox_TextChanged;
-            //
+            // 
             // StartPointCheckBox
-            //
+            // 
             StartPointCheckBox.AutoSize = true;
             StartPointCheckBox.Location = new Point(71, 103);
             StartPointCheckBox.Margin = new Padding(4, 3, 4, 3);
@@ -871,9 +983,9 @@ namespace Server
             StartPointCheckBox.Text = "Start Point";
             StartPointCheckBox.UseVisualStyleBackColor = true;
             StartPointCheckBox.CheckedChanged += StartPointCheckBox_CheckedChanged;
-            //
+            // 
             // SafeZoneInfoListBox
-            //
+            // 
             SafeZoneInfoListBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             SafeZoneInfoListBox.FormattingEnabled = true;
             SafeZoneInfoListBox.ItemHeight = 15;
@@ -881,12 +993,12 @@ namespace Server
             SafeZoneInfoListBox.Margin = new Padding(4, 3, 4, 3);
             SafeZoneInfoListBox.Name = "SafeZoneInfoListBox";
             SafeZoneInfoListBox.SelectionMode = SelectionMode.MultiExtended;
-            SafeZoneInfoListBox.Size = new Size(206, 154);
+            SafeZoneInfoListBox.Size = new Size(206, 469);
             SafeZoneInfoListBox.TabIndex = 9;
             SafeZoneInfoListBox.SelectedIndexChanged += SafeZoneInfoListBox_SelectedIndexChanged;
-            //
+            // 
             // tabPage2
-            //
+            // 
             tabPage2.Controls.Add(RPasteButton);
             tabPage2.Controls.Add(RCopyButton);
             tabPage2.Controls.Add(RemoveRButton);
@@ -901,9 +1013,9 @@ namespace Server
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Respawns";
             tabPage2.UseVisualStyleBackColor = true;
-            //
+            // 
             // RPasteButton
-            //
+            // 
             RPasteButton.Location = new Point(315, 8);
             RPasteButton.Margin = new Padding(4, 3, 4, 3);
             RPasteButton.Name = "RPasteButton";
@@ -912,9 +1024,9 @@ namespace Server
             RPasteButton.Text = "Paste";
             RPasteButton.UseVisualStyleBackColor = true;
             RPasteButton.Click += RPasteButton_Click;
-            //
+            // 
             // RCopyButton
-            //
+            // 
             RCopyButton.Location = new Point(220, 8);
             RCopyButton.Margin = new Padding(4, 3, 4, 3);
             RCopyButton.Name = "RCopyButton";
@@ -922,9 +1034,9 @@ namespace Server
             RCopyButton.TabIndex = 21;
             RCopyButton.Text = "Copy";
             RCopyButton.UseVisualStyleBackColor = true;
-            //
+            // 
             // RemoveRButton
-            //
+            // 
             RemoveRButton.Location = new Point(126, 8);
             RemoveRButton.Margin = new Padding(4, 3, 4, 3);
             RemoveRButton.Name = "RemoveRButton";
@@ -933,9 +1045,9 @@ namespace Server
             RemoveRButton.Text = "Remove";
             RemoveRButton.UseVisualStyleBackColor = true;
             RemoveRButton.Click += RemoveRButton_Click;
-            //
+            // 
             // AddRButton
-            //
+            // 
             AddRButton.Location = new Point(7, 8);
             AddRButton.Margin = new Padding(4, 3, 4, 3);
             AddRButton.Name = "AddRButton";
@@ -944,9 +1056,9 @@ namespace Server
             AddRButton.Text = "Add";
             AddRButton.UseVisualStyleBackColor = true;
             AddRButton.Click += AddRButton_Click;
-            //
+            // 
             // RespawnInfoListBox
-            //
+            // 
             RespawnInfoListBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             RespawnInfoListBox.FormattingEnabled = true;
             RespawnInfoListBox.ItemHeight = 15;
@@ -954,12 +1066,12 @@ namespace Server
             RespawnInfoListBox.Margin = new Padding(4, 3, 4, 3);
             RespawnInfoListBox.Name = "RespawnInfoListBox";
             RespawnInfoListBox.SelectionMode = SelectionMode.MultiExtended;
-            RespawnInfoListBox.Size = new Size(303, 169);
+            RespawnInfoListBox.Size = new Size(303, 469);
             RespawnInfoListBox.TabIndex = 14;
             RespawnInfoListBox.SelectedIndexChanged += RespawnInfoListBox_SelectedIndexChanged;
-            //
+            // 
             // RespawnInfoPanel
-            //
+            // 
             RespawnInfoPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             RespawnInfoPanel.Controls.Add(chkrespawnsave);
             RespawnInfoPanel.Controls.Add(chkRespawnEnableTick);
@@ -987,9 +1099,9 @@ namespace Server
             RespawnInfoPanel.Name = "RespawnInfoPanel";
             RespawnInfoPanel.Size = new Size(296, 237);
             RespawnInfoPanel.TabIndex = 11;
-            //
+            // 
             // chkrespawnsave
-            //
+            // 
             chkrespawnsave.AutoSize = true;
             chkrespawnsave.Location = new Point(29, 126);
             chkrespawnsave.Margin = new Padding(4, 3, 4, 3);
@@ -999,9 +1111,9 @@ namespace Server
             chkrespawnsave.Text = "Save respawnticks on reboot";
             chkrespawnsave.UseVisualStyleBackColor = true;
             chkrespawnsave.CheckedChanged += chkrespawnsave_CheckedChanged;
-            //
+            // 
             // chkRespawnEnableTick
-            //
+            // 
             chkRespawnEnableTick.AutoSize = true;
             chkRespawnEnableTick.Location = new Point(29, 106);
             chkRespawnEnableTick.Margin = new Padding(4, 3, 4, 3);
@@ -1011,9 +1123,9 @@ namespace Server
             chkRespawnEnableTick.Text = "Use tickbased respawn";
             chkRespawnEnableTick.UseVisualStyleBackColor = true;
             chkRespawnEnableTick.CheckedChanged += chkRespawnEnableTick_CheckedChanged;
-            //
+            // 
             // Randomtextbox
-            //
+            // 
             Randomtextbox.Location = new Point(184, 150);
             Randomtextbox.Margin = new Padding(4, 3, 4, 3);
             Randomtextbox.MaxLength = 10;
@@ -1023,9 +1135,9 @@ namespace Server
             Randomtextbox.TabIndex = 23;
             toolTip1.SetToolTip(Randomtextbox, "Allows random + or - added to each spawn time");
             Randomtextbox.TextChanged += RandomTextBox_TextChanged;
-            //
+            // 
             // label23
-            //
+            // 
             label23.AutoSize = true;
             label23.Location = new Point(158, 153);
             label23.Margin = new Padding(4, 0, 4, 0);
@@ -1033,9 +1145,9 @@ namespace Server
             label23.Size = new Size(17, 15);
             label23.TabIndex = 22;
             label23.Text = "R:";
-            //
+            // 
             // label34
-            //
+            // 
             label34.AutoSize = true;
             label34.Location = new Point(26, 183);
             label34.Margin = new Padding(4, 0, 4, 0);
@@ -1043,18 +1155,18 @@ namespace Server
             label34.Size = new Size(41, 15);
             label34.TabIndex = 21;
             label34.Text = "Route:";
-            //
+            // 
             // RoutePathTextBox
-            //
+            // 
             RoutePathTextBox.Location = new Point(76, 180);
             RoutePathTextBox.Margin = new Padding(4, 3, 4, 3);
             RoutePathTextBox.Name = "RoutePathTextBox";
             RoutePathTextBox.Size = new Size(151, 23);
             RoutePathTextBox.TabIndex = 20;
             RoutePathTextBox.TextChanged += RoutePathTextBox_TextChanged;
-            //
+            // 
             // label24
-            //
+            // 
             label24.AutoSize = true;
             label24.Location = new Point(26, 213);
             label24.Margin = new Padding(4, 0, 4, 0);
@@ -1062,9 +1174,9 @@ namespace Server
             label24.Size = new Size(25, 15);
             label24.TabIndex = 18;
             label24.Text = "Dir:";
-            //
+            // 
             // DirectionTextBox
-            //
+            // 
             DirectionTextBox.Location = new Point(76, 210);
             DirectionTextBox.Margin = new Padding(4, 3, 4, 3);
             DirectionTextBox.MaxLength = 5;
@@ -1072,9 +1184,9 @@ namespace Server
             DirectionTextBox.Size = new Size(42, 23);
             DirectionTextBox.TabIndex = 17;
             DirectionTextBox.TextChanged += DirectionTextBox_TextChanged;
-            //
+            // 
             // label8
-            //
+            // 
             label8.AutoSize = true;
             label8.Location = new Point(26, 153);
             label8.Margin = new Padding(4, 0, 4, 0);
@@ -1082,9 +1194,9 @@ namespace Server
             label8.Size = new Size(39, 15);
             label8.TabIndex = 16;
             label8.Text = "Delay:";
-            //
+            // 
             // DelayTextBox
-            //
+            // 
             DelayTextBox.Location = new Point(76, 150);
             DelayTextBox.Margin = new Padding(4, 3, 4, 3);
             DelayTextBox.MaxLength = 10;
@@ -1094,9 +1206,9 @@ namespace Server
             DelayTextBox.TabIndex = 15;
             toolTip1.SetToolTip(DelayTextBox, "if you use tick based spawn: this is ignored!");
             DelayTextBox.TextChanged += DelayTextBox_TextChanged;
-            //
+            // 
             // label7
-            //
+            // 
             label7.AutoSize = true;
             label7.Location = new Point(13, 18);
             label7.Margin = new Padding(4, 0, 4, 0);
@@ -1104,9 +1216,9 @@ namespace Server
             label7.Size = new Size(54, 15);
             label7.TabIndex = 14;
             label7.Text = "Monster:";
-            //
+            // 
             // MonsterInfoComboBox
-            //
+            // 
             MonsterInfoComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             MonsterInfoComboBox.FormattingEnabled = true;
             MonsterInfoComboBox.Location = new Point(76, 15);
@@ -1115,9 +1227,9 @@ namespace Server
             MonsterInfoComboBox.Size = new Size(151, 23);
             MonsterInfoComboBox.TabIndex = 13;
             MonsterInfoComboBox.SelectedIndexChanged += MonsterInfoComboBox_SelectedIndexChanged;
-            //
+            // 
             // label6
-            //
+            // 
             label6.AutoSize = true;
             label6.Location = new Point(126, 80);
             label6.Margin = new Padding(4, 0, 4, 0);
@@ -1125,9 +1237,9 @@ namespace Server
             label6.Size = new Size(46, 15);
             label6.TabIndex = 12;
             label6.Text = "Spread:";
-            //
+            // 
             // SpreadTextBox
-            //
+            // 
             SpreadTextBox.Location = new Point(184, 76);
             SpreadTextBox.Margin = new Padding(4, 3, 4, 3);
             SpreadTextBox.MaxLength = 5;
@@ -1135,9 +1247,9 @@ namespace Server
             SpreadTextBox.Size = new Size(42, 23);
             SpreadTextBox.TabIndex = 11;
             SpreadTextBox.TextChanged += SpreadTextBox_TextChanged;
-            //
+            // 
             // label9
-            //
+            // 
             label9.AutoSize = true;
             label9.Location = new Point(158, 50);
             label9.Margin = new Padding(4, 0, 4, 0);
@@ -1145,9 +1257,9 @@ namespace Server
             label9.Size = new Size(17, 15);
             label9.TabIndex = 10;
             label9.Text = "Y:";
-            //
+            // 
             // RYTextBox
-            //
+            // 
             RYTextBox.Location = new Point(184, 46);
             RYTextBox.Margin = new Padding(4, 3, 4, 3);
             RYTextBox.MaxLength = 5;
@@ -1155,9 +1267,9 @@ namespace Server
             RYTextBox.Size = new Size(42, 23);
             RYTextBox.TabIndex = 3;
             RYTextBox.TextChanged += RYTextBox_TextChanged;
-            //
+            // 
             // label10
-            //
+            // 
             label10.AutoSize = true;
             label10.Location = new Point(24, 80);
             label10.Margin = new Padding(4, 0, 4, 0);
@@ -1165,9 +1277,9 @@ namespace Server
             label10.Size = new Size(43, 15);
             label10.TabIndex = 8;
             label10.Text = "Count:";
-            //
+            // 
             // CountTextBox
-            //
+            // 
             CountTextBox.Location = new Point(76, 76);
             CountTextBox.Margin = new Padding(4, 3, 4, 3);
             CountTextBox.MaxLength = 5;
@@ -1175,9 +1287,9 @@ namespace Server
             CountTextBox.Size = new Size(42, 23);
             CountTextBox.TabIndex = 4;
             CountTextBox.TextChanged += CountTextBox_TextChanged;
-            //
+            // 
             // label13
-            //
+            // 
             label13.AutoSize = true;
             label13.Location = new Point(49, 50);
             label13.Margin = new Padding(4, 0, 4, 0);
@@ -1185,9 +1297,9 @@ namespace Server
             label13.Size = new Size(17, 15);
             label13.TabIndex = 3;
             label13.Text = "X:";
-            //
+            // 
             // RXTextBox
-            //
+            // 
             RXTextBox.Location = new Point(76, 46);
             RXTextBox.Margin = new Padding(4, 3, 4, 3);
             RXTextBox.MaxLength = 5;
@@ -1195,9 +1307,9 @@ namespace Server
             RXTextBox.Size = new Size(42, 23);
             RXTextBox.TabIndex = 2;
             RXTextBox.TextChanged += RXTextBox_TextChanged;
-            //
+            // 
             // tabPage4
-            //
+            // 
             tabPage4.Controls.Add(RemoveMButton);
             tabPage4.Controls.Add(AddMButton);
             tabPage4.Controls.Add(MovementInfoPanel);
@@ -1210,9 +1322,9 @@ namespace Server
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Movements";
             tabPage4.UseVisualStyleBackColor = true;
-            //
+            // 
             // RemoveMButton
-            //
+            // 
             RemoveMButton.Location = new Point(126, 8);
             RemoveMButton.Margin = new Padding(4, 3, 4, 3);
             RemoveMButton.Name = "RemoveMButton";
@@ -1221,9 +1333,9 @@ namespace Server
             RemoveMButton.Text = "Remove";
             RemoveMButton.UseVisualStyleBackColor = true;
             RemoveMButton.Click += RemoveMButton_Click;
-            //
+            // 
             // AddMButton
-            //
+            // 
             AddMButton.Location = new Point(7, 8);
             AddMButton.Margin = new Padding(4, 3, 4, 3);
             AddMButton.Name = "AddMButton";
@@ -1232,9 +1344,9 @@ namespace Server
             AddMButton.Text = "Add";
             AddMButton.UseVisualStyleBackColor = true;
             AddMButton.Click += AddMButton_Click;
-            //
+            // 
             // MovementInfoPanel
-            //
+            // 
             MovementInfoPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             MovementInfoPanel.Controls.Add(label26);
             MovementInfoPanel.Controls.Add(BigMapIconTextBox);
@@ -1259,9 +1371,9 @@ namespace Server
             MovementInfoPanel.Name = "MovementInfoPanel";
             MovementInfoPanel.Size = new Size(299, 237);
             MovementInfoPanel.TabIndex = 14;
-            //
+            // 
             // label26
-            //
+            // 
             label26.AutoSize = true;
             label26.Location = new Point(180, 210);
             label26.Margin = new Padding(4, 0, 4, 0);
@@ -1269,9 +1381,9 @@ namespace Server
             label26.Size = new Size(33, 15);
             label26.TabIndex = 23;
             label26.Text = "Icon:";
-            //
+            // 
             // BigMapIconTextBox
-            //
+            // 
             BigMapIconTextBox.Location = new Point(225, 207);
             BigMapIconTextBox.Margin = new Padding(4, 3, 4, 3);
             BigMapIconTextBox.MaxLength = 5;
@@ -1279,9 +1391,9 @@ namespace Server
             BigMapIconTextBox.Size = new Size(42, 23);
             BigMapIconTextBox.TabIndex = 22;
             BigMapIconTextBox.TextChanged += BigMapIconTextBox_TextChanged;
-            //
+            // 
             // ShowBigMapCheckBox
-            //
+            // 
             ShowBigMapCheckBox.AutoSize = true;
             ShowBigMapCheckBox.Location = new Point(16, 210);
             ShowBigMapCheckBox.Margin = new Padding(4, 3, 4, 3);
@@ -1291,9 +1403,9 @@ namespace Server
             ShowBigMapCheckBox.Text = "Show on BigMap";
             ShowBigMapCheckBox.UseVisualStyleBackColor = true;
             ShowBigMapCheckBox.CheckedChanged += ShowBigMapCheckBox_CheckedChanged;
-            //
+            // 
             // label25
-            //
+            // 
             label25.AutoSize = true;
             label25.Location = new Point(4, 172);
             label25.Margin = new Padding(4, 0, 4, 0);
@@ -1301,9 +1413,9 @@ namespace Server
             label25.Size = new Size(61, 15);
             label25.TabIndex = 20;
             label25.Text = "Conquest:";
-            //
+            // 
             // ConquestComboBox
-            //
+            // 
             ConquestComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             ConquestComboBox.FormattingEnabled = true;
             ConquestComboBox.Location = new Point(75, 168);
@@ -1312,9 +1424,9 @@ namespace Server
             ConquestComboBox.Size = new Size(212, 23);
             ConquestComboBox.TabIndex = 19;
             ConquestComboBox.SelectedIndexChanged += ConquestComboBox_SelectedIndexChanged;
-            //
+            // 
             // NeedMoveMCheckBox
-            //
+            // 
             NeedMoveMCheckBox.AutoSize = true;
             NeedMoveMCheckBox.Location = new Point(16, 142);
             NeedMoveMCheckBox.Margin = new Padding(4, 3, 4, 3);
@@ -1324,9 +1436,9 @@ namespace Server
             NeedMoveMCheckBox.Text = "Need Move";
             NeedMoveMCheckBox.UseVisualStyleBackColor = true;
             NeedMoveMCheckBox.CheckedChanged += NeedScriptMCheckBox_CheckedChanged;
-            //
+            // 
             // NeedHoleMCheckBox
-            //
+            // 
             NeedHoleMCheckBox.AutoSize = true;
             NeedHoleMCheckBox.Location = new Point(16, 115);
             NeedHoleMCheckBox.Margin = new Padding(4, 3, 4, 3);
@@ -1336,19 +1448,19 @@ namespace Server
             NeedHoleMCheckBox.Text = "Need Hole";
             NeedHoleMCheckBox.UseVisualStyleBackColor = true;
             NeedHoleMCheckBox.CheckedChanged += NeedHoleMCheckBox_CheckedChanged;
-            //
+            // 
             // label22
-            //
+            // 
             label22.AutoSize = true;
             label22.Location = new Point(13, 43);
             label22.Margin = new Padding(4, 0, 4, 0);
             label22.Name = "label22";
-            label22.Size = new Size(50, 15);
+            label22.Size = new Size(49, 15);
             label22.TabIndex = 16;
             label22.Text = "To Map:";
-            //
+            // 
             // DestMapComboBox
-            //
+            // 
             DestMapComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             DestMapComboBox.FormattingEnabled = true;
             DestMapComboBox.Location = new Point(75, 38);
@@ -1357,19 +1469,19 @@ namespace Server
             DestMapComboBox.Size = new Size(212, 23);
             DestMapComboBox.TabIndex = 15;
             DestMapComboBox.SelectedIndexChanged += DestMapComboBox_SelectedIndexChanged;
-            //
+            // 
             // label18
-            //
+            // 
             label18.AutoSize = true;
             label18.Location = new Point(138, 73);
             label18.Margin = new Padding(4, 0, 4, 0);
             label18.Name = "label18";
-            label18.Size = new Size(33, 15);
+            label18.Size = new Size(32, 15);
             label18.TabIndex = 14;
             label18.Text = "To Y:";
-            //
+            // 
             // DestYTextBox
-            //
+            // 
             DestYTextBox.Location = new Point(183, 69);
             DestYTextBox.Margin = new Padding(4, 3, 4, 3);
             DestYTextBox.MaxLength = 5;
@@ -1377,19 +1489,19 @@ namespace Server
             DestYTextBox.Size = new Size(42, 23);
             DestYTextBox.TabIndex = 12;
             DestYTextBox.TextChanged += DestYTextBox_TextChanged;
-            //
+            // 
             // label21
-            //
+            // 
             label21.AutoSize = true;
             label21.Location = new Point(27, 73);
             label21.Margin = new Padding(4, 0, 4, 0);
             label21.Name = "label21";
-            label21.Size = new Size(33, 15);
+            label21.Size = new Size(32, 15);
             label21.TabIndex = 13;
             label21.Text = "To X:";
-            //
+            // 
             // DestXTextBox
-            //
+            // 
             DestXTextBox.Location = new Point(72, 69);
             DestXTextBox.Margin = new Padding(4, 3, 4, 3);
             DestXTextBox.MaxLength = 5;
@@ -1397,9 +1509,9 @@ namespace Server
             DestXTextBox.Size = new Size(42, 23);
             DestXTextBox.TabIndex = 11;
             DestXTextBox.TextChanged += DestXTextBox_TextChanged;
-            //
+            // 
             // label16
-            //
+            // 
             label16.AutoSize = true;
             label16.Location = new Point(126, 13);
             label16.Margin = new Padding(4, 0, 4, 0);
@@ -1407,9 +1519,9 @@ namespace Server
             label16.Size = new Size(48, 15);
             label16.TabIndex = 10;
             label16.Text = "From Y:";
-            //
+            // 
             // SourceYTextBox
-            //
+            // 
             SourceYTextBox.Location = new Point(183, 8);
             SourceYTextBox.Margin = new Padding(4, 3, 4, 3);
             SourceYTextBox.MaxLength = 5;
@@ -1417,9 +1529,9 @@ namespace Server
             SourceYTextBox.Size = new Size(42, 23);
             SourceYTextBox.TabIndex = 3;
             SourceYTextBox.TextChanged += SourceYTextBox_TextChanged;
-            //
+            // 
             // label20
-            //
+            // 
             label20.AutoSize = true;
             label20.Location = new Point(15, 13);
             label20.Margin = new Padding(4, 0, 4, 0);
@@ -1427,9 +1539,9 @@ namespace Server
             label20.Size = new Size(48, 15);
             label20.TabIndex = 3;
             label20.Text = "From X:";
-            //
+            // 
             // SourceXTextBox
-            //
+            // 
             SourceXTextBox.Location = new Point(72, 8);
             SourceXTextBox.Margin = new Padding(4, 3, 4, 3);
             SourceXTextBox.MaxLength = 5;
@@ -1437,9 +1549,9 @@ namespace Server
             SourceXTextBox.Size = new Size(42, 23);
             SourceXTextBox.TabIndex = 2;
             SourceXTextBox.TextChanged += SourceXTextBox_TextChanged;
-            //
+            // 
             // MovementInfoListBox
-            //
+            // 
             MovementInfoListBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             MovementInfoListBox.FormattingEnabled = true;
             MovementInfoListBox.ItemHeight = 15;
@@ -1447,12 +1559,12 @@ namespace Server
             MovementInfoListBox.Margin = new Padding(4, 3, 4, 3);
             MovementInfoListBox.Name = "MovementInfoListBox";
             MovementInfoListBox.SelectionMode = SelectionMode.MultiExtended;
-            MovementInfoListBox.Size = new Size(264, 199);
+            MovementInfoListBox.Size = new Size(264, 469);
             MovementInfoListBox.TabIndex = 13;
             MovementInfoListBox.SelectedIndexChanged += MovementInfoListBox_SelectedIndexChanged;
-            //
+            // 
             // tabPage7
-            //
+            // 
             tabPage7.Controls.Add(MZDeletebutton);
             tabPage7.Controls.Add(MZAddbutton);
             tabPage7.Controls.Add(MineZonepanel);
@@ -1465,9 +1577,9 @@ namespace Server
             tabPage7.TabIndex = 6;
             tabPage7.Text = "MineZones";
             tabPage7.UseVisualStyleBackColor = true;
-            //
+            // 
             // MZDeletebutton
-            //
+            // 
             MZDeletebutton.Location = new Point(126, 8);
             MZDeletebutton.Margin = new Padding(4, 3, 4, 3);
             MZDeletebutton.Name = "MZDeletebutton";
@@ -1476,9 +1588,9 @@ namespace Server
             MZDeletebutton.Text = "Remove";
             MZDeletebutton.UseVisualStyleBackColor = true;
             MZDeletebutton.Click += MZDeletebutton_Click;
-            //
+            // 
             // MZAddbutton
-            //
+            // 
             MZAddbutton.Location = new Point(7, 8);
             MZAddbutton.Margin = new Padding(4, 3, 4, 3);
             MZAddbutton.Name = "MZAddbutton";
@@ -1487,9 +1599,9 @@ namespace Server
             MZAddbutton.Text = "Add";
             MZAddbutton.UseVisualStyleBackColor = true;
             MZAddbutton.Click += MZAddbutton_Click;
-            //
+            // 
             // MineZonepanel
-            //
+            // 
             MineZonepanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             MineZonepanel.Controls.Add(label27);
             MineZonepanel.Controls.Add(MineZoneComboBox);
@@ -1505,19 +1617,19 @@ namespace Server
             MineZonepanel.Name = "MineZonepanel";
             MineZonepanel.Size = new Size(281, 160);
             MineZonepanel.TabIndex = 14;
-            //
+            // 
             // label27
-            //
+            // 
             label27.AutoSize = true;
             label27.Location = new Point(14, 20);
             label27.Margin = new Padding(4, 0, 4, 0);
             label27.Name = "label27";
-            label27.Size = new Size(65, 15);
+            label27.Size = new Size(64, 15);
             label27.TabIndex = 14;
             label27.Text = "Mine Type:";
-            //
+            // 
             // MineZoneComboBox
-            //
+            // 
             MineZoneComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             MineZoneComboBox.FormattingEnabled = true;
             MineZoneComboBox.Location = new Point(91, 16);
@@ -1526,9 +1638,9 @@ namespace Server
             MineZoneComboBox.Size = new Size(144, 23);
             MineZoneComboBox.TabIndex = 13;
             MineZoneComboBox.SelectedIndexChanged += MineZoneComboBox_SelectedIndexChanged;
-            //
+            // 
             // label30
-            //
+            // 
             label30.AutoSize = true;
             label30.Location = new Point(166, 61);
             label30.Margin = new Padding(4, 0, 4, 0);
@@ -1536,9 +1648,9 @@ namespace Server
             label30.Size = new Size(17, 15);
             label30.TabIndex = 10;
             label30.Text = "Y:";
-            //
+            // 
             // MZYtextBox
-            //
+            // 
             MZYtextBox.Location = new Point(192, 58);
             MZYtextBox.Margin = new Padding(4, 3, 4, 3);
             MZYtextBox.MaxLength = 5;
@@ -1546,9 +1658,9 @@ namespace Server
             MZYtextBox.Size = new Size(42, 23);
             MZYtextBox.TabIndex = 3;
             MZYtextBox.TextChanged += MZYtextBox_TextChanged;
-            //
+            // 
             // label31
-            //
+            // 
             label31.AutoSize = true;
             label31.Location = new Point(49, 114);
             label31.Margin = new Padding(4, 0, 4, 0);
@@ -1556,9 +1668,9 @@ namespace Server
             label31.Size = new Size(30, 15);
             label31.TabIndex = 8;
             label31.Text = "Size:";
-            //
+            // 
             // MZSizetextBox
-            //
+            // 
             MZSizetextBox.Location = new Point(91, 111);
             MZSizetextBox.Margin = new Padding(4, 3, 4, 3);
             MZSizetextBox.MaxLength = 5;
@@ -1566,9 +1678,9 @@ namespace Server
             MZSizetextBox.Size = new Size(42, 23);
             MZSizetextBox.TabIndex = 4;
             MZSizetextBox.TextChanged += MZSizetextBox_TextChanged;
-            //
+            // 
             // label32
-            //
+            // 
             label32.AutoSize = true;
             label32.Location = new Point(64, 66);
             label32.Margin = new Padding(4, 0, 4, 0);
@@ -1576,9 +1688,9 @@ namespace Server
             label32.Size = new Size(17, 15);
             label32.TabIndex = 3;
             label32.Text = "X:";
-            //
+            // 
             // MZXtextBox
-            //
+            // 
             MZXtextBox.Location = new Point(91, 62);
             MZXtextBox.Margin = new Padding(4, 3, 4, 3);
             MZXtextBox.MaxLength = 5;
@@ -1586,9 +1698,9 @@ namespace Server
             MZXtextBox.Size = new Size(42, 23);
             MZXtextBox.TabIndex = 2;
             MZXtextBox.TextChanged += MZXtextBox_TextChanged;
-            //
+            // 
             // MZListlistBox
-            //
+            // 
             MZListlistBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             MZListlistBox.FormattingEnabled = true;
             MZListlistBox.ItemHeight = 15;
@@ -1596,12 +1708,12 @@ namespace Server
             MZListlistBox.Margin = new Padding(4, 3, 4, 3);
             MZListlistBox.Name = "MZListlistBox";
             MZListlistBox.SelectionMode = SelectionMode.MultiExtended;
-            MZListlistBox.Size = new Size(206, 154);
+            MZListlistBox.Size = new Size(206, 229);
             MZListlistBox.TabIndex = 13;
             MZListlistBox.SelectedIndexChanged += MZListlistBox_SelectedIndexChanged;
-            //
+            // 
             // RemoveButton
-            //
+            // 
             RemoveButton.Location = new Point(109, 5);
             RemoveButton.Margin = new Padding(4, 3, 4, 3);
             RemoveButton.Name = "RemoveButton";
@@ -1610,9 +1722,9 @@ namespace Server
             RemoveButton.Text = "Remove";
             RemoveButton.UseVisualStyleBackColor = true;
             RemoveButton.Click += RemoveButton_Click;
-            //
+            // 
             // AddButton
-            //
+            // 
             AddButton.Location = new Point(13, 5);
             AddButton.Margin = new Padding(4, 3, 4, 3);
             AddButton.Name = "AddButton";
@@ -1621,9 +1733,9 @@ namespace Server
             AddButton.Text = "Add";
             AddButton.UseVisualStyleBackColor = true;
             AddButton.Click += AddButton_Click;
-            //
+            // 
             // MapInfoListBox
-            //
+            // 
             MapInfoListBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             MapInfoListBox.FormattingEnabled = true;
             MapInfoListBox.ItemHeight = 15;
@@ -1634,9 +1746,9 @@ namespace Server
             MapInfoListBox.Size = new Size(220, 529);
             MapInfoListBox.TabIndex = 7;
             MapInfoListBox.SelectedIndexChanged += MapInfoListBox_SelectedIndexChanged;
-            //
+            // 
             // PasteMapButton
-            //
+            // 
             PasteMapButton.Location = new Point(301, 5);
             PasteMapButton.Margin = new Padding(4, 3, 4, 3);
             PasteMapButton.Name = "PasteMapButton";
@@ -1645,9 +1757,9 @@ namespace Server
             PasteMapButton.Text = "Paste";
             PasteMapButton.UseVisualStyleBackColor = true;
             PasteMapButton.Click += PasteMapButton_Click;
-            //
+            // 
             // CopyMapButton
-            //
+            // 
             CopyMapButton.Location = new Point(205, 5);
             CopyMapButton.Margin = new Padding(4, 3, 4, 3);
             CopyMapButton.Name = "CopyMapButton";
@@ -1655,9 +1767,9 @@ namespace Server
             CopyMapButton.TabIndex = 23;
             CopyMapButton.Text = "Copy";
             CopyMapButton.UseVisualStyleBackColor = true;
-            //
+            // 
             // ImportMapInfoButton
-            //
+            // 
             ImportMapInfoButton.Location = new Point(658, 5);
             ImportMapInfoButton.Margin = new Padding(4, 3, 4, 3);
             ImportMapInfoButton.Name = "ImportMapInfoButton";
@@ -1666,9 +1778,9 @@ namespace Server
             ImportMapInfoButton.Text = "Import MapInfo";
             ImportMapInfoButton.UseVisualStyleBackColor = true;
             ImportMapInfoButton.Click += ImportMapInfoButton_Click;
-            //
+            // 
             // ExportMapInfoButton
-            //
+            // 
             ExportMapInfoButton.Location = new Point(658, 38);
             ExportMapInfoButton.Margin = new Padding(4, 3, 4, 3);
             ExportMapInfoButton.Name = "ExportMapInfoButton";
@@ -1677,9 +1789,9 @@ namespace Server
             ExportMapInfoButton.Text = "Export MapInfo";
             ExportMapInfoButton.UseVisualStyleBackColor = true;
             ExportMapInfoButton.Click += ExportMapInfoButton_Click;
-            //
+            // 
             // ImportMongenButton
-            //
+            // 
             ImportMongenButton.Location = new Point(766, 3);
             ImportMongenButton.Margin = new Padding(4, 3, 4, 3);
             ImportMongenButton.Name = "ImportMongenButton";
@@ -1688,9 +1800,9 @@ namespace Server
             ImportMongenButton.Text = "Import Spawns";
             ImportMongenButton.UseVisualStyleBackColor = true;
             ImportMongenButton.Click += ImportMonGenButton_Click;
-            //
+            // 
             // ExportMongenButton
-            //
+            // 
             ExportMongenButton.Location = new Point(766, 38);
             ExportMongenButton.Margin = new Padding(4, 3, 4, 3);
             ExportMongenButton.Name = "ExportMongenButton";
@@ -1699,9 +1811,9 @@ namespace Server
             ExportMongenButton.Text = "Export Spawns";
             ExportMongenButton.UseVisualStyleBackColor = true;
             ExportMongenButton.Click += ExportMonGenButton_Click;
-            //
+            // 
             // VisualizerButton
-            //
+            // 
             VisualizerButton.Location = new Point(564, 5);
             VisualizerButton.Margin = new Padding(4, 3, 4, 3);
             VisualizerButton.Name = "VisualizerButton";
@@ -1710,9 +1822,9 @@ namespace Server
             VisualizerButton.Text = "Visualizer";
             VisualizerButton.UseVisualStyleBackColor = true;
             VisualizerButton.Click += VisualizerButton_Click;
-            //
+            // 
             // MapSearchButton
-            //
+            // 
             MapSearchButton.Location = new Point(240, 42);
             MapSearchButton.Name = "MapSearchButton";
             MapSearchButton.Size = new Size(75, 23);
@@ -1720,17 +1832,17 @@ namespace Server
             MapSearchButton.Text = "Search";
             MapSearchButton.UseVisualStyleBackColor = true;
             MapSearchButton.Click += MapSearchButton_Click;
-            //
+            // 
             // MapSearchTextBox
-            //
+            // 
             MapSearchTextBox.Location = new Point(14, 41);
             MapSearchTextBox.Name = "MapSearchTextBox";
             MapSearchTextBox.PlaceholderText = "Search...";
             MapSearchTextBox.Size = new Size(220, 23);
             MapSearchTextBox.TabIndex = 35;
-            //
+            // 
             // MapInfoForm
-            //
+            // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(886, 625);
@@ -1910,5 +2022,14 @@ namespace Server
         private TextBox MapSearchTextBox;
         private CheckBox GTBox;
         private TextBox GTIndexBox;
+        private CheckBox NoPetsCheckbox;
+        private CheckBox NoIntelligentCreatureCheckbox;
+        private TextBox RequiredGroupTextBox;
+        private CheckBox noGroupCheckbox;
+        private CheckBox NoExperienceCheckbox;
+        private CheckBox NoHeroesCheckbox;
+        private CheckBox RequiredGroupCheckBox;
+        private TextBox FireWallCount;
+        private CheckBox FireWallCheckBox;
     }
 }

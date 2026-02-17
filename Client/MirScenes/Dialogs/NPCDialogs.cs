@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Client.MirControls;
 using Client.MirGraphics;
@@ -7,6 +8,7 @@ using Client.MirObjects;
 using Client.MirSounds;
 using Font = System.Drawing.Font;
 using C = ClientPackets;
+using S = ServerPackets;
 using System.Diagnostics;
 
 namespace Client.MirScenes.Dialogs
@@ -18,6 +20,11 @@ namespace Client.MirScenes.Dialogs
         public static Regex L = new Regex(@"\(((.*?)\/(.*?))\)");
         public static Regex B = new Regex(@"<<((.*?)\/(\@.*?))>>");
 
+        // New regex patterns for NPC/Monster/Item linking (using IDX)
+        public static Regex MonsterLink = new Regex(@"\[MONSTER:(?<idx>\d+)(\|(?<name>[^\]]+))?\]|<\$MONSTER:(?<idx>\d+)>", RegexOptions.IgnoreCase);
+        public static Regex NPCLink = new Regex(@"\[NPC:(?<idx>\d+)(\|(?<name>[^\]]+))?\]|<\$NPC:(?<idx>\d+)>", RegexOptions.IgnoreCase);
+        public static Regex ItemLink = new Regex(@"\[ITEM:(?<idx>\d+)(\|(?<name>[^\]]+))?\]|<\$ITEM:(?<idx>\d+)>", RegexOptions.IgnoreCase);
+
         public MirButton CloseButton, UpButton, DownButton, PositionBar, QuestButton, HelpButton;
         public MirLabel[] TextLabel;
         public List<MirLabel> TextButtons;
@@ -26,18 +33,29 @@ namespace Client.MirScenes.Dialogs
 
         public MirLabel NameLabel;
 
-        // ZZ NPC对话框对话文字字体大小
+        // ZZ NPC对话框对话文字字体大小（原值是9，我这里改为10）
         Font font = new Font(Settings.FontName, 10F);
+
+        private static readonly HashSet<int> PendingMapInfoRequests = new HashSet<int>();
 
         public List<string> CurrentLines = new List<string>();
         private int _index = 0;
         public int MaximumLines = 8;
 
+        // Tooltip control for linked objects
+        private MirControl _tooltipPanel;
+        private MirImageControl _tooltipImage;
+        private MirLabel _tooltipTitle;
+        private MirLabel _tooltipContent;
+        
         public NPCDialog()
         {
             Index = 995;
             Library = Libraries.Prguse;
 
+            // Hide tooltip when dialog is clicked
+            this.MouseDown += (o, e) => HideTooltip();
+            
             TextLabel = new MirLabel[30];
             TextButtons = new List<MirLabel>();
             BigButtons = new List<BigButton>();
@@ -114,7 +132,7 @@ namespace Client.MirScenes.Dialogs
                 Sound = SoundList.None,
                 Visible = false
             };
-            PositionBar.OnMoving += PositionBar_OnMoving;
+            PositionBar.OnMoving += PositionBar_OnMoving;            
 
             CloseButton = new MirButton
             {
@@ -138,11 +156,11 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(390, 3),
                 Sound = SoundList.ButtonA,
             };
-            HelpButton.Click += (o, e) => GameScene.Scene.HelpDialog.DisplayPage("购买");
+            HelpButton.Click += (o, e) => GameScene.Scene.HelpDialog.DisplayPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Purchasing));
 
             BigButtonDialog = new BigButtonDialog()
             {
-                Parent = this,
+                Parent = this,               
             };
 
             QuestButton = new MirAnimatedButton()
@@ -162,6 +180,57 @@ namespace Client.MirScenes.Dialogs
             };
 
             QuestButton.Click += (o, e) => GameScene.Scene.QuestListDialog.Toggle();
+            
+            // Initialize tooltip panel
+            InitializeTooltipPanel();
+        }
+
+        private void InitializeTooltipPanel()
+        {
+            // Use simple background like item tooltips
+            _tooltipPanel = new MirControl
+            {
+                Parent = GameScene.Scene,
+                Visible = false,
+                NotControl = true,
+                Sort = true,
+                BackColour = Color.FromArgb(240, 80, 60, 40), // Darker brownish color
+                Border = true,
+                BorderColour = Color.FromArgb(255, 120, 100, 80), // Brownish border
+                DrawControlTexture = true,
+                Modal = false
+            };
+
+            _tooltipImage = new MirImageControl
+            {
+                Parent = _tooltipPanel,
+                Visible = false,
+                NotControl = true,
+                Size = new Size(48, 48),
+                Location = new Point(10, 10),
+                DrawImage = true
+            };
+
+            _tooltipTitle = new MirLabel
+            {
+                Parent = _tooltipPanel,
+                AutoSize = true,
+                ForeColour = Color.Yellow, // Title in yellow like KR
+                Location = new Point(70, 5),
+                NotControl = true,
+                OutLine = true
+            };
+
+            _tooltipContent = new MirLabel
+            {
+                Parent = _tooltipPanel,
+                AutoSize = true,
+                ForeColour = Color.White, // Content in white
+                Location = new Point(70, 25),
+                NotControl = true,
+                DrawFormat = TextFormatFlags.WordBreak | TextFormatFlags.ExpandTabs,
+                OutLine = true
+            };
         }
 
         void NPCDialog_MouseWheel(object sender, MouseEventArgs e)
@@ -306,8 +375,8 @@ namespace Client.MirScenes.Dialogs
                     BigButtonDialog.Show(BigButtons, minimumButtons);
                     Size = new Size(Size.Width, BigButtonDialog.Location.Y + BigButtonDialog.Size.Height);
                 }
-            }
-
+            }                
+            
             if (lines.Count > MaximumLines)
             {
                 Index = 385;
@@ -320,8 +389,8 @@ namespace Client.MirScenes.Dialogs
                 Index = 384;
                 UpButton.Visible = false;
                 DownButton.Visible = false;
-                PositionBar.Visible = false;
-            }
+                PositionBar.Visible = false;                
+            }         
 
             QuestButton.Location = new Point(172, Size.Height - 30);
 
@@ -357,10 +426,13 @@ namespace Client.MirScenes.Dialogs
                 }
 
                 string currentLine = lines[i];
-
                 List<Match> matchList = R.Matches(currentLine).Cast<Match>().ToList();
                 matchList.AddRange(C.Matches(currentLine).Cast<Match>());
                 matchList.AddRange(L.Matches(currentLine).Cast<Match>());
+
+                matchList.AddRange(MonsterLink.Matches(currentLine).Cast<Match>());
+                matchList.AddRange(NPCLink.Matches(currentLine).Cast<Match>());
+                matchList.AddRange(ItemLink.Matches(currentLine).Cast<Match>());
 
                 int oldLength = currentLine.Length;
 
@@ -368,26 +440,67 @@ namespace Client.MirScenes.Dialogs
                 {
                     int offSet = oldLength - currentLine.Length;
 
-                    Capture capture = match.Groups[1].Captures[0];
-                    string txt = match.Groups[2].Captures[0].Value;
-                    string action = match.Groups[3].Captures[0].Value;
+                    // Handle new link types FIRST (Monster, NPC, Item)
+                    bool isMonsterLink = MonsterLink.Match(match.Value).Success;
+                    bool isNPCLink = NPCLink.Match(match.Value).Success;
+                    bool isItemLink = ItemLink.Match(match.Value).Success;
 
-                    currentLine = currentLine.Remove(capture.Index - 1 - offSet, capture.Length + 2).Insert(capture.Index - 1 - offSet, txt);
-                    string text = currentLine.Substring(0, capture.Index - 1 - offSet) + " ";
-                    Size size = TextRenderer.MeasureText(CMain.Graphics, text, TextLabel[i].Font, TextLabel[i].Size, TextFormatFlags.TextBoxControl);
+                    if (isMonsterLink || isNPCLink || isItemLink)
+                    {
+                        // Extract the index from the link
+                        string linkIdx = match.Groups["idx"].Captures.Count > 0 ? match.Groups["idx"].Captures[0].Value : match.Groups["idx"].Value;
+                        string providedName = match.Groups["name"].Success ? match.Groups["name"].Captures[0].Value : null;
 
-                    // ZZ NPC对话框对话文字字体大小
-                    // 由于调整了自提大小， 这里改为 size.Width - 11, 原来是 - 10
-                    if (R.Match(match.Value).Success)
-                        NewButton(txt, action, TextLabel[i].Location.Add(new Point(size.Width - 11, 0)));
+                        string linkType = "ITEM";
+                        switch (true)
+                        {
+                            case true when isMonsterLink:
+                                linkType = "MONSTER";
+                                break;
+                            case true when isNPCLink:
+                                linkType = "NPC";
+                                break;
+                        }
 
-                    if (C.Match(match.Value).Success)
-                        NewColour(txt, action, TextLabel[i].Location.Add(new Point(size.Width - 11, 0)));
+                        string displayName = GetDisplayNameForLink(linkType, linkIdx, providedName);
+                        if (string.IsNullOrEmpty(displayName)) displayName = $"LINK_{linkIdx}";
 
-                    if (L.Match(match.Value).Success)
-                        NewButton(txt, null, TextLabel[i].Location.Add(new Point(size.Width - 11, 0)), action);
+                        int matchStart = match.Index - offSet;
+                        int matchLength = match.Length;
+                        currentLine = currentLine.Remove(matchStart, matchLength).Insert(matchStart, displayName);
+
+                        string textUpToLink = currentLine.Substring(0, matchStart);
+                        Point offset = CalculateLinkOffset(textUpToLink, TextLabel[i]);
+
+                        NewLink(displayName, linkType, linkIdx, TextLabel[i].Location.Add(offset));
+
+                        continue;
+                    }
+
+                    bool hasMultipleGroups = match.Groups.Count > 3 && match.Groups[2].Captures.Count > 0 && match.Groups[3].Captures.Count > 0;
+
+                    if (hasMultipleGroups)
+                    {
+                        Capture capture = match.Groups[1].Captures[0];
+                        string txt = match.Groups[2].Captures[0].Value;
+                        string action = match.Groups[3].Captures[0].Value;
+
+                        currentLine = currentLine.Remove(capture.Index - 1 - offSet, capture.Length + 2).Insert(capture.Index - 1 - offSet, txt);
+                        string text2 = currentLine.Substring(0, capture.Index - 1 - offSet) + " ";
+                        Size size2 = TextRenderer.MeasureText(CMain.Graphics, text2, TextLabel[i].Font, TextLabel[i].Size, TextFormatFlags.TextBoxControl);
+
+                        // ZZ NPC对话框对话文字字体大小
+                        // 由于调整了自提大小， 这里改为 size.Width - 11, 原来是 - 10
+                        if (R.Match(match.Value).Success)
+                            NewButton(txt, action, TextLabel[i].Location.Add(new Point(size2.Width - 11, 0)));
+
+                        if (C.Match(match.Value).Success)
+                            NewColour(txt, action, TextLabel[i].Location.Add(new Point(size2.Width - 11, 0)));
+
+                        if (L.Match(match.Value).Success)
+                            NewButton(txt, null, TextLabel[i].Location.Add(new Point(size2.Width - 11, 0)), action);
+                    }
                 }
-
                 TextLabel[i].Text = currentLine;
                 TextLabel[i].MouseWheel += NPCDialog_MouseWheel;
             }
@@ -438,7 +551,7 @@ namespace Client.MirScenes.Dialogs
 
             TextButtons.Add(temp);
         }
-
+               
         private void NewColour(string text, string colour, Point p)
         {
             Color textColour = Color.FromName(colour);
@@ -456,6 +569,441 @@ namespace Client.MirScenes.Dialogs
             temp.MouseWheel += NPCDialog_MouseWheel;
 
             TextButtons.Add(temp);
+        }
+
+        private void NewLink(string text, string linkType, string linkName, Point p)
+        {
+            MirLabel temp = new MirLabel
+            {
+                AutoSize = true,
+                Visible = true,
+                Parent = this,
+                Location = p,
+                Text = text,
+                ForeColour = Color.Cyan,
+                Font = font,
+                NotControl = false // Make sure it can receive mouse events
+            };
+
+            temp.MouseEnter += (o, e) =>
+            {
+                temp.ForeColour = Color.Orange;
+
+                // All link types (MONSTER, NPC, ITEM) now use the custom ShowTooltip method
+                ShowTooltip(linkType, linkName, temp.DisplayLocation);
+            };
+
+            temp.MouseLeave += (o, e) =>
+            {
+                temp.ForeColour = Color.Cyan;
+                HideTooltip();
+            };
+
+            temp.Click += (o, e) =>
+            {
+                HideTooltip();
+            };
+
+            temp.MouseWheel += NPCDialog_MouseWheel;
+            TextButtons.Add(temp);
+        }
+
+        private void ShowTooltip(string linkType, string linkName, Point anchor)
+        {
+            if (_tooltipPanel == null) return;
+
+            string title = "";
+            string content = "";
+            bool showImage = false;
+
+            switch (linkType)
+            {
+                case "MONSTER":
+                    // Get monster name instead of index
+                    if (int.TryParse(linkName, out int monsterIdx))
+                    {
+                        var monsterInfo = GameScene.MonsterInfoList.FirstOrDefault(x => x.Index == monsterIdx);
+                        if (monsterInfo != null)
+                        {
+                            string monsterName = string.IsNullOrEmpty(monsterInfo.GameName) ? monsterInfo.Name : monsterInfo.GameName;
+                            title = monsterName;
+                            content = GetMonsterInfo(linkName);
+
+                            // Show monster image
+                            if ((ushort)monsterInfo.Image < Libraries.Monsters.Length)
+                            {
+                                _tooltipImage.Library = Libraries.Monsters[(ushort)monsterInfo.Image];
+                                _tooltipImage.Index = 20;
+                                _tooltipImage.Location = new Point(10, 10);
+                                showImage = true;
+                            }
+                        }
+                        else
+                        {
+                            GameScene.RequestMonsterInfo(monsterIdx);
+                            title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterIndexTitle, linkName);
+                            content = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterInfoLoading);
+                        }
+                    }
+                    else
+                    {
+                        title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterIndexTitle, linkName);
+                        content = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InvalidLinkIndex);
+                    }
+                    break;
+                case "NPC":
+                    // Get NPC name instead of index
+                    if (int.TryParse(linkName, out int npcIdx))
+                    {
+                        var npcInfo = GameScene.NPCInfoList.FirstOrDefault(x => x.Index == npcIdx);
+                        if (npcInfo != null)
+                        {
+                            title = npcInfo.Name;
+                            content = GetNPCInfo(linkName);
+
+                            // Show NPC image
+                            if (npcInfo.Image < Libraries.NPCs.Length)
+                            {
+                                _tooltipImage.Library = Libraries.NPCs[npcInfo.Image];
+                                _tooltipImage.Index = 0;
+                                _tooltipImage.Location = new Point(10, 10);
+                                showImage = true;
+                            }
+                        }
+                        else
+                        {
+                            GameScene.RequestNPCInfo(npcIdx);
+                            title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCIndexTitle, linkName);
+                            content = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCInfoLoading);
+                        }
+                    }
+                    else
+                    {
+                        title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCIndexTitle, linkName);
+                        content = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InvalidLinkIndex);
+                    }
+                    break;
+                case "ITEM":
+                    // Get item name instead of index
+                    if (int.TryParse(linkName, out int itemIdx))
+                    {
+                        var item = GameScene.ItemInfoList.FirstOrDefault(x => x.Index == itemIdx);
+                        if (item != null)
+                        {
+                            title = item.FriendlyName ?? item.Name;
+                            content = GetItemInfo(linkName);
+
+                            // Show item image using Items_Tooltip_32bit library for KR style
+                            _tooltipImage.Library = Libraries.Items_Tooltip_32bit;
+                            _tooltipImage.Index = item.Image;
+                            _tooltipImage.Location = new Point(10, 10);
+                            showImage = true;
+                        }
+                        else
+                        {
+                            GameScene.RequestItemInfo(itemIdx);
+                            title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ItemIndexTitle, linkName);
+                            content = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ItemInfoLoading);
+                        }
+                    }
+                    else
+                    {
+                        title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ItemIndexTitle, linkName);
+                        content = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InvalidLinkIndex);
+                    }
+                    break;
+            }
+
+            // Set image size BEFORE setting text and calculating panel size
+            int imageWidth = 0;
+            int imageHeight = 0;
+
+            if (showImage && _tooltipImage.Library != null)
+            {
+                // Get actual size from library
+                Size libSize = _tooltipImage.Library.GetSize(_tooltipImage.Index);
+                if (!libSize.IsEmpty)
+                {
+                    imageWidth = libSize.Width;
+                    imageHeight = libSize.Height;
+                    _tooltipImage.Size = new Size(imageWidth, imageHeight);
+                }
+                else
+                {
+                    // Fallback to Items library if Items_Tooltip_32bit image not found
+                    if (_tooltipImage.Library == Libraries.Items_Tooltip_32bit && linkType == "ITEM")
+                    {
+                        Size fallbackSize = Libraries.Items.GetSize(_tooltipImage.Index);
+                        if (!fallbackSize.IsEmpty)
+                        {
+                            _tooltipImage.Library = Libraries.Items;
+                            imageWidth = fallbackSize.Width;
+                            imageHeight = fallbackSize.Height;
+                            _tooltipImage.Size = new Size(imageWidth, imageHeight);
+                        }
+                    }
+                }
+            }
+
+            // Now set text and position
+            _tooltipTitle.Text = title;
+            _tooltipContent.Text = content;
+
+            if (showImage)
+            {
+                _tooltipTitle.Location = new Point(imageWidth + 20, 5);
+                _tooltipContent.Location = new Point(imageWidth + 20, 27);
+            }
+            else
+            {
+                _tooltipTitle.Location = new Point(10, 5);
+                _tooltipContent.Location = new Point(10, 27);
+            }
+
+            _tooltipImage.Visible = showImage;
+
+            // Calculate panel size based on content
+            int imageOffset = showImage ? imageWidth + 20 : 10;
+            int contentHeight = _tooltipTitle.Size.Height + _tooltipContent.Size.Height + 30;
+
+            // Panel height should be at least as tall as the image + padding at top and bottom
+            int minPanelHeight = showImage ? imageHeight + 20 : contentHeight;
+            int panelHeight = Math.Max(minPanelHeight, contentHeight);
+
+            _tooltipPanel.Size = new Size(Math.Max(200, Math.Max(_tooltipTitle.Size.Width, _tooltipContent.Size.Width) + imageOffset + 20),
+                                         panelHeight);
+
+            _tooltipPanel.Location = new Point(anchor.X + 20, anchor.Y + 20);
+
+            _tooltipPanel.BringToFront();
+            _tooltipPanel.Sort = true;
+
+            if (_tooltipPanel.Parent != null)
+            {
+                var parent = _tooltipPanel.Parent as MirControl;
+                if (parent != null)
+                {
+                    parent.InsertControl(parent.Controls.Count, _tooltipPanel);
+                }
+            }
+
+            _tooltipPanel.Visible = true;
+        }
+
+        private void HideTooltip()
+        {
+            if (_tooltipPanel != null)
+                _tooltipPanel.Visible = false;
+        }
+
+        private string GetMonsterInfo(string monsterIdx)
+        {
+            if (int.TryParse(monsterIdx, out int idx))
+            {
+                var monster = GameScene.MonsterInfoList.FirstOrDefault(x => x.Index == idx);
+                if (monster != null)
+                {
+                    return string.Join("\n", new[]
+                    {
+                        GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterTooltipLevel, monster.Level),
+                        GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterTooltipHealth, monster.Stats[Stat.HP]),
+                        GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterTooltipExperience, monster.Experience),
+                        GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterTooltipDC, monster.Stats[Stat.MinDC], monster.Stats[Stat.MaxDC]),
+                        GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterTooltipMC, monster.Stats[Stat.MinMC], monster.Stats[Stat.MaxMC]),
+                        GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterTooltipAC, monster.Stats[Stat.MinAC], monster.Stats[Stat.MaxAC]),
+                        GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterTooltipMAC, monster.Stats[Stat.MinMAC], monster.Stats[Stat.MaxMAC])
+                    });
+                }
+                GameScene.RequestMonsterInfo(idx);
+                return GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterIndexLoading, idx);
+            }
+            return GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InvalidMonsterIndex);
+        }
+
+        private string GetNPCInfo(string npcIdx)
+        {
+            if (int.TryParse(npcIdx, out int idx))
+            {
+                var npc = GameScene.NPCInfoList.FirstOrDefault(x => x.Index == idx);
+                if (npc != null)
+                {
+                    string mapName = string.Empty;
+
+                    // Try to get from current map if we're on that map
+                    if (GameScene.Scene.MapControl != null && GameScene.Scene.MapControl.Index == npc.MapIndex)
+                    {
+                        mapName = GameScene.Scene.MapControl.Title;
+                    }
+                    // Otherwise try MapInfoList
+                    else if (npc.MapIndex > 0 && GameScene.MapInfoList.TryGetValue(npc.MapIndex, out var mapInfo))
+                    {
+                        if (mapInfo?.MapInfo != null && !string.IsNullOrEmpty(mapInfo.MapInfo.Title))
+                        {
+                            mapName = mapInfo.MapInfo.Title;
+                        }
+                    }
+                    // Otherwise no map info yet; we will request it below if needed
+
+                    List<string> npcInfoLines = new List<string>
+                    {
+                        GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCTooltipName, npc.Name)
+                    };
+
+                    if (!string.IsNullOrWhiteSpace(mapName))
+                    {
+                        npcInfoLines.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCTooltipLocation, mapName));
+                    }
+                    else if (npc.MapIndex > 0)
+                    {
+                        if (!PendingMapInfoRequests.Contains(npc.MapIndex) && !GameScene.MapInfoList.ContainsKey(npc.MapIndex))
+                        {
+                            PendingMapInfoRequests.Add(npc.MapIndex);
+                            Network.Enqueue(new C.RequestMapInfo() { MapIndex = npc.MapIndex });
+                        }
+
+                        // Show a loading placeholder while we wait for the map title to arrive.
+                        npcInfoLines.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCTooltipLocation, GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCTooltipMapLoading)));
+                    }
+                    else
+                    {
+                        npcInfoLines.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCTooltipLocation, GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCTooltipUnknownMap)));
+                    }
+
+                    npcInfoLines.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCTooltipCoordinates, npc.Location.X, npc.Location.Y));
+
+                    return string.Join("\n", npcInfoLines);
+                }
+                GameScene.RequestNPCInfo(idx);
+                return GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCIndexLoading, idx);
+            }
+            return GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InvalidNPCIndex);
+        }
+
+        private string GetItemInfo(string itemIdx)
+        {
+            if (int.TryParse(itemIdx, out int idx))
+            {
+                var item = GameScene.ItemInfoList.FirstOrDefault(x => x.Index == idx);
+
+                if (item != null)
+                {
+                    List<string> infoLines = new List<string>();
+
+                    string localizedType = item.Type.ToLocalizedString();
+                    if (!string.IsNullOrEmpty(localizedType))
+                    {
+                        infoLines.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ItemTooltipType, localizedType));
+                    }
+
+                    if (item.RequiredType == RequiredType.Level && item.RequiredAmount > 0)
+                    {
+                        infoLines.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.RequiredLevel, item.RequiredAmount));
+                    }
+
+                    if (item.ClassBased)
+                    {
+                        infoLines.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ClassRequired, item.RequiredClass.ToLocalizedString()));
+                    }
+
+                    if (item.Weight > 0)
+                    {
+                        infoLines.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ItemTooltipWeight, item.Weight));
+                    }
+
+                    return string.Join("\n", infoLines);
+                }
+
+                GameScene.RequestItemInfo(idx);
+                return GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ItemIndexLoading, idx);
+            }
+
+            return GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InvalidItemIndex);
+        }
+
+        public static string GetDisplayNameForLink(string linkType, string linkIdx, string providedName = null)
+        {
+            if (!string.IsNullOrEmpty(providedName))
+                return providedName;
+
+            if (int.TryParse(linkIdx, out int idx))
+            {
+                switch (linkType)
+                {
+                    case "ITEM":
+                        var item = GameScene.ItemInfoList.FirstOrDefault(x => x.Index == idx);
+                        if (item != null)
+                        return item.FriendlyName ?? item.Name ?? $"Item {idx}";
+
+                        GameScene.RequestItemInfo(idx);
+                        return $"Item {idx}";
+                    case "MONSTER":
+                        var monster = GameScene.MonsterInfoList.FirstOrDefault(x => x.Index == idx);
+                        if (monster != null)
+                        return string.IsNullOrEmpty(monster.GameName) ? monster.Name : monster.GameName;
+
+                        GameScene.RequestMonsterInfo(idx);
+                        return $"Monster {idx}";
+                    case "NPC":
+                        var npc = GameScene.NPCInfoList.FirstOrDefault(x => x.Index == idx);
+                        if (npc != null)
+                        return npc.Name;
+
+                        GameScene.RequestNPCInfo(idx);
+                        return $"NPC {idx}";
+                    default:
+                        return linkIdx;
+                }
+            }
+            return linkIdx;
+        }
+
+        public static void ShowTooltipForLink(string linkType, string linkIdx, Point anchor)
+        {
+            if (GameScene.Scene.NPCDialog == null) return;
+            GameScene.Scene.NPCDialog.ShowTooltip(linkType, linkIdx, anchor);
+        }
+
+        public static void HideTooltipForLink()
+        {
+            if (GameScene.Scene.NPCDialog == null) return;
+            GameScene.Scene.NPCDialog.HideTooltip();
+        }
+
+        private static readonly TextFormatFlags LinkMeasureFlags = TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix;
+
+        internal static Point CalculateLinkOffset(string text, MirLabel label)
+        {
+            if (label == null || string.IsNullOrEmpty(text))
+                return Point.Empty;
+
+            int maxWidth = Math.Max(1, label.Size.Width);
+            int x = 0;
+            int y = 0;
+
+            foreach (char ch in text)
+            {
+                if (ch == '\r') continue;
+
+                if (ch == '\n')
+                {
+                    x = 0;
+                    y += label.Font.Height;
+                    continue;
+                }
+
+                string character = ch.ToString();
+                Size size = TextRenderer.MeasureText(CMain.Graphics, character, label.Font, new Size(int.MaxValue, int.MaxValue), LinkMeasureFlags);
+
+                if (x + size.Width > maxWidth && x > 0)
+                {
+                    x = 0;
+                    y += label.Font.Height;
+                }
+
+                x += size.Width;
+            }
+
+            return new Point(x, y);
         }
 
         public void CheckQuestButtonDisplay()
@@ -476,7 +1024,7 @@ namespace Client.MirScenes.Dialogs
         }
 
         public override void Hide()
-        {
+        {     
             Visible = false;
             GameScene.Scene.NPCGoodsDialog.Hide();
             GameScene.Scene.NPCSubGoodsDialog.Hide();
@@ -491,6 +1039,7 @@ namespace Client.MirScenes.Dialogs
             GameScene.Scene.RollControl.Hide();
             GameScene.Scene.GuildTerritoryDialog.Hide();
             BigButtonDialog.Hide();
+            HideTooltip();
         }
 
         public override void Show()
@@ -500,6 +1049,7 @@ namespace Client.MirScenes.Dialogs
 
             CheckQuestButtonDisplay();
         }
+
     }
     public sealed class NPCGoodsDialog : MirImageControl
     {
@@ -691,7 +1241,7 @@ namespace Client.MirScenes.Dialogs
                         maxQuantity = Math.Min(ushort.MaxValue, (ushort)(GameScene.Gold / (SelectedItem.Price() / SelectedItem.Count)));
                         if (maxQuantity == 0)
                         {
-                            GameScene.Scene.ChatDialog.ReceiveChat("您没有足够的珍珠", ChatType.System);
+                            GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NotEnoughPearls), ChatType.System);
                             return;
                         }
                     }
@@ -702,7 +1252,7 @@ namespace Client.MirScenes.Dialogs
                     maxQuantity = Math.Min(ushort.MaxValue, (ushort)(GameScene.Gold / (SelectedItem.Price() / SelectedItem.Count)));
                     if (maxQuantity == 0)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.LowGold, ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowGold), ChatType.System);
                         return;
                     }
                 }
@@ -712,7 +1262,7 @@ namespace Client.MirScenes.Dialogs
                 if (SelectedItem.Count == 0)
                 {
                     SelectedItem.Count = tempCount;
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.NoBagSpace, ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouNoBagSpace), ChatType.System);
                     return;
                 }
 
@@ -726,7 +1276,7 @@ namespace Client.MirScenes.Dialogs
                     SelectedItem.Count = tempCount;
                 }
 
-                MirAmountBox amountBox = new("购买数量:", SelectedItem.Image, maxQuantity, 0, SelectedItem.Count);
+                MirAmountBox amountBox = new(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PurchaseAmount), SelectedItem.Image, maxQuantity, 0, SelectedItem.Count);
 
                 amountBox.OKButton.Click += (o, e) =>
                 {
@@ -742,7 +1292,7 @@ namespace Client.MirScenes.Dialogs
             {
                 if (SelectedItem.Info.Price > GameScene.Gold)
                 {
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.LowGold, ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowGold), ChatType.System);
                     return;
                 }
 
@@ -751,7 +1301,7 @@ namespace Client.MirScenes.Dialogs
                     if (MapObject.User.Inventory[i] == null) break;
                     if (i == MapObject.User.Inventory.Length - 1)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.NoBagSpace, ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouNoBagSpace), ChatType.System);
                         return;
                     }
                 }
@@ -978,7 +1528,7 @@ namespace Client.MirScenes.Dialogs
                 case PanelType.Sell:
                     if (TargetItem.Info.Bind.HasFlag(BindMode.DontSell))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat("不能出售此物品", ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CannotSellItem), ChatType.System);
                         return;
                     }
                     if (GameScene.Gold + TargetItem.Price() / 2 <= uint.MaxValue)
@@ -987,12 +1537,12 @@ namespace Client.MirScenes.Dialogs
                         TargetItem = null;
                         return;
                     }
-                    GameScene.Scene.ChatDialog.ReceiveChat("无法携带更多金币", ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CannotCarryMoreGold), ChatType.System);
                     break;
                 case PanelType.Repair:
                     if (TargetItem.Info.Bind.HasFlag(BindMode.DontRepair))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat("无法修理此物品", ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CannotRepairItem), ChatType.System);
                         return;
                     }
                     if (GameScene.Gold >= TargetItem.RepairPrice() * GameScene.NPCRate)
@@ -1001,12 +1551,12 @@ namespace Client.MirScenes.Dialogs
                         TargetItem = null;
                         return;
                     }
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.LowGold, ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowGold), ChatType.System);
                     break;
                 case PanelType.SpecialRepair:
                     if ((TargetItem.Info.Bind.HasFlag(BindMode.DontRepair)) || (TargetItem.Info.Bind.HasFlag(BindMode.NoSRepair)))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat("无法修理此物品", ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CannotRepairItem), ChatType.System);
                         return;
                     }
                     if (GameScene.Gold >= (TargetItem.RepairPrice() * 3) * GameScene.NPCRate)
@@ -1015,15 +1565,15 @@ namespace Client.MirScenes.Dialogs
                         TargetItem = null;
                         return;
                     }
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.LowGold, ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowGold), ChatType.System);
                     break;
                 case PanelType.Consign:
                     if (TargetItem.Info.Bind.HasFlag(BindMode.DontStore) || TargetItem.Info.Bind.HasFlag(BindMode.DontSell))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat("无法寄存此物品", ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CannotConsignItem), ChatType.System);
                         return;
                     }
-                    MirAmountBox box = new MirAmountBox("寄售价格:", TargetItem.Image, Globals.MaxConsignment, Globals.MinConsignment)
+                    MirAmountBox box = new MirAmountBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ConsignmentPrice), TargetItem.Image, Globals.MaxConsignment, Globals.MinConsignment)
                     {
                         InputTextBox = { Text = string.Empty },
                         Amount = 0
@@ -1060,18 +1610,18 @@ namespace Client.MirScenes.Dialogs
                                 TargetItem = null;
                                 return;
                             }
-                            GameScene.Scene.ChatDialog.ReceiveChat(String.Format("您没有足够的金币来精炼 {0}", TargetItem.FriendlyName), ChatType.System);
+                            GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.YouDontHaveEnoughGoldToRefine), TargetItem.FriendlyName), ChatType.System);
                             return;
                         }
 
                     }
-                    GameScene.Scene.ChatDialog.ReceiveChat(String.Format("您未放置任何物品来精炼 {0}", TargetItem.FriendlyName), ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.YouHaventDepositedItemsToRefine), TargetItem.FriendlyName), ChatType.System);
                     break;
                 case PanelType.CheckRefine:
 
                     if (TargetItem.RefineAdded == 0)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(String.Format("您的 {0} 尚未精炼, 因此无需检查", TargetItem.FriendlyName), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ItemHasntBeenRefinedNoChecking), TargetItem.FriendlyName), ChatType.System);
                         return;
                     }
                     Network.Enqueue(new C.CheckRefine { UniqueID = TargetItem.UniqueID });
@@ -1081,7 +1631,7 @@ namespace Client.MirScenes.Dialogs
 
                     if (TargetItem.Info.Type != ItemType.Ring)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(String.Format("{0} 不是戒指", TargetItem.FriendlyName), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ItemIsNotRing), TargetItem.FriendlyName), ChatType.System);
                         return;
                     }
 
@@ -1209,19 +1759,19 @@ namespace Client.MirScenes.Dialogs
             switch (PType)
             {
                 case PanelType.Sell:
-                    text = "出售: ";
+                    text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Sale);
                     break;
                 case PanelType.Repair:
-                    text = "修理: ";
+                    text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Repair);
                     break;
                 case PanelType.SpecialRepair:
-                    text = "特殊修理: ";
+                    text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SpecialRepair);
                     break;
                 case PanelType.Consign:
-                    InfoLabel.Text = "寄售: ";
+                    InfoLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Consignment);
                     return;
                 case PanelType.Disassemble:
-                    text = "物品将被摧毁\n\n\n\n\n\n\n\n         ";
+                    text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ItemWillBeDestroyed);
                     HoldButton.Visible = false;
                     Index = 711;
                     Library = Libraries.Title;
@@ -1234,26 +1784,26 @@ namespace Client.MirScenes.Dialogs
                     ItemCell.Location = new Point(83, 94);
                     break;
                 case PanelType.Downgrade:
-                    text = "降级: ";
+                    text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Downgrade);
                     HoldButton.Visible = false;
                     break;
                 case PanelType.Reset:
-                    text = "重置: ";
+                    text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Reset);
                     HoldButton.Visible = false;
                     break;
                 case PanelType.Refine:
-                    text = "精炼: ";
+                    text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Refine);
                     HoldButton.Visible = false;
                     ConfirmButton.Visible = true;
                     GameScene.Scene.RefineDialog.Show();
                     break;
                 case PanelType.CheckRefine:
-                    text = "检查精炼";
+                    text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CheckRefine);
                     HoldButton.Visible = false;
                     ConfirmButton.Visible = true;
                     break;
                 case PanelType.ReplaceWedRing:
-                    text = "替换: ";
+                    text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ReplaceWedRing);
                     HoldButton.Visible = false;
                     ConfirmButton.Visible = true;
                     break;
@@ -1294,7 +1844,7 @@ namespace Client.MirScenes.Dialogs
                     default: return;
                 }
 
-                text += " 金币";
+                text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Gold2);
             }
 
             InfoLabel.Text = text;
@@ -1496,7 +2046,7 @@ namespace Client.MirScenes.Dialogs
 
             if (Items[0] == null)
             {
-                SelectAwakeType.Items.Add("选择觉醒属性");
+                SelectAwakeType.Items.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SelectUpgradeItem));
                 SelectAwakeType.SelectedIndex = SelectAwakeType.Items.Count - 1;
                 CurrentAwakeType = AwakeType.None;
             }
@@ -1504,21 +2054,21 @@ namespace Client.MirScenes.Dialogs
             {
                 if (Items[0].Awake.GetAwakeLevel() == 0)
                 {
-                    SelectAwakeType.Items.Add("选择觉醒属性");
+                    SelectAwakeType.Items.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SelectUpgradeType));
                     if (Items[0].Info.Type == ItemType.Weapon)
                     {
-                        SelectAwakeType.Items.Add("攻击力");
-                        SelectAwakeType.Items.Add("魔法力");
-                        SelectAwakeType.Items.Add("道术力");
+                        SelectAwakeType.Items.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BraveryGlyph));
+                        SelectAwakeType.Items.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MagicGlyph));
+                        SelectAwakeType.Items.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SoulGlyph));
                     }
                     else if (Items[0].Info.Type == ItemType.Helmet)
                     {
-                        SelectAwakeType.Items.Add("防御");
-                        SelectAwakeType.Items.Add("魔法防御"); // EvilSlayer Glyph。 Glyph可以翻译为 魔符、图腾、等
+                        SelectAwakeType.Items.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ProtectionGlyph));
+                        SelectAwakeType.Items.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.EvilSlayerGlyph));
                     }
                     else
                     {
-                        SelectAwakeType.Items.Add("体质");
+                        SelectAwakeType.Items.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BodyGlyph));
                     }
                 }
                 else
@@ -1536,59 +2086,68 @@ namespace Client.MirScenes.Dialogs
         public string getAwakeTypeText(AwakeType type)
         {
             string typeName = "";
-            switch (type)
+            if (type == AwakeType.DC)
             {
-                case AwakeType.DC:
-                    typeName = "攻击力";
-                    break;
-                case AwakeType.MC:
-                    typeName = "魔法力";
-                    break;
-                case AwakeType.SC:
-                    typeName = "道术力";
-                    break;
-                case AwakeType.AC:
-                    typeName = "防御";
-                    break;
-                case AwakeType.MAC:
-                    typeName = "魔法防御";
-                    break;
-                case AwakeType.HPMP:
-                    typeName = "体质";
-                    break;
-                default:
-                    typeName = "选择觉醒属性";
-                    break;
+                typeName = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BraveryGlyph);
             }
+            else if (type == AwakeType.MC)
+            {
+                typeName = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MagicGlyph);
+            }
+            else if (type == AwakeType.SC)
+            {
+                typeName = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SoulGlyph);
+            }
+            else if (type == AwakeType.AC)
+            {
+                typeName = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ProtectionGlyph);
+            }
+            else if (type == AwakeType.MAC)
+            {
+                typeName = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.EvilSlayerGlyph);
+            }
+            else if (type == AwakeType.HPMP)
+            {
+                typeName = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BodyGlyph);
+            }
+            else
+            {
+                typeName = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SelectUpgradeItem);
+            }
+
             return typeName;
         }
 
         public AwakeType getAwakeType(string typeName)
         {
             AwakeType type = AwakeType.None;
-            switch (typeName)
+            if (typeName == GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BraveryGlyph))
             {
-                case "攻击力":
-                    type = AwakeType.DC;
-                    break;
-                case "魔法力":
-                    type = AwakeType.MC;
-                    break;
-                case "道术力":
-                    type = AwakeType.SC;
-                    break;
-                case "防御":
-                    type = AwakeType.AC;
-                    break;
-                case "魔法防御":
-                    type = AwakeType.MAC;
-                    break;
-                case "体质":
-                    type = AwakeType.HPMP;
-                    break;
-                default:
-                    type = AwakeType.None;
-                    break;
+                type = AwakeType.DC;
+            }
+            else if (typeName == GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MagicGlyph))
+            {
+                type = AwakeType.MC;
+            }
+            else if (typeName == GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SoulGlyph))
+            {
+                type = AwakeType.SC;
+            }
+            else if (typeName == GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ProtectionGlyph))
+            {
+                type = AwakeType.AC;
+            }
+            else if (typeName == GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.EvilSlayerGlyph))
+            {
+                type = AwakeType.MAC;
+            }
+            else if (typeName == GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BodyGlyph))
+            {
+                type = AwakeType.HPMP;
+            }
+            else
+            {
+                type = AwakeType.None;
             }
 
             return type;
@@ -1612,7 +2171,7 @@ namespace Client.MirScenes.Dialogs
             {
                 ItemCells[1].Item = new UserItem(Materials[0]);
                 ItemCells[1].Item.Count = MaterialsCount[0];
-                NeedItemLabel1.Text = Regex.Replace(ItemCells[1].Item.Info.FriendlyName, @"[\d-]", string.Empty) + "\n数量: " + MaterialsCount[0].ToString();
+                NeedItemLabel1.Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.NeedItemQuantity), Regex.Replace(ItemCells[1].Item.Info.Name, @"[\d-]", string.Empty), MaterialsCount[0].ToString());
             }
             else
             {
@@ -1624,7 +2183,7 @@ namespace Client.MirScenes.Dialogs
             {
                 ItemCells[2].Item = new UserItem(Materials[1]);
                 ItemCells[2].Item.Count = MaterialsCount[1];
-                NeedItemLabel2.Text = Regex.Replace(ItemCells[2].Item.Info.FriendlyName, @"[\d-]", string.Empty) + "\n数量:" + MaterialsCount[1].ToString();
+                NeedItemLabel2.Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.NeedItemQuantity), Regex.Replace(ItemCells[2].Item.Info.Name, @"[\d-]", string.Empty), MaterialsCount[1].ToString());
             }
             else
             {
@@ -1999,7 +2558,7 @@ namespace Client.MirScenes.Dialogs
             {
                 if (Recipe.Gold > GameScene.Gold)
                 {
-                    GameScene.Scene.ChatDialog.ReceiveChat("您没有足够的金币", ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouDoNotHaveEnoughGold), ChatType.System);
                     return;
                 }
 
@@ -2007,7 +2566,7 @@ namespace Client.MirScenes.Dialogs
 
             if (max > 1)
             {
-                MirAmountBox amountBox = new MirAmountBox("合成数量:", RecipeItem.Info.Image, max, 0, max);
+                MirAmountBox amountBox = new MirAmountBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CraftAmount), RecipeItem.Info.Image, max, 0, max);
 
                 amountBox.OKButton.Click += (o, e) =>
                 {
@@ -2015,13 +2574,13 @@ namespace Client.MirScenes.Dialogs
                     {
                         if (!HasCraftItems((ushort)amountBox.Amount))
                         {
-                            GameScene.Scene.ChatDialog.ReceiveChat("您没有所需的工具或原料", ChatType.System);
+                            GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouDoNotHaveRequiredToolsOrIngredients), ChatType.System);
                             return;
                         }
-
+                        
                         if ((Recipe.Gold * amountBox.Amount) > GameScene.Gold)
                         {
-                            GameScene.Scene.ChatDialog.ReceiveChat("您没有足够的金币", ChatType.System);
+                            GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouDoNotHaveEnoughGold), ChatType.System);
                             return;
                         }
 
@@ -2246,7 +2805,10 @@ namespace Client.MirScenes.Dialogs
         public MirItemCell[] Grid;
         public MirButton Storage1Button, Storage2Button, RentButton, ProtectButton, CloseButton;
         public MirImageControl LockedPage;
-        public MirLabel RentalLabel;
+        public MirLabel RentalLabel, StoragePasswordLabel;
+        private bool _storageUnlocked;
+        private bool _pendingOpenAfterPasswordSet;
+        private bool _forcingPasswordSetup;
 
         public StorageDialog()
         {
@@ -2318,9 +2880,9 @@ namespace Client.MirScenes.Dialogs
                 MirMessageBox messageBox;
 
                 if (GameScene.User.HasExpandedStorage)
-                    messageBox = new MirMessageBox(GameLanguage.ExtendYourRentalPeriod, MirMessageBoxButtons.OKCancel);
+                    messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExtendYourRentalPeriod), MirMessageBoxButtons.OKCancel);
                 else
-                    messageBox = new MirMessageBox(GameLanguage.ExtraStorage, MirMessageBoxButtons.OKCancel);
+                    messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExtraStorage), MirMessageBoxButtons.OKCancel);
 
                 // ZZ 扩展仓库 确定按钮按下
                 messageBox.OKButton.Click += (o1, a) =>
@@ -2341,6 +2903,7 @@ namespace Client.MirScenes.Dialogs
                 Sound = SoundList.ButtonA,
                 Visible = true
             };
+            ProtectButton.Click += (o, e) => ManageStoragePassword();
             CloseButton = new MirButton
             {
                 HoverIndex = 361,
@@ -2360,8 +2923,19 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
                 NotControl = true,
-                Text = GameLanguage.ExpandedStorageLocked,
+                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExpandedStorageLocked),
                 ForeColour = Color.Red
+            };
+
+            StoragePasswordLabel = new MirLabel
+            {
+                Parent = this,
+                Location = new Point(40, 304),
+                AutoSize = true,
+                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                NotControl = true,
+                ForeColour = Color.White,
+                Visible = false
             };
 
             Grid = new MirItemCell[10 * 16];
@@ -2389,11 +2963,285 @@ namespace Client.MirScenes.Dialogs
 
         public override void Show()
         {
+            if (GameScene.User == null) return;
+
+            ProtectButton.Enabled = GameScene.User.RequireStoragePassword;
+
+            if (!GameScene.User.RequireStoragePassword)
+            {
+                _storageUnlocked = true;
+                GameScene.Scene.InventoryDialog.Location = new Point(Size.Width + 5, Location.Y);
+                GameScene.Scene.InventoryDialog.Show();
+                RefreshStorage1();
+                Visible = true;
+                return;
+            }
+
+            if (!GameScene.User.HasStoragePassword)
+            {
+                GameScene.Scene.NPCDialog.Hide();
+                GameScene.Scene.InventoryDialog.Hide();
+                ForceStoragePasswordSetup();
+                return;
+            }
+
+            if (!_storageUnlocked)
+            {
+                GameScene.Scene.NPCDialog.Hide();
+                GameScene.Scene.InventoryDialog.Hide();
+                PromptStorageUnlock();
+                return;
+            }
+
             GameScene.Scene.InventoryDialog.Location = new Point(Size.Width + 5, Location.Y);
             GameScene.Scene.InventoryDialog.Show();
             RefreshStorage1();
 
             Visible = true;
+        }
+
+        public override void Hide()
+        {
+            _storageUnlocked = false;
+            base.Hide();
+        }
+
+        public void HandleStorageUnlockResult(S.StorageUnlockResult p)
+        {
+            if (GameScene.User != null)
+                GameScene.User.HasStoragePassword = p.HasPassword;
+
+            switch (p.Result)
+            {
+                case 0:
+                case 4:
+                    _storageUnlocked = true;
+                    Show();
+                    return;
+                case 1:
+                    SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordNotAcceptable));
+                    return;
+                case 2:
+                    SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordWrong));
+                    return;
+                case 3:
+                    SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordUnavailable));
+                    return;
+            }
+        }
+
+        public void HandleStoragePasswordResult(S.StoragePasswordResult p)
+        {
+            bool hadPassword = GameScene.User != null && GameScene.User.HasStoragePassword;
+            if (GameScene.User != null)
+            {
+                GameScene.User.HasStoragePassword = p.HasPassword;
+                GameScene.User.StoragePasswordLastSet = p.LastSetTime;
+            }
+            StoragePasswordLabel.Visible = false;
+
+            switch (p.Result)
+            {
+                case 0:
+                    SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordUnavailable));
+                    return;
+                case 1:
+                case 3:
+                    SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordNotAcceptable));
+                    return;
+                case 2:
+                    SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordWrong));
+                    return;
+                case 5:
+                    SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordNoPasswordSet));
+                    return;
+                case 4:
+                    _storageUnlocked = true;
+                    if (p.Removing)
+                    {
+                        _pendingOpenAfterPasswordSet = false;
+                        _forcingPasswordSetup = false;
+                        SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordRemoveSuccess));
+                        _storageUnlocked = false;
+                        Hide();
+                        return;
+                    }
+                    if (hadPassword)
+                        SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordChangeSuccess));
+                    else
+                        SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordSetSuccess));
+                    if (_pendingOpenAfterPasswordSet)
+                    {
+                        _pendingOpenAfterPasswordSet = false;
+                        _forcingPasswordSetup = false;
+                        Show();
+                    }
+                    return;
+            }
+
+            _pendingOpenAfterPasswordSet = false;
+            _forcingPasswordSetup = false;
+        }
+
+        private void SendStorageSystemMessage(string message)
+        {
+            GameScene.Scene?.ChatDialog.ReceiveChat(message, ChatType.System);
+        }
+
+        private void ManageStoragePassword()
+        {
+            if (GameScene.User == null) return;
+            if (!GameScene.User.RequireStoragePassword) return;
+
+            if (!GameScene.User.HasStoragePassword)
+            {
+                BeginSetStoragePassword();
+                return;
+            }
+
+            string prompt = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordChangePrompt);
+            if (GameScene.User.StoragePasswordLastSet != DateTime.MinValue)
+            {
+                string lastSet = string.Format(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordLastSetLabel),
+                    GameScene.User.StoragePasswordLastSet.ToString("g"));
+                prompt = $"{prompt}{Environment.NewLine}{lastSet}";
+            }
+
+            MirMessageBox changePrompt = new MirMessageBox(prompt, MirMessageBoxButtons.OKCancel);
+            changePrompt.OKButton.Click += (o, e) => BeginChangeStoragePassword();
+            changePrompt.Show();
+        }
+
+        private void ForceStoragePasswordSetup()
+        {
+            _forcingPasswordSetup = true;
+            _pendingOpenAfterPasswordSet = true;
+            BeginSetStoragePassword(() => CancelStoragePasswordSetup(), true);
+        }
+
+        private void CancelStoragePasswordSetup()
+        {
+            _pendingOpenAfterPasswordSet = false;
+            _forcingPasswordSetup = false;
+            Hide();
+        }
+
+        private void BeginSetStoragePassword(Action onCancel = null, bool force = false)
+        {
+            PromptStoragePassword(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordNewPrompt), newPassword =>
+            {
+                if (string.IsNullOrEmpty(newPassword))
+                {
+                    if (force)
+                    {
+                        BeginSetStoragePassword(onCancel, true);
+                        return false;
+                    }
+                    _pendingOpenAfterPasswordSet = false;
+                    return false;
+                }
+
+                PromptStoragePassword(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordConfirmPrompt), confirmPassword =>
+                {
+                    if (!string.Equals(newPassword, confirmPassword, StringComparison.Ordinal))
+                    {
+                        SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordMismatch));
+                        if (force)
+                        {
+                            BeginSetStoragePassword(onCancel, true);
+                            return false;
+                        }
+                        _pendingOpenAfterPasswordSet = false;
+                        return false;
+                    }
+
+                    Network.Enqueue(new C.SetStoragePassword { CurrentPassword = string.Empty, NewPassword = newPassword });
+                    return true;
+                }, onCancel);
+                return true;
+            }, onCancel);
+        }
+
+        private void BeginChangeStoragePassword()
+        {
+            PromptStoragePassword(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordCurrentPrompt), currentPassword =>
+            {
+                if (string.IsNullOrEmpty(currentPassword))
+                {
+                    return false;
+                }
+
+                PromptStoragePassword(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordNewPrompt), newPassword =>
+                {
+                    if (string.IsNullOrEmpty(newPassword))
+                    {
+                        return false;
+                    }
+
+                    PromptStoragePassword(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordConfirmPrompt), confirmPassword =>
+                    {
+                        if (!string.Equals(newPassword, confirmPassword, StringComparison.Ordinal))
+                        {
+                        SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordMismatch));
+                            return false;
+                        }
+
+                        Network.Enqueue(new C.SetStoragePassword { CurrentPassword = currentPassword, NewPassword = newPassword });
+                        return true;
+                    });
+                    return true;
+                });
+                return true;
+            });
+        }
+
+        private void PromptStorageUnlock()
+        {
+            PromptStoragePassword(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordPrompt), password =>
+            {
+                if (string.IsNullOrEmpty(password))
+                {
+                    return false;
+                }
+
+                Network.Enqueue(new C.UnlockStorage { Password = password });
+                return true;
+            }, () => Hide());
+        }
+
+        private void PromptStoragePassword(string prompt, Func<string, bool> onSubmit, Action onCancel = null)
+        {
+            string rules = string.Format(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordRules),
+                Globals.MinPasswordLength, Globals.MaxPasswordLength);
+            MirInputBox inputBox = new MirInputBox($"{prompt}{Environment.NewLine}{rules}");
+            inputBox.InputTextBox.Password = true;
+            inputBox.OKButton.Enabled = false;
+            inputBox.InputTextBox.TextBox.TextChanged += (o, e) =>
+            {
+                inputBox.OKButton.Enabled = !string.IsNullOrEmpty(inputBox.InputTextBox.Text);
+            };
+            if (onCancel != null)
+            {
+                inputBox.CancelButton.Click += (o, e) =>
+                {
+                    inputBox.Dispose();
+                    onCancel();
+                };
+            }
+            inputBox.OKButton.Click += (o, e) =>
+            {
+                string value = inputBox.InputTextBox.Text;
+                if (string.IsNullOrEmpty(value) || onSubmit == null) return;
+
+                if (onSubmit.Invoke(value))
+                {
+                    inputBox.Dispose();
+                    return;
+                }
+
+                inputBox.InputTextBox.SetFocus();
+            };
+            inputBox.Show();
         }
 
         public void RefreshStorage1()
@@ -2416,6 +3264,7 @@ namespace Client.MirScenes.Dialogs
             RentButton.Visible = false;
             LockedPage.Visible = false;
             RentalLabel.Visible = false;
+            StoragePasswordLabel.Visible = false;
         }
 
         public void RefreshStorage2()
@@ -2433,12 +3282,12 @@ namespace Client.MirScenes.Dialogs
             {
                 RentButton.Visible = true;
                 LockedPage.Visible = false;
-                RentalLabel.Text = GameLanguage.ExpandedStorageExpiresOn + GameScene.User.ExpandedStorageExpiryTime.ToString();
+                RentalLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExpandedStorageExpiresOn) + GameScene.User.ExpandedStorageExpiryTime.ToString();
                 RentalLabel.ForeColour = Color.White;
             }
             else
             {
-                RentalLabel.Text = GameLanguage.ExpandedStorageLocked;
+                RentalLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExpandedStorageLocked);
                 RentalLabel.ForeColour = Color.Red;
                 RentButton.Visible = true;
                 LockedPage.Visible = true;
@@ -2451,6 +3300,7 @@ namespace Client.MirScenes.Dialogs
                 else
                     grid.Visible = true;
             }
+            StoragePasswordLabel.Visible = false;
         }
 
         public MirItemCell GetCell(ulong id)
@@ -2567,7 +3417,7 @@ namespace Client.MirScenes.Dialogs
                 CurrentButtons[i + ScrollOffset].Parent = this;
                 CurrentButtons[i + ScrollOffset].Visible = true;
                 CurrentButtons[i + ScrollOffset].Location = new Point(97, 7 + i * 40);
-            }
+            }            
         }
 
         private void BigButtonDialog_MouseWheel(object sender, MouseEventArgs e)
@@ -2700,7 +3550,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(0, 5),
                 AutoSize = false,
                 Size = new Size(237, 20),
-                DrawFormat = TextFormatFlags.HorizontalCenter,
+                DrawFormat = TextFormatFlags.HorizontalCenter,                
                 Font = ScaleFont(new Font(Settings.FontName, 12F, FontStyle.Bold))
             };
         }

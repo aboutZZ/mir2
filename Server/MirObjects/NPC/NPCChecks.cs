@@ -64,6 +64,7 @@ namespace Server.MirObjects
         CheckHeroGender,
         CheckHeroItem,
         HasGT,
-        CheckBuff
+        CheckBuff,
+        CheckMapLight
     }
 }

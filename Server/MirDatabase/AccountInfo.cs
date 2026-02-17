@@ -6,7 +6,7 @@ using C = ClientPackets;
 namespace Server.MirDatabase
 {
     public class AccountInfo
-    {
+    {       
         protected static Envir Envir
         {
             get { return Envir.Main; }
@@ -22,14 +22,29 @@ namespace Server.MirDatabase
         {
             get { return password; }
             set
-            {
+            {                
                 Salt = Crypto.GenerateSalt();
                 password = Crypto.HashPassword(value, Salt);
-
+                
             }
         }
 
         public byte[] Salt = new byte[24];
+
+        private string storagePassword = string.Empty;
+        public string StoragePassword
+        {
+            get { return storagePassword; }
+            set
+            {
+                StorageSalt = Crypto.GenerateSalt();
+                storagePassword = Crypto.HashPassword(value, StorageSalt);
+            }
+        }
+
+        public byte[] StorageSalt = new byte[24];
+        public bool HasStoragePassword => !string.IsNullOrEmpty(storagePassword);
+        public DateTime StoragePasswordLastSet = DateTime.MinValue;
 
         public string UserName = string.Empty;
         public DateTime BirthDate;
@@ -58,7 +73,7 @@ namespace Server.MirDatabase
         public uint Credit;
 
         public MirConnection Connection;
-
+        
         public LinkedList<AuctionInfo> Auctions = new LinkedList<AuctionInfo>();
         public bool AdminAccount;
 
@@ -96,6 +111,13 @@ namespace Server.MirDatabase
             if (Envir.LoadVersion > 97)
                 RequirePasswordChange = reader.ReadBoolean();
 
+            if (Envir.LoadVersion >= 117) // 117 版本新增仓库密码存储
+            {
+                storagePassword = reader.ReadString();
+                StorageSalt = reader.ReadBytes(reader.ReadInt32());
+                StoragePasswordLastSet = DateTime.FromBinary(reader.ReadInt64());
+            }
+
             UserName = reader.ReadString();
             BirthDate = DateTime.FromBinary(reader.ReadInt64());
             SecretQuestion = reader.ReadString();
@@ -123,21 +145,21 @@ namespace Server.MirDatabase
 
                 if (info.Deleted && info.DeleteDate.AddMonths(Settings.ArchiveDeletedCharacterAfterMonths) <= Envir.Now)
                 {
-                    MessageQueue.Enqueue($"玩家 {info.Name} 已被归档，由于其被删除超过了 {Settings.ArchiveDeletedCharacterAfterMonths} 个月.");
+                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerArchivedAfterDeletionMonths), info.Name, Settings.ArchiveDeletedCharacterAfterMonths));
                     Envir.SaveArchivedCharacter(info);
                     continue;
                 }
 
                 if (info.LastLoginDate == DateTime.MinValue && info.CreationDate.AddMonths(Settings.ArchiveInactiveCharacterAfterMonths) <= Envir.Now)
                 {
-                    MessageQueue.Enqueue($"玩家 {info.Name} 已被归档，由于其超过 {Settings.ArchiveInactiveCharacterAfterMonths} 个月从未登录.");
+                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerArchivedAfterNoLoginMonths), info.Name, Settings.ArchiveInactiveCharacterAfterMonths));
                     Envir.SaveArchivedCharacter(info);
                     continue;
                 }
-
+                
                 if (info.LastLoginDate > DateTime.MinValue && info.LastLoginDate.AddMonths(Settings.ArchiveInactiveCharacterAfterMonths) <= Envir.Now)
                 {
-                    MessageQueue.Enqueue($"玩家 {info.Name} 已被归档，由于其超过 {Settings.ArchiveInactiveCharacterAfterMonths} 个月未登录.");
+                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerArchivedAfterInactivityMonths), info.Name, Settings.ArchiveInactiveCharacterAfterMonths));
                     Envir.SaveArchivedCharacter(info);
                     continue;
                 }
@@ -150,7 +172,7 @@ namespace Server.MirDatabase
                 HasExpandedStorage = reader.ReadBoolean();
                 ExpandedStorageExpiryDate = DateTime.FromBinary(reader.ReadInt64());
             }
-
+            
             Gold = reader.ReadUInt32();
             if (Envir.LoadVersion >= 63) Credit = reader.ReadUInt32();
 
@@ -187,6 +209,11 @@ namespace Server.MirDatabase
             writer.Write(Salt.Length);
             writer.Write(Salt);
             writer.Write(RequirePasswordChange);
+
+            writer.Write(storagePassword);
+            writer.Write(StorageSalt.Length);
+            writer.Write(StorageSalt);
+            writer.Write(StoragePasswordLastSet.ToBinary());
 
             writer.Write(UserName);
             writer.Write(BirthDate.ToBinary());
@@ -259,6 +286,20 @@ namespace Server.MirDatabase
                     return false;
             }
             return true;
+        }
+
+        public bool ValidateStoragePassword(string rawPassword)
+        {
+            if (string.IsNullOrEmpty(storagePassword)) return false;
+
+            var hashed = Crypto.HashPassword(rawPassword, StorageSalt);
+            return string.CompareOrdinal(storagePassword, hashed) == 0;
+        }
+
+        public void ClearStoragePassword()
+        {
+            storagePassword = string.Empty;
+            StoragePasswordLastSet = DateTime.MinValue;
         }
     }
 }

@@ -259,14 +259,14 @@ namespace Client.MirObjects
                     };
                     break;
                 case BuffType.MagicBooster:
-					Effects.Add(new BuffEffect(Libraries.Magic3, 90, 6, 1200, this, true, type) { Repeat = true });
+                    Effects.Add(new BuffEffect(Libraries.Magic3, 90, 6, 1200, this, true, type) { Repeat = true });
                     break;
                 case BuffType.PetEnhancer:
                     Effects.Add(new BuffEffect(Libraries.Magic3, 230, 6, 1200, this, true, type) { Repeat = true });
                     break;
-				case BuffType.GameMaster:
-					Effects.Add(new BuffEffect(Libraries.CHumEffect[5], 0, 1, 1200, this, true, type) { Repeat = true });
-					break;
+                case BuffType.GameMaster:
+                    Effects.Add(new BuffEffect(Libraries.CHumEffect[5], 0, 1, 1200, this, true, type) { Repeat = true });
+                    break;
                 case BuffType.GeneralMeowMeowShield:
                     Effects.Add(new BuffEffect(Libraries.Monsters[(ushort)Monster.GeneralMeowMeow], 529, 7, 700, this, true, type) { Repeat = true, Light = 1 });
                     MirSounds.SoundManager.PlaySound(8322);
@@ -434,7 +434,7 @@ namespace Client.MirObjects
 
             if (NameLabel == null) return;
 
-            NameLabel.Text = Name;
+            //NameLabel.Text = Name; //When CreateLabel() is called, the name is already determined, so there's no need to assign it every time in DrawName.
             NameLabel.Location = new Point(DisplayRectangle.X + (50 - NameLabel.Size.Width) / 2, DisplayRectangle.Y - (32 - NameLabel.Size.Height / 2) + (Dead ? 35 : 8)); //was 48 -
             NameLabel.Draw();
         }
@@ -469,7 +469,7 @@ namespace Client.MirObjects
             return false;
         }
       
-        //
+        // ZZ 绘制血条
         public void DrawPlayerHealthHP(ObjectType race)
         {
             if (HealthHPLabel == null || HealthHPLabel.IsDisposed)
@@ -515,7 +515,9 @@ namespace Client.MirObjects
             switch (Race)
             {
                 case ObjectType.Player:
-                    if (GroupDialog.GroupList.Contains(name)) index = 10;
+                    index = 12;
+                    if (GroupDialog.GroupList.Contains(name) && name != User.Name) index = 10;
+                    // ZZ 绘制血条
                     this.DrawPlayerHealthHP(Race);
                     break;
                 case ObjectType.Monster:
@@ -524,18 +526,19 @@ namespace Client.MirObjects
                 case ObjectType.Hero:
                     if (GroupDialog.GroupList.Contains(MapObject.HeroObject?.OwnerName)) // Fails but not game breaking
                     {
-                            index = 11;
+                        index = 11;
                     }
                     if (HeroObject.HeroObject?.OwnerName == User.Name)
                     {
                         index = 1;
                         if ((MapObject.HeroObject.Class != MirClass.Warrior && HeroObject.Level > 7) || (MapObject.HeroObject.Class == MirClass.Warrior && HeroObject.Level > 25))
                         {
-                           Libraries.Prguse2.Draw(10, new Rectangle(0, 0, (int)(32 * PercentMana / 100F), 4), new Point(DisplayRectangle.X + 8, DisplayRectangle.Y - 60), Color.White, false);
+                            Libraries.Prguse2.Draw(10, new Rectangle(0, 0, (int)(32 * PercentMana / 100F), 4), new Point(DisplayRectangle.X + 8, DisplayRectangle.Y - 60), Color.White, false);
                         }
                     }
                     break;
             }
+
             Libraries.Prguse2.Draw(index, new Rectangle(0, 0, (int)(32 * PercentHealth / 100F), 4), new Point(DisplayRectangle.X + 8, DisplayRectangle.Y - 64), Color.White, false);
         }
 

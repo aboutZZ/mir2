@@ -65,6 +65,10 @@ namespace Client.MirObjects
 
         public SpellEffect CurrentEffect;
 
+        public uint MasterObjectId;
+
+        public MonsterType Rarity;
+
         public MonsterObject(uint objectID) : base(objectID) { }
 
         public void Load(S.ObjectMonster info, bool update = false)
@@ -91,6 +95,15 @@ namespace Client.MirObjects
             ShockTime = CMain.Time + info.ShockTime;
             BindingShotCenter = info.BindingShotCenter;
 
+            MasterObjectId = info.MasterObjectId;
+            Rarity = info.Rarity;
+
+            if (MasterObjectId == 0 && Rarity != MonsterType.Normal)
+            {
+                //Moving the rarity tag processing from the server to the client allows for more complex tag displays in the future, such as adding special markers on monster health bars.
+                //Add localization for rarity text
+                Name = $"{Rarity.ToLocalizedString()}_{Name}";
+            }
             Buffs = info.Buffs;
 
             if (Stage != info.ExtraByte)
@@ -1034,13 +1047,19 @@ namespace Client.MirObjects
                     case MirAction.Struck:
                         uint attackerID = (uint)action.Params[0];
                         StruckWeapon = -2;
-                        MapObject ob = MapControl.Objects[attackerID];
-                        if (ob.Race == ObjectType.Player)
+                        if (action.Params.Count > 1)
                         {
-                            PlayerObject player = (PlayerObject)ob;
-                            StruckWeapon = player.Weapon;
-                            if (player.Class == MirClass.Assassin && StruckWeapon > -1)
-                                StruckWeapon = 1;
+                            StruckWeapon = (int)action.Params[1];
+                        }
+                        else if (MapControl.Objects.TryGetValue(attackerID, out MapObject ob))
+                        {
+                            if (ob.Race == ObjectType.Player)
+                            {
+                                PlayerObject player = (PlayerObject)ob;
+                                StruckWeapon = player.Weapon;
+                                if (player.Class == MirClass.Assassin && StruckWeapon > -1)
+                                    StruckWeapon = 1;
+                            }
                         }
                         PlayFlinchSound();
                         PlayStruckSound();
@@ -3195,7 +3214,7 @@ namespace Client.MirObjects
                                             ob = MapControl.GetObject(TargetID);
                                             if (ob != null)
                                             {
-                                                ob.Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.MudZombie], 304, 7, 700, ob) { Blend = false } );
+                                                ob.Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.MudZombie], 304, 7, 700, ob) { Blend = false });
                                             }
                                             break;
                                         case Monster.DarkSpirit:
@@ -3683,7 +3702,7 @@ namespace Client.MirObjects
                                             break;
                                     }
                                     break;
-                                    // Sanjian
+                                // Sanjian
                                 case 4:
                                     PlayDeadSound();
                                     break;
@@ -3946,7 +3965,7 @@ namespace Client.MirObjects
         }
         public void PlayStruckSound()
         {
-            switch(BaseImage)
+            switch (BaseImage)
             {
                 case Monster.EvilMir:
                     SoundManager.PlaySound(SoundList.StruckEvilMir);
@@ -5615,7 +5634,7 @@ namespace Client.MirObjects
             {
                 CreateMonsterLabel(splitName[s], s);
 
-                TempLabel.Text = splitName[s];
+                //TempLabel.Text = splitName[s];//When CreateLabel() is called, the name is already determined, so there's no need to assign it every time in DrawName.
                 TempLabel.Location = new Point(DisplayRectangle.X + (48 - TempLabel.Size.Width) / 2, DisplayRectangle.Y - (32 - TempLabel.Size.Height / 2) + (Dead ? 35 : 8) - (((splitName.Count() - 1) * 10) / 2) + (s * 12) + yOffset);
                 TempLabel.Draw();
             }

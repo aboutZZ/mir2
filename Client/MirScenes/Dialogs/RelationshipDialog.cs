@@ -56,7 +56,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 612,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.SwitchMarriage
+                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SwitchMarriage)
             };
             AllowButton.Click += (o, e) => Network.Enqueue(new C.ChangeMarriage());
 
@@ -69,13 +69,13 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 602,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.RequestMarriage
+                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.RequestMarriage)
             };
             RequestButton.Click += (o, e) =>
             {
                 if (LoverName != "")
                 {
-                    GameScene.Scene.ChatDialog.ReceiveChat("你已经结婚了", ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouAreAlreadyMarried), ChatType.System);
                     return;
                 }
 
@@ -91,13 +91,13 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 618,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.RequestDivorce
+                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.RequestDivorce)
             };
             DivorceButton.Click += (o, e) =>
             {
                 if (LoverName == "")
                 {
-                    GameScene.Scene.ChatDialog.ReceiveChat("你尚未结婚", ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouAreNotMarried), ChatType.System);
                     return;
                 }
 
@@ -113,13 +113,13 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 439,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.MailLover
+                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MailLover)
             };
             MailButton.Click += (o, e) =>
             {
                 if (LoverName == "")
                 {
-                    GameScene.Scene.ChatDialog.ReceiveChat("你尚未结婚", ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouAreNotMarried), ChatType.System);
                     return;
                 }
 
@@ -135,21 +135,22 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 568,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.WhisperLover
+                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.WhisperLover)
             };
             WhisperButton.Click += (o, e) =>
             {
                 if (LoverName == "")
                 {
-                    GameScene.Scene.ChatDialog.ReceiveChat("你尚未结婚", ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouAreNotMarried), ChatType.System);
                     return;
                 }
 
                 if (MapName == "")
                 {
-                    GameScene.Scene.ChatDialog.ReceiveChat("爱人目前不在线", ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LoverIsNotOnline), ChatType.System);
                     return;
                 }
+
                 GameScene.Scene.ChatDialog.ChatTextBox.SetFocus();
                 GameScene.Scene.ChatDialog.ChatTextBox.Text = ":)";
                 GameScene.Scene.ChatDialog.ChatTextBox.Visible = true;
@@ -208,40 +209,39 @@ namespace Client.MirScenes.Dialogs
 
         public void UpdateInterface()
         {
-            LoverNameLabel.Text = "爱人:  " + LoverName;
+            LoverNameLabel.Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.LoverName), LoverName);
 
             if (MapName != "")
             {
-                LoverOnlineLabel.Text = "位置:  " + MapName;
+                LoverOnlineLabel.Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.LoverLocation), MapName);
             }
             else
-                LoverOnlineLabel.Text = "位置:  离线";
+                LoverOnlineLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LoverLocationOffline);
 
             if ((LoverName == "") && (Date != default))
             {
                 if (Date < new DateTime(2000))
                 {
-                    LoverDateLabel.Text = "日期: ";
-                    LoverLengthLabel.Text = "成婚: ";
+                    LoverDateLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LoverDate);
+                    LoverLengthLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LoverLength);
                 }
                 else
                 {
-                    LoverDateLabel.Text = "离婚日期:  " + Date.ToShortDateString();
-                    LoverLengthLabel.Text = "成婚: " + MarriedDays + " 天";
+                    LoverDateLabel.Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.DivorcedDate), Date.ToShortDateString());
+                    LoverLengthLabel.Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.TimeSinceDays), MarriedDays);
                 }
 
 
-                LoverOnlineLabel.Text = "位置: ";
-                AllowButton.Hint = GameLanguage.SwitchMarriage;
+                LoverOnlineLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LoverLocationTitle)
+                    ;
+                AllowButton.Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SwitchMarriage);
             }
             else
             {
-                LoverDateLabel.Text = "结婚日:  " + Date.ToShortDateString();
-                LoverLengthLabel.Text = "成婚: " + MarriedDays.ToString() + " 天";
-                AllowButton.Hint = "允许/禁止夫妻传送";
+                LoverDateLabel.Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.MarriageDate), Date == DateTime.MinValue ? string.Empty : Date.ToShortDateString());
+                LoverLengthLabel.Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.LengthDays), MarriedDays);
+                AllowButton.Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AllowBlockRecall);
             }
-
-
         }
     }
 }

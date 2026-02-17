@@ -105,52 +105,52 @@ namespace Client.MirScenes.Dialogs
 
             Dictionary<string, string> keybinds = new Dictionary<string, string>();
 
-            List<HelpPage> imagePages = new List<HelpPage> {
-                new HelpPage("快捷键", -1, new ShortcutPage1 { Parent = this } ) { Parent = this, Location = location, Visible = false },
-                new HelpPage("快捷键", -1, new ShortcutPage2 { Parent = this } ) { Parent = this, Location = location, Visible = false },
-                new HelpPage("聊天快捷键", -1, new ShortcutPage3 { Parent = this } ) { Parent = this, Location = location, Visible = false },
-                new HelpPage("移动", 0, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("攻击", 1, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("Collecting Items", 2, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("生命", 3, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("技能", 4, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("技能", 5, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("魔法", 6, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("聊天", 7, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("组队", 8, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("持久", 9, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("购买", 10, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("出售", 11, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("修理", 12, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("交易", 13, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("鉴定", 14, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("统计", 15, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("统计", 16, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("统计", 17, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("统计", 18, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("统计", 19, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("统计", 20, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("任务", 21, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("任务", 22, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("任务", 23, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("任务", 24, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("坐骑", 25, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("坐骑", 26, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("钓鱼", 27, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("宝石和宝珠", 28, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("英雄", 29, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("英雄", 30, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("英雄", 31, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("英雄", 32, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("英雄", 33, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("工会BUFF", 34, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("工会BUFF", 35, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("工会BUFF", 36, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("觉醒", 37, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("觉醒", 38, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("觉醒", 39, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("觉醒", 40, null) { Parent = this, Location = location, Visible = false },
-                new HelpPage("觉醒", 41, null) { Parent = this, Location = location, Visible = false },
+            List<HelpPage> imagePages = new List<HelpPage> { 
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ShortcutInformation), -1, new ShortcutPage1 { Parent = this } ) { Parent = this, Location = location, Visible = false }, 
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ShortcutInformation), -1, new ShortcutPage2 { Parent = this } ) { Parent = this, Location = location, Visible = false }, 
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ChatShortcuts), -1, new ShortcutPage3 { Parent = this } ) { Parent = this, Location = location, Visible = false }, 
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Movements), 0, null) { Parent = this, Location = location, Visible = false }, 
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Attacking), 1, null) { Parent = this, Location = location, Visible = false }, 
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CollectingItems), 2, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Health), 3, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Skills), 4, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Skills), 5, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Mana), 6, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chatting), 7, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Groups), 8, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Durability), 9, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Purchasing), 10, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Selling), 11, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Repairing), 12, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Trading), 13, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Inspecting), 14, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Statistics), 15, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Statistics), 16, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Statistics), 17, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Statistics), 18, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Statistics), 19, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Statistics), 20, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Quests), 21, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Quests), 22, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Quests), 23, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Quests), 24, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Mounts), 25, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Mounts), 26, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Fishing), 27, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GemsAndOrbs), 28, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Heroes), 29, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Heroes), 30, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Heroes), 31, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Heroes), 32, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Heroes), 33, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GuildBuffs), 34, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GuildBuffs), 35, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GuildBuffs), 36, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Awakening), 37, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Awakening), 38, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Awakening), 39, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Awakening), 40, null) { Parent = this, Location = location, Visible = false },
+                new HelpPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Awakening), 41, null) { Parent = this, Location = location, Visible = false },
             };
 
             Pages.AddRange(imagePages);
@@ -214,25 +214,25 @@ namespace Client.MirScenes.Dialogs
         {
             Shortcuts = new List<ShortcutInfo>
             {
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Exit), "退出游戏"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Logout), "Log out"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Bar1Skill1) + "-" + CMain.InputKeys.GetKey(KeybindOptions.Bar1Skill8), "技能按键"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Inventory), "背包 (打开 / 关闭)"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Equipment), "状态面板"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Skills), "技能面板"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Group), "组队面板"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Trade), "交易面板"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Friends), "好友面板"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Minimap), "小地图面板"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Guilds), "行会面板"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.GameShop), "商城面板"),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Exit), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExitGame)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Logout), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LogOut)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Bar1Skill1) + "-" + CMain.InputKeys.GetKey(KeybindOptions.Bar1Skill8), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillButtons)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Inventory), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InventoryWindowOpenClose)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Equipment), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StatusWindowOpenClose)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Skills), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillWindowOpenClose)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Group), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GroupWindowOpenClose)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Trade), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.TradeWindowOpenClose)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Friends), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.FriendWindowOpenClose)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Minimap), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MinimapWindowOpenClose)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Guilds), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GuildWindowOpenClose)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.GameShop), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GameshopWindowOpenClose)),
                 //Shortcuts.Add(new ShortcutInfo("K", "Rental window (open / close)"));
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Relationship), "婚恋"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Belt), "Belt window (open / close)"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Options), "选项"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Help), "帮助"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Mount), "坐骑"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), "法术锁定")
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Relationship), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.EngagementWindowOpenClose)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Belt), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BeltWindowOpenClose)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Options), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.OptionWindowOpenClose)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Help), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.HelpWindowOpenClose)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Mount), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MountDismountRide)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LockSpellOnTargetNotCursor))
             };
 
             LoadKeyBinds();
@@ -244,26 +244,26 @@ namespace Client.MirScenes.Dialogs
         {
             Shortcuts = new List<ShortcutInfo>
             {
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.ChangePetmode), "切换宠物攻击模式"),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.ChangePetmode), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.TogglePetAttackPet)),
                 //Shortcuts.Add(new ShortcutInfo("Ctrl + F", "Change the font in the chat box"));
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.ChangeAttackmode), "切换攻击模式"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.AttackmodePeace), "和平模式 - 仅攻击怪物"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.AttackmodeGroup), "组队模式 - 攻击除队友以外的对象"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.AttackmodeGuild), "行会模式 - 攻击除行会成员以外的对象"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.AttackmodeRedbrown), "善恶模式 - 攻击PK玩家及怪物"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.AttackmodeAll), "全体攻击模式 - 攻击所有对象"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Bigmap), "显示地图"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Skillbar), "显示技能栏"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Autorun), "自动奔跑"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Cameramode), "显示 / 隐藏 界面UI"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Pickup), "高亮 / 拾取 物品"),
-                new ShortcutInfo("Ctrl + 右击", "显示其他玩家装备"),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.ChangeAttackmode), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.TogglePlayerAttackMode)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.AttackmodePeace), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PeaceModeAttackMonstersOnly)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.AttackmodeGroup), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GroupModeAttackExceptMembers)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.AttackmodeGuild), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GuildModeAttackExceptMembers)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.AttackmodeRedbrown), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GoodEvilModeAttackPKAndMonsters)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.AttackmodeAll), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AllAttackModeAllSubjects)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Bigmap), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ShowFieldMap)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Skillbar), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ShowSkillBar)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Autorun), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AutoRunOnOff)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Cameramode), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ShowHideInterface)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Pickup), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.HighlightPickupItems)),
+                new ShortcutInfo(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CtrlRightClick), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ShowOtherPlayersKits)),
                 //Shortcuts.Add(new ShortcutInfo("F12", "Chat macros"));
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Screenshot), "截屏"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Fishing), "钓鱼"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Mentor), "师徒"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.CreaturePickup), "灵物自动拾取 (Multi Mouse Target)"),
-                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.CreatureAutoPickup), "灵物自动拾取 (Single Mouse Target)")
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Screenshot), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ScreenCapture)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Fishing), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.OpenCloseFishingWindow)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.Mentor), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MentorWindowOpenClose)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.CreaturePickup), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CreaturePickupMultiMouseTarget)),
+                new ShortcutInfo(CMain.InputKeys.GetKey(KeybindOptions.CreatureAutoPickup), GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CreaturePickupSingleMouseTarget))
             };
 
             LoadKeyBinds();
@@ -276,9 +276,9 @@ namespace Client.MirScenes.Dialogs
             Shortcuts = new List<ShortcutInfo>
             {
                 //Shortcuts.Add(new ShortcutInfo("` / Ctrl", "Change the skill bar"));
-                new ShortcutInfo("/(username)", "发送私聊"),
-                new ShortcutInfo("!(text)", "发送给附近的玩家"),
-                new ShortcutInfo("!~(text)", "行会聊天")
+                new ShortcutInfo("/(username)", GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CommandWhisperOthers)),
+                new ShortcutInfo("!(text)", GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CommandShoutNearby)),
+                new ShortcutInfo("!~(text)", GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CommandGuildChat))
             };
 
             LoadKeyBinds();
@@ -307,7 +307,7 @@ namespace Client.MirScenes.Dialogs
 
             MirLabel shortcutTitleLabel = new MirLabel
             {
-                Text = "快捷键",
+                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Shortcuts),
                 DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
                 ForeColour = Color.White,
                 Font = new Font(Settings.FontName, 10F),
@@ -319,7 +319,7 @@ namespace Client.MirScenes.Dialogs
 
             MirLabel infoTitleLabel = new MirLabel
             {
-                Text = "功能",
+                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Information),
                 DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
                 ForeColour = Color.White,
                 Font = new Font(Settings.FontName, 10F),
@@ -359,7 +359,7 @@ namespace Client.MirScenes.Dialogs
                     Location = new Point(119, 107 + (20 * i)),
                     Size = new Size(400, 23),
                 };
-            }
+            }  
         }
     }
 

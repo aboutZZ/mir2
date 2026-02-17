@@ -905,9 +905,8 @@ namespace Client.MirObjects
                 }
             }
 
-            if (User == this && CMain.Time < MapControl.NextAction)
+            if (User == this && !GameScene.Observing && CMain.Time < MapControl.NextAction)
                 return;
-
 
             if (ActionFeed.Count == 0)
             {
@@ -1362,7 +1361,7 @@ namespace Client.MirObjects
 
                             if (!RidingMount)
                             {
-                                if (GameScene.User.Slaying && TargetObject != null)
+                                if (GameScene.User.Slaying && (TargetObject != null || GameScene.Observing))
                                     Spell = Spell.Slaying;
 
                                 if (GameScene.User.Thrusting && GameScene.Scene.MapControl.HasTarget(Functions.PointMove(CurrentLocation, Direction, 2)))
@@ -1396,7 +1395,7 @@ namespace Client.MirObjects
                                 }
 
 
-                                if (GameScene.User.TwinDrakeBlade && TargetObject != null)
+                                if (GameScene.User.TwinDrakeBlade && (TargetObject != null || GameScene.Observing))
                                 {
                                     magic = User.GetMagic(Spell.TwinDrakeBlade);
                                     if (magic != null && magic.BaseCost + magic.LevelCost * magic.Level <= User.MP)
@@ -1606,7 +1605,11 @@ namespace Client.MirObjects
                         uint attackerID = (uint)action.Params[0];
                         StruckWeapon = -2;
 
-                        if (MapControl.Objects.TryGetValue(attackerID, out MapObject ob))
+                        if (action.Params.Count > 1)
+                        {
+                            StruckWeapon = (int)action.Params[1];
+                        }
+                        else if (MapControl.Objects.TryGetValue(attackerID, out MapObject ob))
                             if (ob.Race == ObjectType.Player)
                             {
                                 PlayerObject player = (PlayerObject)ob;

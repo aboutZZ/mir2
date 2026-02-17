@@ -44,7 +44,7 @@ namespace Client.MirScenes.Dialogs
 
             TitleTypeLabel = new MirLabel
             {
-                Text = "类型",
+                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Type),
                 Parent = this,
                 Font = new Font(Settings.FontName, Settings.FontSize - 1, FontStyle.Italic),
                 DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
@@ -54,7 +54,7 @@ namespace Client.MirScenes.Dialogs
 
             TitleSenderLabel = new MirLabel
             {
-                Text = "发送人",
+                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Sender),
                 Parent = this,
                 Font = new Font(Settings.FontName, Settings.FontSize - 1, FontStyle.Italic),
                 DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
@@ -64,7 +64,7 @@ namespace Client.MirScenes.Dialogs
 
             TitleMessageLabel = new MirLabel
             {
-                Text = "信息",
+                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Message),
                 Parent = this,
                 Font = new Font(Settings.FontName, Settings.FontSize - 1, FontStyle.Italic),
                 DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
@@ -160,17 +160,17 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(75, 414),
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.Send
+                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Send)
             };
             SendButton.Click += (o, e) =>
                 {
-                    MirInputBox inputBox = new MirInputBox(GameLanguage.EnterMailToName);
+                    MirInputBox inputBox = new MirInputBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.EnterMailToName));
 
                     inputBox.OKButton.Click += (o1, e1) =>
                     {
                         //open letter dialog, pass in name
                         GameScene.Scene.MailComposeLetterDialog.ComposeMail(inputBox.InputTextBox.Text);
-
+                        
                         inputBox.Dispose();
                     };
 
@@ -186,7 +186,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(102, 414),
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.Reply
+                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Reply)
             };
             ReplyButton.Click += (o, e) =>
             {
@@ -204,7 +204,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(129, 414),
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.Read
+                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Read)
             };
             ReadButton.Click += (o, e) =>
             {
@@ -229,7 +229,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(156, 414),
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.Delete
+                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Delete)
             };
             DeleteButton.Click += (o, e) =>
             {
@@ -237,7 +237,7 @@ namespace Client.MirScenes.Dialogs
 
                 if (SelectedMail.Items.Count > 0 || SelectedMail.Gold > 0)
                 {
-                    MirMessageBox messageBox = new MirMessageBox("该包裹包含物品或金币。 确定要删除吗？", MirMessageBoxButtons.YesNo);
+                    MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ParcelContainsItemsOrGoldDeleteConfirm), MirMessageBoxButtons.YesNo);
 
                     messageBox.YesButton.Click += (o1, e1) =>
                     {
@@ -263,7 +263,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(183, 414),
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.BlockList,
+                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BlockList),
                 GrayScale = true,
                 Enabled = false
             };
@@ -277,13 +277,13 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(210, 414),
                 Sound = SoundList.ButtonA,
-                Hint = "上报 BUG",
+                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ReportBug),
                 GrayScale = true,
                 Enabled = false
             };
             #endregion
 
-
+            
         }
 
         public void Reset()
@@ -584,7 +584,7 @@ namespace Client.MirScenes.Dialogs
         protected override void OnMouseEnter()
         {
             base.OnMouseEnter();
-            GameScene.Scene.CreateMailLabel(Mail);
+            GameScene.Scene.CreateMailLabel(Mail);          
         }
         protected override void OnMouseLeave()
         {
@@ -756,7 +756,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(73, 56),
                 Size = new Size(20,20),
                 Library = Libraries.Prguse2,
-                Parent = this,
+                Parent = this,             
                 Sound = SoundList.ButtonA,
             };
             StampButton.Click += (o, e) =>
@@ -809,7 +809,7 @@ namespace Client.MirScenes.Dialogs
             {
                 if (GameScene.SelectedCell == null && GameScene.Gold > 0)
                 {
-                    MirAmountBox amountBox = new MirAmountBox("金币数量:", 116, GameScene.Gold);
+                    MirAmountBox amountBox = new MirAmountBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SendAmount), 116, GameScene.Gold);
 
                     amountBox.OKButton.Click += (c, a) =>
                     {
@@ -1186,7 +1186,7 @@ namespace Client.MirScenes.Dialogs
             };
             CollectButton.Click += (o, e) =>
             {
-                Network.Enqueue(new C.CollectParcel { MailID = Mail.MailID });
+                Network.Enqueue(new C.CollectParcel { MailID = Mail.MailID }); 
             };
 
             CancelButton = new MirButton

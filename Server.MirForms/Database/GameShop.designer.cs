@@ -64,12 +64,13 @@
             ResetFilter_button = new Button();
             Add_Button = new Button();
             GameShopSearchBox = new TextBox();
+            ExportButton = new Button();
             ItemDetails_gb.SuspendLayout();
             groupBox3.SuspendLayout();
             SuspendLayout();
-            //
+            // 
             // GameShopListBox
-            //
+            // 
             GameShopListBox.FormattingEnabled = true;
             GameShopListBox.ItemHeight = 15;
             GameShopListBox.Location = new Point(14, 119);
@@ -80,9 +81,9 @@
             GameShopListBox.Size = new Size(234, 349);
             GameShopListBox.TabIndex = 11;
             GameShopListBox.SelectedIndexChanged += GameShopListBox_SelectedIndexChanged;
-            //
+            // 
             // label14
-            //
+            // 
             label14.AutoSize = true;
             label14.Location = new Point(27, 178);
             label14.Margin = new Padding(4, 0, 4, 0);
@@ -90,9 +91,9 @@
             label14.Size = new Size(64, 15);
             label14.TabIndex = 90;
             label14.Text = "Gold Price:";
-            //
+            // 
             // GoldPrice_textbox
-            //
+            // 
             GoldPrice_textbox.Location = new Point(100, 175);
             GoldPrice_textbox.Margin = new Padding(4, 3, 4, 3);
             GoldPrice_textbox.MaxLength = 0;
@@ -100,9 +101,9 @@
             GoldPrice_textbox.Size = new Size(131, 23);
             GoldPrice_textbox.TabIndex = 86;
             GoldPrice_textbox.TextChanged += GoldPrice_textbox_TextChanged;
-            //
+            // 
             // label21
-            //
+            // 
             label21.AutoSize = true;
             label21.Location = new Point(21, 146);
             label21.Margin = new Padding(4, 0, 4, 0);
@@ -110,9 +111,9 @@
             label21.Size = new Size(71, 15);
             label21.TabIndex = 91;
             label21.Text = "Credit Price:";
-            //
+            // 
             // GPPrice_textbox
-            //
+            // 
             GPPrice_textbox.Location = new Point(100, 142);
             GPPrice_textbox.Margin = new Padding(4, 3, 4, 3);
             GPPrice_textbox.MaxLength = 0;
@@ -120,9 +121,9 @@
             GPPrice_textbox.Size = new Size(131, 23);
             GPPrice_textbox.TabIndex = 87;
             GPPrice_textbox.TextChanged += GPPrice_textbox_TextChanged;
-            //
+            // 
             // label29
-            //
+            // 
             label29.AutoSize = true;
             label29.Location = new Point(9, 240);
             label29.Margin = new Padding(4, 0, 4, 0);
@@ -130,9 +131,9 @@
             label29.Size = new Size(79, 15);
             label29.TabIndex = 93;
             label29.Text = "Class Section:";
-            //
+            // 
             // ItemDetails_gb
-            //
+            // 
             ItemDetails_gb.BackColor = Color.White;
             ItemDetails_gb.Controls.Add(label7);
             ItemDetails_gb.Controls.Add(ItemComboBox);
@@ -165,27 +166,27 @@
             ItemDetails_gb.TabIndex = 98;
             ItemDetails_gb.TabStop = false;
             ItemDetails_gb.Text = "Item Details";
-            //
+            // 
             // label7
-            //
+            // 
             label7.AutoSize = true;
             label7.Location = new Point(55, 34);
             label7.Name = "label7";
             label7.Size = new Size(34, 15);
             label7.TabIndex = 121;
             label7.Text = "Item:";
-            //
+            // 
             // ItemComboBox
-            //
+            // 
             ItemComboBox.FormattingEnabled = true;
             ItemComboBox.Location = new Point(100, 30);
             ItemComboBox.Name = "ItemComboBox";
             ItemComboBox.Size = new Size(201, 23);
             ItemComboBox.TabIndex = 120;
             ItemComboBox.SelectedIndexChanged += ItemComboBox_SelectedIndexChanged;
-            //
+            // 
             // GoldOnlyBox
-            //
+            // 
             GoldOnlyBox.AutoSize = true;
             GoldOnlyBox.Location = new Point(239, 177);
             GoldOnlyBox.Margin = new Padding(4, 3, 4, 3);
@@ -195,9 +196,9 @@
             GoldOnlyBox.Text = "Gold";
             GoldOnlyBox.UseVisualStyleBackColor = true;
             GoldOnlyBox.CheckedChanged += GoldOnlyBox_CheckedChanged;
-            //
+            // 
             // CreditOnlyBox
-            //
+            // 
             CreditOnlyBox.AutoSize = true;
             CreditOnlyBox.Location = new Point(239, 145);
             CreditOnlyBox.Margin = new Padding(4, 3, 4, 3);
@@ -207,9 +208,9 @@
             CreditOnlyBox.Text = "Credits";
             CreditOnlyBox.UseVisualStyleBackColor = true;
             CreditOnlyBox.CheckedChanged += CreditOnly_CheckedChanged;
-            //
+            // 
             // label6
-            //
+            // 
             label6.AutoSize = true;
             label6.Location = new Point(51, 208);
             label6.Margin = new Padding(4, 0, 4, 0);
@@ -217,9 +218,9 @@
             label6.Size = new Size(43, 15);
             label6.TabIndex = 117;
             label6.Text = "Count:";
-            //
+            // 
             // Count_textbox
-            //
+            // 
             Count_textbox.Location = new Point(100, 205);
             Count_textbox.Margin = new Padding(4, 3, 4, 3);
             Count_textbox.MaxLength = 0;
@@ -227,9 +228,9 @@
             Count_textbox.Size = new Size(131, 23);
             Count_textbox.TabIndex = 116;
             Count_textbox.TextChanged += Count_textbox_TextChanged;
-            //
+            // 
             // LeftinStock_label
-            //
+            // 
             LeftinStock_label.AutoSize = true;
             LeftinStock_label.Location = new Point(97, 111);
             LeftinStock_label.Margin = new Padding(4, 0, 4, 0);
@@ -238,9 +239,9 @@
             LeftinStock_label.Size = new Size(25, 15);
             LeftinStock_label.TabIndex = 115;
             LeftinStock_label.Text = "100";
-            //
+            // 
             // label3
-            //
+            // 
             label3.AutoSize = true;
             label3.Location = new Point(14, 111);
             label3.Margin = new Padding(4, 0, 4, 0);
@@ -248,9 +249,9 @@
             label3.Size = new Size(75, 15);
             label3.TabIndex = 114;
             label3.Text = "Left in Stock:";
-            //
+            // 
             // label5
-            //
+            // 
             label5.AutoSize = true;
             label5.Location = new Point(28, 81);
             label5.Margin = new Padding(4, 0, 4, 0);
@@ -258,9 +259,9 @@
             label5.Size = new Size(62, 15);
             label5.TabIndex = 113;
             label5.Text = "Total Sold:";
-            //
+            // 
             // TotalSold_label
-            //
+            // 
             TotalSold_label.AutoSize = true;
             TotalSold_label.Location = new Point(96, 81);
             TotalSold_label.Margin = new Padding(4, 0, 4, 0);
@@ -269,9 +270,9 @@
             TotalSold_label.Size = new Size(25, 15);
             TotalSold_label.TabIndex = 112;
             TotalSold_label.Text = "100";
-            //
+            // 
             // TopItem_checkbox
-            //
+            // 
             TopItem_checkbox.AutoSize = true;
             TopItem_checkbox.Location = new Point(32, 352);
             TopItem_checkbox.Margin = new Padding(4, 3, 4, 3);
@@ -282,9 +283,9 @@
             TopItem_checkbox.Text = ":Top Item";
             TopItem_checkbox.UseVisualStyleBackColor = true;
             TopItem_checkbox.CheckedChanged += TopItem_checkbox_CheckedChanged;
-            //
+            // 
             // DealofDay_checkbox
-            //
+            // 
             DealofDay_checkbox.AutoSize = true;
             DealofDay_checkbox.Location = new Point(31, 329);
             DealofDay_checkbox.Margin = new Padding(4, 3, 4, 3);
@@ -295,9 +296,9 @@
             DealofDay_checkbox.Text = ":Sale Item";
             DealofDay_checkbox.UseVisualStyleBackColor = true;
             DealofDay_checkbox.CheckedChanged += DealofDay_checkbox_CheckedChanged;
-            //
+            // 
             // Individual_checkbox
-            //
+            // 
             Individual_checkbox.AutoSize = true;
             Individual_checkbox.Location = new Point(190, 302);
             Individual_checkbox.Margin = new Padding(4, 3, 4, 3);
@@ -307,19 +308,19 @@
             Individual_checkbox.Text = "Player Limit";
             Individual_checkbox.UseVisualStyleBackColor = true;
             Individual_checkbox.CheckedChanged += Individual_checkbox_CheckedChanged;
-            //
+            // 
             // label1
-            //
+            // 
             label1.AutoSize = true;
             label1.Location = new Point(51, 303);
             label1.Margin = new Padding(4, 0, 4, 0);
             label1.Name = "label1";
             label1.Size = new Size(39, 15);
             label1.TabIndex = 111;
-            label1.Text = "Stock;";
-            //
+            label1.Text = "Stock:";
+            // 
             // Stock_textbox
-            //
+            // 
             Stock_textbox.Location = new Point(100, 299);
             Stock_textbox.Margin = new Padding(4, 3, 4, 3);
             Stock_textbox.MaxLength = 0;
@@ -327,9 +328,9 @@
             Stock_textbox.Size = new Size(83, 23);
             Stock_textbox.TabIndex = 109;
             Stock_textbox.TextChanged += Stock_textbox_TextChanged;
-            //
+            // 
             // Category_textbox
-            //
+            // 
             Category_textbox.Location = new Point(100, 268);
             Category_textbox.Margin = new Padding(4, 3, 4, 3);
             Category_textbox.MaxLength = 0;
@@ -337,9 +338,9 @@
             Category_textbox.Size = new Size(201, 23);
             Category_textbox.TabIndex = 108;
             Category_textbox.TextChanged += Category_textbox_TextChanged;
-            //
+            // 
             // label4
-            //
+            // 
             label4.AutoSize = true;
             label4.Location = new Point(35, 272);
             label4.Margin = new Padding(4, 0, 4, 0);
@@ -347,9 +348,9 @@
             label4.Size = new Size(58, 15);
             label4.TabIndex = 106;
             label4.Text = "Category:";
-            //
+            // 
             // Class_combo
-            //
+            // 
             Class_combo.DropDownStyle = ComboBoxStyle.DropDownList;
             Class_combo.FormattingEnabled = true;
             Class_combo.Items.AddRange(new object[] { "All", "Warrior", "Assassin", "Taoist", "Wizard", "Archer" });
@@ -359,9 +360,9 @@
             Class_combo.Size = new Size(201, 23);
             Class_combo.TabIndex = 105;
             Class_combo.SelectedIndexChanged += Class_combo_SelectedIndexChanged;
-            //
+            // 
             // groupBox3
-            //
+            // 
             groupBox3.BackColor = Color.White;
             groupBox3.Controls.Add(label2);
             groupBox3.Controls.Add(CredxGold_textbox);
@@ -372,10 +373,10 @@
             groupBox3.Size = new Size(312, 78);
             groupBox3.TabIndex = 105;
             groupBox3.TabStop = false;
-            groupBox3.Text = "游戏商城设置";
-            //
+            groupBox3.Text = "Gameshop Settings";
+            // 
             // label2
-            //
+            // 
             label2.AutoSize = true;
             label2.Location = new Point(14, 30);
             label2.Margin = new Padding(4, 0, 4, 0);
@@ -383,9 +384,9 @@
             label2.Size = new Size(78, 15);
             label2.TabIndex = 92;
             label2.Text = "Credit x Gold:";
-            //
+            // 
             // CredxGold_textbox
-            //
+            // 
             CredxGold_textbox.Location = new Point(100, 25);
             CredxGold_textbox.Margin = new Padding(4, 3, 4, 3);
             CredxGold_textbox.MaxLength = 0;
@@ -393,31 +394,31 @@
             CredxGold_textbox.Size = new Size(75, 23);
             CredxGold_textbox.TabIndex = 88;
             CredxGold_textbox.TextChanged += CredxGold_textbox_TextChanged;
-            //
+            // 
             // ServerLog_button
-            //
-            ServerLog_button.Location = new Point(321, 470);
+            // 
+            ServerLog_button.Location = new Point(310, 470);
             ServerLog_button.Margin = new Padding(4, 3, 4, 3);
             ServerLog_button.Name = "ServerLog_button";
-            ServerLog_button.Size = new Size(246, 27);
+            ServerLog_button.Size = new Size(257, 27);
             ServerLog_button.TabIndex = 112;
             ServerLog_button.Text = "Reset Purchase Logs (Stock Levels will reset)";
             ServerLog_button.UseVisualStyleBackColor = true;
             ServerLog_button.Click += ServerLog_button_Click;
-            //
+            // 
             // Remove_button
-            //
+            // 
             Remove_button.Location = new Point(120, 470);
             Remove_button.Margin = new Padding(4, 3, 4, 3);
             Remove_button.Name = "Remove_button";
-            Remove_button.Size = new Size(128, 27);
+            Remove_button.Size = new Size(105, 27);
             Remove_button.TabIndex = 106;
-            Remove_button.Text = "移除所选";
+            Remove_button.Text = "Remove Selected";
             Remove_button.UseVisualStyleBackColor = true;
             Remove_button.Click += Remove_button_Click;
-            //
+            // 
             // ClassFilter_lb
-            //
+            // 
             ClassFilter_lb.DropDownStyle = ComboBoxStyle.DropDownList;
             ClassFilter_lb.FormattingEnabled = true;
             ClassFilter_lb.Location = new Point(14, 6);
@@ -426,9 +427,9 @@
             ClassFilter_lb.Size = new Size(170, 23);
             ClassFilter_lb.TabIndex = 107;
             ClassFilter_lb.SelectedIndexChanged += ClassFilter_lb_SelectedIndexChanged;
-            //
+            // 
             // SectionFilter_lb
-            //
+            // 
             SectionFilter_lb.DropDownStyle = ComboBoxStyle.DropDownList;
             SectionFilter_lb.FormattingEnabled = true;
             SectionFilter_lb.Items.AddRange(new object[] { "All Items", "Top Items", "Sale Items", "New Items" });
@@ -438,9 +439,9 @@
             SectionFilter_lb.Size = new Size(170, 23);
             SectionFilter_lb.TabIndex = 108;
             SectionFilter_lb.SelectedIndexChanged += SectionFilter_lb_SelectedIndexChanged;
-            //
+            // 
             // CategoryFilter_lb
-            //
+            // 
             CategoryFilter_lb.DropDownStyle = ComboBoxStyle.DropDownList;
             CategoryFilter_lb.FormattingEnabled = true;
             CategoryFilter_lb.Location = new Point(14, 59);
@@ -449,20 +450,20 @@
             CategoryFilter_lb.Size = new Size(170, 23);
             CategoryFilter_lb.TabIndex = 109;
             CategoryFilter_lb.SelectedIndexChanged += CategoryFilter_lb_SelectedIndexChanged;
-            //
+            // 
             // ResetFilter_button
-            //
+            // 
             ResetFilter_button.Location = new Point(191, 5);
             ResetFilter_button.Margin = new Padding(4, 3, 4, 3);
             ResetFilter_button.Name = "ResetFilter_button";
             ResetFilter_button.Size = new Size(57, 80);
             ResetFilter_button.TabIndex = 110;
-            ResetFilter_button.Text = "重置过滤器";
+            ResetFilter_button.Text = "Reset Filter";
             ResetFilter_button.UseVisualStyleBackColor = true;
             ResetFilter_button.Click += ResetFilter_button_Click;
-            //
+            // 
             // Add_Button
-            //
+            // 
             Add_Button.Location = new Point(14, 470);
             Add_Button.Margin = new Padding(4, 3, 4, 3);
             Add_Button.Name = "Add_Button";
@@ -471,21 +472,32 @@
             Add_Button.Text = "Add Item";
             Add_Button.UseVisualStyleBackColor = true;
             Add_Button.Click += Add_Button_Click;
-            //
+            // 
             // GameShopSearchBox
-            //
+            // 
             GameShopSearchBox.Location = new Point(14, 88);
             GameShopSearchBox.Name = "GameShopSearchBox";
             GameShopSearchBox.PlaceholderText = "Search...";
             GameShopSearchBox.Size = new Size(234, 23);
             GameShopSearchBox.TabIndex = 114;
             GameShopSearchBox.TextChanged += GameShopSearchBox_TextChanged;
-            //
+            // 
+            // ExportButton
+            // 
+            ExportButton.Location = new Point(232, 470);
+            ExportButton.Name = "ExportButton";
+            ExportButton.Size = new Size(75, 27);
+            ExportButton.TabIndex = 115;
+            ExportButton.Text = "Export";
+            ExportButton.UseVisualStyleBackColor = true;
+            ExportButton.Click += ExportButton_Click;
+            // 
             // GameShop
-            //
+            // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(581, 503);
+            Controls.Add(ExportButton);
             Controls.Add(GameShopSearchBox);
             Controls.Add(Add_Button);
             Controls.Add(ServerLog_button);
@@ -499,7 +511,7 @@
             Controls.Add(GameShopListBox);
             Margin = new Padding(4, 3, 4, 3);
             Name = "GameShop";
-            Text = "游戏商城";
+            Text = "GameShop";
             FormClosed += GameShop_FormClosed;
             Load += GameShop_Load;
             ItemDetails_gb.ResumeLayout(false);
@@ -548,5 +560,6 @@
         private Label label7;
         private ComboBox ItemComboBox;
         private TextBox GameShopSearchBox;
+        private Button ExportButton;
     }
 }

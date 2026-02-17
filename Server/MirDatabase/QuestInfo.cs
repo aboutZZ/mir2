@@ -143,7 +143,7 @@ namespace Server.MirDatabase
                 ParseFile(lines);
             }
             else
-                MessageQueue.Enqueue(string.Format("File Not Found: {0}, Quest: {1}", fileName, Name));
+                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.FileNotFoundQuest), fileName, Name));
         }
 
         public void ClearInfo()
@@ -221,7 +221,7 @@ namespace Server.MirDatabase
                                 break;
                             case killTasksKey:
                                 QuestKillTask t1 = ParseKill(innerLine);
-                                if(t1 != null) KillTasks.Add(t1);
+                                if (t1 != null) KillTasks.Add(t1);
                                 break;
                             case itemTasksKey:
                                 QuestItemTask t2 = ParseItem(innerLine);
@@ -385,8 +385,13 @@ namespace Server.MirDatabase
             return true;
         }
 
-        public ClientQuestInfo CreateClientQuestInfo()
+        public ClientQuestInfo CreateClientQuestInfo(PlayerObject viewer = null)
         {
+            var description = LinkFormatter.ReplacePlaceholders(Description, (type, index) => EnsureLinkInfo(viewer, type, index)) ?? new List<string>();
+            var taskDescription = LinkFormatter.ReplacePlaceholders(TaskDescription, (type, index) => EnsureLinkInfo(viewer, type, index)) ?? new List<string>();
+            var returnDescription = LinkFormatter.ReplacePlaceholders(ReturnDescription, (type, index) => EnsureLinkInfo(viewer, type, index)) ?? new List<string>();
+            var completionDescription = LinkFormatter.ReplacePlaceholders(CompletionDescription, (type, index) => EnsureLinkInfo(viewer, type, index)) ?? new List<string>();
+
             return new ClientQuestInfo
             {
                 Index = Index,
@@ -394,10 +399,10 @@ namespace Server.MirDatabase
                 FinishNPCIndex = FinishNpcIndex,
                 Name = string.IsNullOrEmpty(NameLocale) ? Name : NameLocale,
                 Group = Group,
-                Description = Description,
-                TaskDescription = TaskDescription,
-                ReturnDescription = ReturnDescription,
-                CompletionDescription = CompletionDescription,
+                Description = description,
+                TaskDescription = taskDescription,
+                ReturnDescription = returnDescription,
+                CompletionDescription = completionDescription,
                 MinLevelNeeded = RequiredMinLevel,
                 MaxLevelNeeded = RequiredMaxLevel,
                 ClassNeeded = RequiredClass,
@@ -412,45 +417,73 @@ namespace Server.MirDatabase
             };
         }
 
+        private void EnsureLinkInfo(PlayerObject viewer, string linkType, int index)
+        {
+            if (viewer?.Connection == null) return;
+
+            switch (linkType)
+            {
+                case "ITEM":
+                    var itemInfo = Envir.GetItemInfo(index);
+                    if (itemInfo != null)
+                        viewer.Connection.CheckItemInfo(itemInfo);
+                    break;
+                case "MONSTER":
+                    viewer.Connection.CheckMonsterInfo(index);
+                    break;
+                case "NPC":
+                    viewer.Connection.CheckNPCInfo(index);
+                    break;
+            }
+        }
+
         public static void FromText(string text)
         {
             string[] data = text.Split(new[] { ',' });
 
             if (data.Length < 10) return;
+            QuestInfo info;
+            bool isNew = false;
+            if (!int.TryParse(data[0], out var index))
+            {
+                index = -1;
+            }
+            if (index == -1 || (info = EditEnvir.QuestInfoList.FirstOrDefault(it => it.Index == index)) == null)
+            {
+                info = new QuestInfo() { Index = ++EditEnvir.QuestIndex };
+                isNew = true;
 
-            QuestInfo info = new QuestInfo();
-
-            info.Name = data[0];
-            info.Group = data[1];
+            }
+            info.Name = data[1];
+            info.Group = data[2];
 
             byte temp;
 
-            byte.TryParse(data[2], out temp);
+            byte.TryParse(data[3], out temp);
 
             info.Type = (QuestType)temp;
 
-            info.FileName = data[3];
-            info.GotoMessage = data[4];
-            info.KillMessage = data[5];
-            info.ItemMessage = data[6];
-            info.FlagMessage = data[7];
+            info.FileName = data[4];
+            info.GotoMessage = data[5];
+            info.KillMessage = data[6];
+            info.ItemMessage = data[7];
+            info.FlagMessage = data[8];
 
-            int.TryParse(data[8], out info.RequiredMinLevel);
-            int.TryParse(data[9], out info.RequiredMaxLevel);
-            int.TryParse(data[10], out info.RequiredQuest);
+            int.TryParse(data[9], out info.RequiredMinLevel);
+            int.TryParse(data[10], out info.RequiredMaxLevel);
+            int.TryParse(data[11], out info.RequiredQuest);
 
-            byte.TryParse(data[11], out temp);
+            byte.TryParse(data[12], out temp);
 
             info.RequiredClass = (RequiredClass)temp;
 
-            info.Index = ++EditEnvir.QuestIndex;
-            EditEnvir.QuestInfoList.Add(info);
+            if (isNew) EditEnvir.QuestInfoList.Add(info);
         }
 
         public string ToText()
         {
-            return string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}",
-                Name, Group, (byte)Type, FileName, GotoMessage, KillMessage, ItemMessage, FlagMessage, RequiredMinLevel, RequiredMaxLevel, RequiredQuest, (byte)RequiredClass);
+            return string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12}",
+                Index, Name, Group, (byte)Type, FileName, GotoMessage, KillMessage, ItemMessage, FlagMessage, RequiredMinLevel, RequiredMaxLevel, RequiredQuest, (byte)RequiredClass);
         }
 
         public override string ToString()

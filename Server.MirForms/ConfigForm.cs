@@ -31,7 +31,9 @@ namespace Server
             StartGameCheckBox.Checked = Settings.AllowStartGame;
             AllowAssassinCheckBox.Checked = Settings.AllowCreateAssassin;
             AllowArcherCheckBox.Checked = Settings.AllowCreateArcher;
+            WarehousePasswordCheckBox.Checked = Settings.RequireStoragePassword;
             Resolution_textbox.Text = Settings.AllowedResolution.ToString();
+            ObserveCheckBox.Checked = Settings.AllowObserve;
 
             SafeZoneBorderCheckBox.Checked = Settings.SafeZoneBorder;
             SafeZoneHealingCheckBox.Checked = Settings.SafeZoneHealing;
@@ -105,6 +107,8 @@ namespace Server
             Settings.AllowStartGame = StartGameCheckBox.Checked;
             Settings.AllowCreateAssassin = AllowAssassinCheckBox.Checked;
             Settings.AllowCreateArcher = AllowArcherCheckBox.Checked;
+            Settings.RequireStoragePassword = WarehousePasswordCheckBox.Checked;
+            Settings.AllowObserve = ObserveCheckBox.Checked;
 
             if (int.TryParse(Resolution_textbox.Text, out tempint))
                 Settings.AllowedResolution = tempint;

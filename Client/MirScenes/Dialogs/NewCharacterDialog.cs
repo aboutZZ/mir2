@@ -2,6 +2,7 @@
 using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirSounds;
+
 namespace Client.MirScenes.Dialogs
 {
     public sealed class NewCharacterDialog : MirImageControl
@@ -12,14 +13,14 @@ namespace Client.MirScenes.Dialogs
         public MirAnimatedControl CharacterDisplay;
 
         public MirButton OKButton,
-                         CancelButton,
-                         WarriorButton,
-                         WizardButton,
-                         TaoistButton,
-                         AssassinButton,
-                         ArcherButton,
-                         MaleButton,
-                         FemaleButton;
+            CancelButton,
+            WarriorButton,
+            WizardButton,
+            TaoistButton,
+            AssassinButton,
+            ArcherButton,
+            MaleButton,
+            FemaleButton;
 
         public MirTextBox NameTextBox;
 
@@ -29,20 +30,16 @@ namespace Client.MirScenes.Dialogs
         public MirGender Gender;
 
         #region Descriptions
-        public const string WarriorDescription =
-            "战士是一种具有极高力量和生命力的职业。他们在战斗中不容易被杀死，并且有使用各种重型武器和装甲的优势。因此，战士喜欢基于近战物理伤害的攻击。他们在远程攻击上较弱，但是专门为战士开发的各种装备可以弥补他们在远程战斗中的弱点。";
 
-        public const string WizardDescription =
-            "法师是一种力量和耐力较低，但能使用强大法术的职业。他们的攻击性法术非常有效，但由于施法需要时间，他们可能会暴露在敌人的攻击下。因此，身体虚弱的法师必须目标是从安全的距离攻击他们的敌人。";
+        public readonly string WarriorDescription = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.WarriorsDescription);
 
-        public const string TaoistDescription =
-            "道士在天文学、医学等领域的研究中有着良好的纪律性，除了武功之外。他们的特长不在于直接与敌人交战，而在于用支援来帮助他们的盟友。道士可以召唤强大的生物，并且对魔法有很高的抗性，是一种攻防平衡的职业。";
+        public readonly string WizardDescription = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.WizardsDescription);
 
-        public const string AssassinDescription =
-            "刺客是秘密组织的成员，他们的历史相对未知。他们能够隐藏自己并在其他人看不见的情况下进行攻击，这自然使他们擅长快速杀戮。由于他们的生命力和力量较弱，他们需要避免与多个敌人进行战斗。";
+        public readonly string TaoistDescription = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.TaoistsDescription);
 
-        public const string ArcherDescription =
-            "弓箭手是一种具有极高精准度和力量的职业，他们利用弓箭的强大技能从远处造成巨大的伤害。就像法师一样，他们依赖于自己的敏锐直觉来躲避即将到来的攻击，因为他们往往会让自己暴露于正面攻击之下。然而，他们的身体力量和致命的瞄准能力使他们能够让任何被击中的人感到恐惧。";
+        public readonly string AssassinDescription = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AssassinsDescription);
+
+        public readonly string ArcherDescription = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ArchersDescription);
 
         #endregion
 
@@ -258,6 +255,7 @@ namespace Client.MirScenes.Dialogs
             if (OKButton.Enabled)
                 OKButton.InvokeMouseClick(null);
         }
+
         private void CharacterNameTextBox_TextChanged(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(NameTextBox.Text))
@@ -280,6 +278,7 @@ namespace Client.MirScenes.Dialogs
         }
 
         public event EventHandler OnCreateCharacter;
+
         private void CreateCharacter()
         {
             OKButton.Enabled = false;

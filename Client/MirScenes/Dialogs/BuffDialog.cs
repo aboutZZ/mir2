@@ -273,7 +273,7 @@ namespace Client.MirScenes.Dialogs
 
         public string BuffString(ClientBuff buff)
         {
-            string text = RegexFunctions.SeperateCamelCase(buff.Type.ToString()) + "\n";
+            string text = RegexFunctions.SeperateCamelCase(buff.Type.ToLocalizedString()) + "\n";
             bool overridestats = false;
 
             switch (buff.Type)
@@ -281,65 +281,65 @@ namespace Client.MirScenes.Dialogs
                 case BuffType.GameMaster:
                     GMOptions options = (GMOptions)buff.Values[0];
 
-                    if (options.HasFlag(GMOptions.GameMaster)) text += "-隐形\n";
-                    if (options.HasFlag(GMOptions.Superman)) text += "-无敌\n";
-                    if (options.HasFlag(GMOptions.Observer)) text += "-观察者\n";
+                    if (options.HasFlag(GMOptions.GameMaster)) text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Invisible);
+                    if (options.HasFlag(GMOptions.Superman)) text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Superman);
+                    if (options.HasFlag(GMOptions.Observer)) text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Observer);
                     break;
                 case BuffType.MentalState:
                     switch (buff.Values[0])
                     {
                         case 0:
-                            text += "Agressive (Full damage)\nCan't shoot over walls.\n";
+                            text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AgressiveFullDamageCantShootOverWalls);
                             break;
                         case 1:
-                            text += "Trick shot (Minimal damage)\nCan shoot over walls.\n";
+                            text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.TrickShotMinimalDamage);
                             break;
                         case 2:
-                            text += "Group Mode (Medium damage)\nDon't steal agro.\n";
+                            text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GroupModeMediumDamageDontStealAgro);
                             break;
                     }
                     break;
                 case BuffType.Hiding:
                 case BuffType.ClearRing:
-                    text += "静止时对多数怪物隐身\n";
+                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InvisibleToManyMonsters);
                     break;
                 case BuffType.MoonLight:
-                    text += "对玩家和多数怪物在一定距离内隐身";
+                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InvisibleToPlayersAndMonstersAtDistance);
                     break;
                 case BuffType.EnergyShield:
                     overridestats = true;
-                    text += string.Format("攻击时 {0}% 几率增加 {1} HP\n", buff.Stats[Stat.EnergyShieldPercent], buff.Stats[Stat.EnergyShieldHPGain]);
+                    text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ChanceGainHpWhenAttacked), buff.Stats[Stat.EnergyShieldPercent], buff.Stats[Stat.EnergyShieldHPGain]);
                     break;
                 case BuffType.DarkBody:
-                    text += "静止或移动时对多数怪物隐身\n";
+                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InvisibleToManyMonstersAbleToMove);
                     break;
                 case BuffType.VampireShot:
-                    text += "释放特定技能时吸血";
+                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GivesVampiricAbility);
                     break;
                 case BuffType.PoisonShot:
-                    text += "释放特定技能时施毒\n";
+                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GivesPoisonAbility);
                     break;
                 case BuffType.Concentration:
-                    text += "增加元素提取的几率\nIncreases chance on element extraction.\n";
+                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.IncreaseElementExtractionChance);
                     break;
                 case BuffType.MagicBooster:
                     overridestats = true;
-                    text += string.Format("魔法增加 {0}-{1}\n魔法消耗增加 {2}%\n", buff.Stats[Stat.MinMC], buff.Stats[Stat.MaxMC], buff.Stats[Stat.ManaPenaltyPercent]);
+                    text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.IncreaseMcAndConsumption), buff.Stats[Stat.MinMC], buff.Stats[Stat.MaxMC], buff.Stats[Stat.ManaPenaltyPercent]);
                     break;
                 case BuffType.Transform:
-                    text += "更改你的外表\n";
+                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.DisguisesYourAppearance);
                     break;
                 case BuffType.Mentee:
-                    text += "学习技能速度加倍\n";
+                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LearnSkillPointsTwiceAsQuick);
                     break;
                 case BuffType.Guild:
                     text += GameScene.Scene.GuildDialog.ActiveStats;
                     break;
                 case BuffType.Blindness:
-                    text += "降低可见范围\n";
+                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ReducesVisibility);
                     break;
                 case BuffType.Newbie:
-                    text += "A boost provided to members of your guild.\n";
+                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GuildMemberBoost);
                     break;
             }
 
@@ -347,21 +347,18 @@ namespace Client.MirScenes.Dialogs
             {
                 foreach (var val in buff.Stats.Values)
                 {
-                    var c = val.Value < 0 ? "减少" : "增加";
-                    var key = val.Key.ToString();
-
-                    // ZZ 这里汉化改动下
-                    // var strKey = RegexFunctions.SeperateCamelCase(key.Replace("Rate", "").Replace("Multiplier", "").Replace("Percent", ""));
-                    var strKey = val.Key.GetDescription();
+                    var c = val.Value < 0 ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Decreases) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Increases);
+                    var strKey = val.Key.ToLocalizedString();
+                    // ZZ 这里汉化改动下 var strKey = val.Key.GetDescription(); 看合并代码后怎么说
 
                     var sign = "";
 
-                    if (key.Contains("Percent"))
+                    if (val.Key.ToString().Contains("Percent"))
                         sign = "%";
-                    else if (key.Contains("Multiplier"))
+                    else if (val.Key.ToString().Contains("Multiplier"))
                         sign = "x";
 
-                    var txt = $"{strKey} {c}: {val.Value}{sign}\n";
+                    var txt = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BuffEffect), c, strKey, val.Value, sign);
 
                     text += txt;
                 }
@@ -369,25 +366,25 @@ namespace Client.MirScenes.Dialogs
 
             if (buff.Paused)
             {
-                text += GameLanguage.ExpirePaused;
+                text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExpirePaused);
             }
             else if (buff.Infinite)
             {
-                text += GameLanguage.ExpireNever;
+                text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExpireNever);
             }
             else
             {
-                text += string.Format(GameLanguage.Expire, Functions.PrintTimeSpanFromSeconds(Math.Round((buff.ExpireTime - CMain.Time) / 1000D)));
+                text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.Expire), Functions.PrintTimeSpanFromSeconds(Math.Round((buff.ExpireTime - CMain.Time) / 1000D)));
             }
 
-            if (!string.IsNullOrEmpty(buff.Caster)) text += string.Format("\n施法者: {0}", buff.Caster);
+            if (!string.IsNullOrEmpty(buff.Caster)) text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.CasterName), buff.Caster);
 
             return text;
         }
 
         private string CombinedBuffText()
         {
-            string text = "已激活的Buff\n";
+            string text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ActiveBuffs);
             var stats = new Stats();
 
             for (var i = 0; i < _buffList.Count; i++)
@@ -399,21 +396,17 @@ namespace Client.MirScenes.Dialogs
 
             foreach (var val in stats.Values)
             {
-                var c = val.Value < 0 ? "减少" : "增加";
-                var key = val.Key.ToString();
-
-                // ZZ 这里汉化改动下
-                // var strKey = RegexFunctions.SeperateCamelCase(key.Replace("Rate", "").Replace("Multiplier", "").Replace("Percent", ""));
-                var strKey = val.Key.GetDescription();
+                var c = val.Value < 0 ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Decreases) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Increases);
+                var strKey = val.Key.ToLocalizedString();
 
                 var sign = "";
 
-                if (key.Contains("Percent"))
+                if (val.Key.ToString().Contains("Percent"))
                     sign = "%";
-                else if (key.Contains("Multiplier"))
+                else if (val.Key.ToString().Contains("Multiplier"))
                     sign = "x";
 
-                var txt = $"{strKey} {c}: {val.Value}{sign}\n";
+                var txt = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BuffEffect), c, strKey, val.Value, sign);;
 
                 text += txt;
             }
@@ -516,7 +509,7 @@ namespace Client.MirScenes.Dialogs
 
                 //Stats
                 case BuffType.Impact:
-                case BuffType.Accuracy:
+                case BuffType.Accuracy: // ZZ 这里商城里准确药水buff不生效，这里修复下，让它生效
                     return 249;
                 case BuffType.Magic:
                     return 165;
@@ -649,68 +642,68 @@ namespace Client.MirScenes.Dialogs
 
         public string BuffString(ClientPoisonBuff buff)
         {
-            string text = RegexFunctions.SeperateCamelCase(buff.Type.ToString()) + "\n";
+            string text = RegexFunctions.SeperateCamelCase(buff.Type.ToLocalizedString()) + "\n";
 
             switch (buff.Type)
             {
                 case PoisonType.Green:
                     {
                         var tick = buff.TickSpeed / 1000;
-                        var tickName = tick > 1 ? "秒" : "秒";
+                        var tickName = tick > 1 ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Seconds) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Second);
 
-                        text += $"每 {tick} {tickName} 受到 {buff.Value} 点伤害\n";
+                        text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ReceiveDamageEveryTick), buff.Value, tick, tickName);
                     }
                     break;
                 case PoisonType.Red:
                     {
                         var tick = buff.TickSpeed / 1000;
-                        var tickName = tick > 1 ? "秒" : "秒";
+                        var tickName = tick > 1 ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Seconds) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Second);
 
-                        text += $"每 {tick} {tickName} 降低 10% 护甲率\n";
+                        text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ReducesArmourRatePerTick), tick, tickName);
                     }
                     break;
                 case PoisonType.Slow:
-                    text += "降低移动速度\n";
+                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ReducesMovementSpeed);
                     break;
                 case PoisonType.Frozen:
-                    text += "不能施法、移动、攻击\n";
+                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PreventsCastingMovingAttacking);
                     break;
                 case PoisonType.Stun:
                     {
                         var tick = buff.TickSpeed / 1000;
-                        var tickName = tick > 1 ? "秒" : "秒";
+                        var tickName = tick > 1 ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Seconds) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Second);
 
-                        text += $"每 {tick} {tickName} 增加 20% 受到的伤害\n";
+                        text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.DamageReceivedIncrease), tick, tickName);
                     }
                     break;
                 case PoisonType.Paralysis:
-                    text += "不能移动、攻击\n";
+                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PreventsMoveAndAttack);
                     break;
                 case PoisonType.DelayedExplosion:
-                    text += "定时炸弹\n";
+                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.TickingTimeBomb);
                     break;
                 case PoisonType.Bleeding:
                     {
                         var tick = buff.TickSpeed / 1000;
-                        var tickName = tick > 1 ? "秒" : "秒";
+                        var tickName = tick > 1 ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Seconds) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Second);
 
-                        text += $"每 {tick} {tickName} 受到 {buff.Value} 点伤害\n";
+                        text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RecieveDamageEveryTime), buff.Value, tick, tickName);
                     }
                     break;
                 case PoisonType.LRParalysis:
-                    text += "不能移动、攻击\n受到攻击后将取消\n";
+                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PreventsMoveAttackCancelOnHit);
                     break;
                 case PoisonType.Blindness:
-                    text += "造成暂时性失明\n";
+                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CausesTemporaryBlindness);
                     break;
                 case PoisonType.Dazed:
-                    text += "不能攻击\n";
+                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PreventsAttacking);
                     break;
             }
 
-            text += string.Format(GameLanguage.Expire, Functions.PrintTimeSpanFromSeconds(Math.Round((buff.ExpireTime - CMain.Time) / 1000D)));
+            text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.Expire), Functions.PrintTimeSpanFromSeconds(Math.Round((buff.ExpireTime - CMain.Time) / 1000D)));
 
-            if (!string.IsNullOrEmpty(buff.Caster)) text += string.Format("\n施法者: {0}", buff.Caster);
+            if (!string.IsNullOrEmpty(buff.Caster)) text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.CasterName), buff.Caster);
 
             return text;
         }
@@ -894,7 +887,7 @@ namespace Client.MirScenes.Dialogs
 
         private string CombinedBuffText()
         {
-            string text = "施毒状态\n";
+            string text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ActivePoisons);
 
             return text;
         }

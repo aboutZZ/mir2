@@ -2,6 +2,9 @@
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirSounds;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
 using C = ClientPackets;
 
 
@@ -43,17 +46,22 @@ namespace Client.MirScenes.Dialogs
 
         public MirImageControl FilterBox, FilterBackground;
 
-        private readonly string consignmentText = $"1. 没件物品寄售价格为 {Globals.ConsignmentCost} 金币 \r\n\r\n" +
-            $"2. 物品售出后，商人将抽取销售价格的 1% \r\n\r\n" +
-            $"3. 寄售最大时长为 {Globals.ConsignmentLength} 天 \r\n\r\n" +
-            $"4. 寄售物品数量无限制 \r\n\r\n" +
-            $"5. 物品售价允许设置为: {Globals.MinConsignment} - {Globals.MaxConsignment} 金币";
+        private MarketPriceFilter PriceFilter = MarketPriceFilter.Normal;
+        private MirImageControl PriceFilterIcon;
 
-        private readonly string auctionText = $"1. 拍卖费用为 {Globals.AuctionCost} 金币, 每件物品的最高起拍价为 {Globals.MaxStartingBid} 金币 \r\n\r\n" +
-            $"2. 物品成交后，商人将抽取销售价格的 1% \r\n\r\n" +
-            $"3. 拍卖最大时长为 {Globals.ConsignmentLength} 天, 拍卖时间到之后最高出价者得\r\n\r\n" +
-            $"4. 拍卖物品数量无限制\r\n\r\n";
-
+        private readonly string consignmentText = string.Format(
+            GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ConsignmentRules),
+            Globals.ConsignmentCost,
+            Globals.ConsignmentLength,
+            Globals.MinConsignment,
+            Globals.MaxConsignment
+        );
+        private readonly string auctionText = string.Format(
+            GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AuctionRules),
+            Globals.AuctionCost,
+            Globals.MaxStartingBid,
+            Globals.ConsignmentLength
+        );
         private MirLabel TotalGold;
 
         public List<Filter> Filters = new List<Filter>();
@@ -69,6 +77,12 @@ namespace Client.MirScenes.Dialogs
         private int PossibleTotal = 0;
         private int PosX, PosMinY, PosMaxY;
 
+        NumberFormatInfo nfi = new NumberFormatInfo
+        {
+            NumberGroupSeparator = ",",
+            NumberGroupSizes = new[] { 3 },
+            NumberDecimalDigits = 0
+        };
         public TrustMerchantDialog()
         {
             Index = 786;
@@ -306,7 +320,7 @@ namespace Client.MirScenes.Dialogs
             {
                 if (Selected == null || CMain.Time < MarketTime) return;
 
-                string message = $"我愿意以 {Selected.Listing.Price} 金币价格购买 {Selected.Listing.Item.FriendlyName}";
+                string message = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.InterestedInPurchase), Selected.Listing.Item.FriendlyName, Selected.Listing.Price);
 
                 GameScene.Scene.MailComposeLetterDialog.ComposeMail(Selected.Listing.Seller, message);
             };
@@ -325,7 +339,7 @@ namespace Client.MirScenes.Dialogs
             {
                 if (CMain.Time < SearchTime)
                 {
-                    GameScene.Scene.ChatDialog.ReceiveChat(string.Format("{0} 秒后可再次检索", Math.Ceiling((SearchTime - CMain.Time) / 1000D)), ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.YouCanSearchAgain), Math.Ceiling((SearchTime - CMain.Time) / 1000D)), ChatType.System);
                     return;
                 }
                 SearchTime = CMain.Time + Globals.SearchDelay;
@@ -353,7 +367,7 @@ namespace Client.MirScenes.Dialogs
                     {
                         if (Selected.Listing.Seller == "For Sale") // 上架
                         {
-                            MirMessageBox box = new MirMessageBox(string.Format("{0} 尚未售出，您确定要取回吗?", Selected.Listing.Item.FriendlyName), MirMessageBoxButtons.YesNo);
+                            MirMessageBox box = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ItemNotSoldGetBack), Selected.Listing.Item.FriendlyName), MirMessageBoxButtons.YesNo);
                             box.YesButton.Click += (o1, e2) =>
                             {
                                 MarketTime = CMain.Time + 3000;
@@ -371,7 +385,7 @@ namespace Client.MirScenes.Dialogs
                     {
                         if (Selected.Listing.Seller == "No Bid") // 无人出价
                         {
-                            MirMessageBox box = new MirMessageBox(string.Format("{0} 尚未售出，您确定要取回吗?", Selected.Listing.Item.FriendlyName), MirMessageBoxButtons.YesNo);
+                            MirMessageBox box = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ItemNotSoldConfirmRetrieve), Selected.Listing.Item.FriendlyName), MirMessageBoxButtons.YesNo);
                             box.YesButton.Click += (o1, e2) =>
                             {
                                 MarketTime = CMain.Time + 3000;
@@ -393,7 +407,7 @@ namespace Client.MirScenes.Dialogs
                         case MarketItemType.Consign:
                         case MarketItemType.GameShop:
                             {
-                                MirMessageBox box = new MirMessageBox(string.Format("您确定以 {1:#,##0} {2}购买 {0}?", Selected.Listing.Item.FriendlyName, Selected.Listing.Price, MarketType == MarketPanelType.GameShop ? "元宝" : "金币"), MirMessageBoxButtons.YesNo);
+                                MirMessageBox box = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ConfirmBuyItemWithPrice), Selected.Listing.Item.FriendlyName, Selected.Listing.Price, MarketType == MarketPanelType.GameShop ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Credits) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Gold)), MirMessageBoxButtons.YesNo);
                                 box.YesButton.Click += (o1, e2) =>
                                 {
                                     MarketTime = CMain.Time + 3000;
@@ -404,11 +418,11 @@ namespace Client.MirScenes.Dialogs
                             break;
                         case MarketItemType.Auction:
                             {
-                                MirAmountBox bidAmount = new MirAmountBox("成交价:", Selected.Listing.Item.Info.Image, uint.MaxValue, Selected.Listing.Price + 1, Selected.Listing.Price + 1);
+                                MirAmountBox bidAmount = new MirAmountBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BidAmount), Selected.Listing.Item.Info.Image, uint.MaxValue, Selected.Listing.Price + 1, Selected.Listing.Price + 1);
 
                                 bidAmount.OKButton.Click += (o1, e1) =>
                                 {
-                                    MirMessageBox box = new MirMessageBox(string.Format("您确定以 {0:#,##0} 金币拍下 {1}?", bidAmount.Amount, Selected.Listing.Item.FriendlyName), MirMessageBoxButtons.YesNo);
+                                    MirMessageBox box = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ConfirmBidGoldForItem), bidAmount.Amount, Selected.Listing.Item.FriendlyName), MirMessageBoxButtons.YesNo);
                                     box.YesButton.Click += (o2, e2) =>
                                     {
                                         MarketTime = CMain.Time + 3000;
@@ -498,7 +512,7 @@ namespace Client.MirScenes.Dialogs
                 if (String.IsNullOrEmpty(SearchTextBox.Text)) return;
                 if (CMain.Time < SearchTime)
                 {
-                    GameScene.Scene.ChatDialog.ReceiveChat(string.Format("{0} 秒后可再次检索", Math.Ceiling((SearchTime - CMain.Time) / 1000D)), ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SearchAgainAfterSeconds), Math.Ceiling((SearchTime - CMain.Time) / 1000D)), ChatType.System);
                     return;
                 }
 
@@ -595,7 +609,7 @@ namespace Client.MirScenes.Dialogs
 
             TitleSalePriceLabel = new MirLabel
             {
-                Text = "SALE PRICE",
+                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SalePrice),
                 Parent = this,
                 Font = new Font(Settings.FontName, Settings.FontSize - 1, FontStyle.Italic),
                 DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
@@ -605,7 +619,7 @@ namespace Client.MirScenes.Dialogs
 
             TitleSellLabel = new MirLabel
             {
-                Text = "SELL ITEM",
+                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SellItem),
                 Parent = this,
                 Font = new Font(Settings.FontName, Settings.FontSize - 1, FontStyle.Italic),
                 DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
@@ -615,7 +629,7 @@ namespace Client.MirScenes.Dialogs
 
             TitleItemLabel = new MirLabel
             {
-                Text = "ITEM",
+                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Item),
                 Parent = this,
                 Font = new Font(Settings.FontName, Settings.FontSize - 1, FontStyle.Italic),
                 DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
@@ -625,17 +639,28 @@ namespace Client.MirScenes.Dialogs
 
             TitlePriceLabel = new MirLabel
             {
-                Text = "PRICE",
+                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Price),
                 Parent = this,
                 Font = new Font(Settings.FontName, Settings.FontSize - 1, FontStyle.Italic),
                 DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
                 Size = new Size(88, 21),
                 Location = new Point(295, 60)
             };
+            TitlePriceLabel.Click += (o, e) => CyclePriceFilter();
+
+            PriceFilterIcon = new MirImageControl
+            {
+                Library = Libraries.Prguse2,
+                Index = 926,
+                Location = new Point(TitlePriceLabel.Location.X + TitlePriceLabel.Size.Width - 12, TitlePriceLabel.Location.Y + (TitlePriceLabel.Size.Height - 14) / 2 + 2),
+                Parent = this,
+                Visible = false
+            };
+            PriceFilterIcon.Click += (o, e) => CyclePriceFilter();
 
             TitleExpiryLabel = new MirLabel
             {
-                Text = "EXPIRY",
+                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Expiry),
                 Parent = this,
                 Font = new Font(Settings.FontName, Settings.FontSize - 1, FontStyle.Italic),
                 DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
@@ -644,18 +669,20 @@ namespace Client.MirScenes.Dialogs
             };
 
             #endregion
+
+            UpdatePriceFilterIcon();
         }
 
         private void SetupFilters()
         {
-            var all = new Filter { Index = 0, Title = "全部", Type = ItemType.Nothing };
-            var weapon = new Filter { Index = 1, Title = "武器", Type = ItemType.Weapon };
-            var drapery = new Filter { Index = 2, Title = "装备", Type = null };
-            var accessory = new Filter { Index = 3, Title = "饰品", Type = null };
-            var consumable = new Filter { Index = 4, Title = "消耗品", Type = null };
-            var enhancement = new Filter { Index = 5, Title = "强化", Type = null };
-            var book = new Filter { Index = 6, Title = "书", Type = null };
-            var crafting = new Filter { Index = 7, Title = "合成物品", Type = null };
+            var all = new Filter { Index = 0, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ShowAllItems), Type = ItemType.Nothing };
+            var weapon = new Filter { Index = 1, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.WeaponItems), Type = ItemType.Weapon };
+            var drapery = new Filter { Index = 2, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.DraperyItems), Type = null };
+            var accessory = new Filter { Index = 3, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AccessoryItems), Type = null };
+            var consumable = new Filter { Index = 4, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ConsumableItems), Type = null };
+            var enhancement = new Filter { Index = 5, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Enhancement), Type = null };
+            var book = new Filter { Index = 6, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Books), Type = null };
+            var crafting = new Filter { Index = 7, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CraftItems), Type = null };
 
             Filters.Add(all);
             Filters.Add(weapon);
@@ -666,33 +693,33 @@ namespace Client.MirScenes.Dialogs
             Filters.Add(book);
             Filters.Add(crafting);
 
-            drapery.SubFilters.Add(new Filter { Index = 201, Title = "护甲", Type = ItemType.Armour });
-            drapery.SubFilters.Add(new Filter { Index = 202, Title = "头盔", Type = ItemType.Helmet });
-            drapery.SubFilters.Add(new Filter { Index = 203, Title = "腰带", Type = ItemType.Belt });
-            drapery.SubFilters.Add(new Filter { Index = 204, Title = "靴子", Type = ItemType.Boots });
-            drapery.SubFilters.Add(new Filter { Index = 205, Title = "守护石", Type = ItemType.Stone });
+            drapery.SubFilters.Add(new Filter { Index = 201, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Armour), Type = ItemType.Armour });
+            drapery.SubFilters.Add(new Filter { Index = 202, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Helmet), Type = ItemType.Helmet });
+            drapery.SubFilters.Add(new Filter { Index = 203, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Belt), Type = ItemType.Belt });
+            drapery.SubFilters.Add(new Filter { Index = 204, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Boots), Type = ItemType.Boots });
+            drapery.SubFilters.Add(new Filter { Index = 205, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Stone), Type = ItemType.Stone });
 
-            accessory.SubFilters.Add(new Filter { Index = 301, Title = "项链", Type = ItemType.Necklace });
-            accessory.SubFilters.Add(new Filter { Index = 302, Title = "手镯", Type = ItemType.Bracelet });
-            accessory.SubFilters.Add(new Filter { Index = 303, Title = "戒指", Type = ItemType.Ring });
+            accessory.SubFilters.Add(new Filter { Index = 301, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Necklaces), Type = ItemType.Necklace });
+            accessory.SubFilters.Add(new Filter { Index = 302, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Bracelets), Type = ItemType.Bracelet });
+            accessory.SubFilters.Add(new Filter { Index = 303, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Rings), Type = ItemType.Ring });
 
-            consumable.SubFilters.Add(new Filter { Index = 401, Title = "药水", Type = ItemType.Potion, MaxShape = 2 });
-            consumable.SubFilters.Add(new Filter { Index = 402, Title = "BUFF", Type = ItemType.Potion, MinShape = 3, MaxShape = 4 });
-            consumable.SubFilters.Add(new Filter { Index = 403, Title = "卷轴 / 油", Type = ItemType.Scroll });
-            consumable.SubFilters.Add(new Filter { Index = 404, Title = "其它", Type = ItemType.Script });
+            consumable.SubFilters.Add(new Filter { Index = 401, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.RecoveryPots), Type = ItemType.Potion, MaxShape = 2 });
+            consumable.SubFilters.Add(new Filter { Index = 402, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BuffPots), Type = ItemType.Potion, MinShape = 3, MaxShape = 4 });
+            consumable.SubFilters.Add(new Filter { Index = 403, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ScrollsOils), Type = ItemType.Scroll });
+            consumable.SubFilters.Add(new Filter { Index = 404, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MiscItems), Type = ItemType.Script });
 
-            enhancement.SubFilters.Add(new Filter { Index = 501, Title = "宝石", Type = ItemType.Potion, MinShape = 3, MaxShape = 3 });
-            enhancement.SubFilters.Add(new Filter { Index = 502, Title = "Orbs", Type = ItemType.Potion, MinShape = 4, MaxShape = 4 });
+            enhancement.SubFilters.Add(new Filter { Index = 501, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Gems), Type = ItemType.Potion, MinShape = 3, MaxShape = 3 });
+            enhancement.SubFilters.Add(new Filter { Index = 502, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Orbs), Type = ItemType.Potion, MinShape = 4, MaxShape = 4 });
 
-            book.SubFilters.Add(new Filter { Index = 601, Title = "战士", Type = ItemType.Book, MaxShape = 30 });
-            book.SubFilters.Add(new Filter { Index = 602, Title = "法师", Type = ItemType.Book, MinShape = 31, MaxShape = 60 });
-            book.SubFilters.Add(new Filter { Index = 603, Title = "道士", Type = ItemType.Book, MinShape = 61, MaxShape = 90 });
-            book.SubFilters.Add(new Filter { Index = 604, Title = "刺客", Type = ItemType.Book, MinShape = 91, MaxShape = 120 });
-            book.SubFilters.Add(new Filter { Index = 605, Title = "弓箭手", Type = ItemType.Book, MinShape = 121, MaxShape = 150 });
+            book.SubFilters.Add(new Filter { Index = 601, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Warrior), Type = ItemType.Book, MaxShape = 30 });
+            book.SubFilters.Add(new Filter { Index = 602, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Wizard), Type = ItemType.Book, MinShape = 31, MaxShape = 60 });
+            book.SubFilters.Add(new Filter { Index = 603, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Taoist), Type = ItemType.Book, MinShape = 61, MaxShape = 90 });
+            book.SubFilters.Add(new Filter { Index = 604, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Assassin), Type = ItemType.Book, MinShape = 91, MaxShape = 120 });
+            book.SubFilters.Add(new Filter { Index = 605, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Archer), Type = ItemType.Book, MinShape = 121, MaxShape = 150 });
 
-            crafting.SubFilters.Add(new Filter { Index = 701, Title = "材料", Type = ItemType.CraftingMaterial });
-            crafting.SubFilters.Add(new Filter { Index = 703, Title = "肉", Type = ItemType.Meat });
-            crafting.SubFilters.Add(new Filter { Index = 704, Title = "矿石", Type = ItemType.Ore });
+            crafting.SubFilters.Add(new Filter { Index = 701, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Materials), Type = ItemType.CraftingMaterial });
+            crafting.SubFilters.Add(new Filter { Index = 703, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Meat), Type = ItemType.Meat });
+            crafting.SubFilters.Add(new Filter { Index = 704, Title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Ore), Type = ItemType.Ore });
         }
 
         private void DrawFilters(int index, int subIndex)
@@ -892,27 +919,81 @@ namespace Client.MirScenes.Dialogs
             PositionBar.Location = new Point(x, y);
         }
 
+        private void UpdatePriceFilterIcon()
+        {
+            if (PriceFilterIcon == null) return;
+
+            switch (PriceFilter)
+            {
+                case MarketPriceFilter.High:
+                    PriceFilterIcon.Index = 926;
+                    PriceFilterIcon.Visible = true;
+                    break;
+                case MarketPriceFilter.Low:
+                    PriceFilterIcon.Index = 925;
+                    PriceFilterIcon.Visible = true;
+                    break;
+                default:
+                    PriceFilterIcon.Visible = false;
+                    break;
+            }
+        }
+
+        private void CyclePriceFilter()
+        {
+            switch (PriceFilter)
+            {
+                case MarketPriceFilter.Normal:
+                    PriceFilter = MarketPriceFilter.Low;
+                    break;
+                case MarketPriceFilter.Low:
+                    PriceFilter = MarketPriceFilter.High;
+                    break;
+                default:
+                    PriceFilter = MarketPriceFilter.Normal;
+                    break;
+            }
+
+            UpdatePriceFilterIcon();
+            UpdateInterface();
+        }
+
+        private List<ClientAuction> GetOrderedListings()
+        {
+            switch (PriceFilter)
+            {
+                case MarketPriceFilter.High:
+                    return Listings.OrderByDescending(x => x?.Price ?? 0).ToList();
+                case MarketPriceFilter.Low:
+                    return Listings.OrderBy(x => x?.Price ?? 0).ToList();
+                default:
+                    return Listings;
+            }
+        }
+
         public void UpdateInterface()
         {
+            var orderedListings = GetOrderedListings();
+
             PageLabel.Text = string.Format("{0}/{1}", Page + 1, PageCount);
             TotalGold.Text = MarketType == MarketPanelType.GameShop ? GameScene.Credit.ToString("###,###,##0") : GameScene.Gold.ToString("###,###,##0");
 
             for (int i = 0; i < 10; i++)
             {
-                if (i + Page * 10 >= Listings.Count)
+                if (i + Page * 10 >= orderedListings.Count)
                 {
                     Rows[i].Clear();
                     if (Rows[i] == Selected) Selected = null;
                 }
                 else
                 {
-                    if (Rows[i] == Selected && Selected.Listing != Listings[i + Page * 10])
+                    if (Rows[i] == Selected && Selected.Listing != orderedListings[i + Page * 10])
                     {
                         Selected.Border = false;
                         Selected = null;
                     }
 
-                    Rows[i].Update(Listings[i + Page * 10]);
+                    Rows[i].Update(orderedListings[i + Page * 10]);
                 }
             }
 
@@ -956,7 +1037,7 @@ namespace Client.MirScenes.Dialogs
         {
             if (CMain.Time < SearchTime)
             {
-                GameScene.Scene.ChatDialog.ReceiveChat(string.Format("{0} 秒后可再次检索", Math.Ceiling((SearchTime - CMain.Time) / 1000D)), ChatType.System);
+                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.YouCanSearchAfterSeconds), Math.Ceiling((SearchTime - CMain.Time) / 1000D)), ChatType.System);
                 return;
             }
 
@@ -1060,11 +1141,11 @@ namespace Client.MirScenes.Dialogs
                     TitleItemLabel.Visible = true;
                     TitlePriceLabel.Visible = true;
                     TitleExpiryLabel.Visible = true;
-                    TitleSalePriceLabel.Text = "SALE PRICE";
-                    TitleSellLabel.Text = "SELL ITEM";
-                    TitleItemLabel.Text = "ITEM";
-                    TitlePriceLabel.Text = "PRICE / BID";
-                    TitleExpiryLabel.Text = "SELLER / EXPIRY";
+                    TitleSalePriceLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SalePrice);
+                    TitleSellLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SellItem);
+                    TitleItemLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Item);
+                    TitlePriceLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PriceBid);
+                    TitleExpiryLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SellerExpiry);
 
                     //TotalGold.Visible = true;
                     PriceTextBox.Visible = false;
@@ -1114,11 +1195,11 @@ namespace Client.MirScenes.Dialogs
                     TitleItemLabel.Visible = true;
                     TitlePriceLabel.Visible = true;
                     TitleExpiryLabel.Visible = true;
-                    TitleSalePriceLabel.Text = "SALE PRICE";
-                    TitleSellLabel.Text = "SELL ITEM";
-                    TitleItemLabel.Text = "ITEM";
-                    TitlePriceLabel.Text = "PRICE";
-                    TitleExpiryLabel.Text = "EXPIRY";
+                    TitleSalePriceLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SalePrice);
+                    TitleSellLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SellItem);
+                    TitleItemLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Item);
+                    TitlePriceLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Price);
+                    TitleExpiryLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Expiry);
 
                     foreach (var item in FilterButtons)
                     {
@@ -1164,11 +1245,11 @@ namespace Client.MirScenes.Dialogs
                     TitleItemLabel.Visible = true;
                     TitlePriceLabel.Visible = true;
                     TitleExpiryLabel.Visible = true;
-                    TitleSalePriceLabel.Text = "STARTING BID";
-                    TitleSellLabel.Text = "SELL ITEM";
-                    TitleItemLabel.Text = "ITEM";
-                    TitlePriceLabel.Text = "HIGHEST BID";
-                    TitleExpiryLabel.Text = "END DATE";
+                    TitleSalePriceLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StartingBid);
+                    TitleSellLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SellItem);
+                    TitleItemLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Item);
+                    TitlePriceLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.HighestBid);
+                    TitleExpiryLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.EndDate);
 
                     foreach (var item in FilterButtons)
                     {
@@ -1212,10 +1293,10 @@ namespace Client.MirScenes.Dialogs
                     TitleItemLabel.Visible = true;
                     TitlePriceLabel.Visible = true;
                     TitleExpiryLabel.Visible = true;
-                    TitleSalePriceLabel.Text = "SALE PRICE";
-                    TitleSellLabel.Text = "SELL ITEM";
-                    TitleItemLabel.Text = "ITEM";
-                    TitlePriceLabel.Text = "PRICE";
+                    TitleSalePriceLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SalePrice);
+                    TitleSellLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SellItem);
+                    TitleItemLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Item);
+                    TitlePriceLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Price);
                     TitleExpiryLabel.Text = "";
 
                     MarketType = MarketPanelType.GameShop;
@@ -1234,53 +1315,54 @@ namespace Client.MirScenes.Dialogs
 
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
-            if (MarketType == MarketPanelType.Consign)
+            string price = Regex.Replace(PriceTextBox.TextBox.Text, @"[^\d]", "");
+
+            if (uint.TryParse(price, NumberStyles.AllowThousands, nfi, out Amount))
             {
-                if (uint.TryParse(PriceTextBox.Text, out Amount) && Amount >= MinConsignAmount)
+                if (MarketType == MarketPanelType.Consign)
                 {
-                    PriceTextBox.BorderColour = Color.Lime;
-
-                    if (Amount > MaxConsignAmount)
+                    if (Amount >= MinConsignAmount)
                     {
-                        Amount = MaxConsignAmount;
-                        PriceTextBox.Text = MaxConsignAmount.ToString();
-                        PriceTextBox.TextBox.SelectionStart = PriceTextBox.Text.Length;
+                        if (Amount > MaxConsignAmount)
+                        {
+                            Amount = MaxConsignAmount;
+                        }
+
                         SellItemButton.Enabled = true;
+
+                        PriceTextBox.BorderColour = (Amount == MaxConsignAmount) ? Color.Orange : Color.Lime;
                     }
-
-                    if (Amount == MaxConsignAmount)
-                        PriceTextBox.BorderColour = Color.Orange;
-                    SellItemButton.Enabled = true;
-                }
-                else
-                {
-                    PriceTextBox.BorderColour = Color.Red;
-                    SellItemButton.Enabled = false;
-                }
-            }
-            else if (MarketType == MarketPanelType.Auction)
-            {
-                if (uint.TryParse(PriceTextBox.Text, out Amount) && Amount >= MinBidAmount)
-                {
-                    PriceTextBox.BorderColour = Color.Lime;
-
-                    if (Amount > MaxBidAmount)
+                    else
                     {
-                        Amount = MaxBidAmount;
-                        PriceTextBox.Text = MaxBidAmount.ToString();
-                        PriceTextBox.TextBox.SelectionStart = PriceTextBox.Text.Length;
-                        SellItemButton.Enabled = true;
+                        PriceTextBox.BorderColour = Color.Red;
+                        SellItemButton.Enabled = false;
                     }
-
-                    if (Amount == MaxBidAmount)
-                        PriceTextBox.BorderColour = Color.Orange;
-                    SellItemButton.Enabled = true;
                 }
-                else
+                else if (MarketType == MarketPanelType.Auction)
                 {
-                    PriceTextBox.BorderColour = Color.Red;
-                    SellItemButton.Enabled = false;
+                    if (Amount >= MinBidAmount)
+                    {
+                        PriceTextBox.BorderColour = Color.Lime;
+
+                        if (Amount > MaxBidAmount)
+                        {
+                            Amount = MaxBidAmount;
+                        }
+
+                        SellItemButton.Enabled = true;
+
+                        if (Amount == MaxBidAmount)
+                            PriceTextBox.BorderColour = Color.Orange;
+                    }
+                    else
+                    {
+                        PriceTextBox.BorderColour = Color.Red;
+                        SellItemButton.Enabled = false;
+                    }
                 }
+
+                PriceTextBox.Text = string.Format(nfi, "{0:N0}", Amount);
+                PriceTextBox.TextBox.SelectionStart = PriceTextBox.Text.Length;
             }
         }
 
@@ -1484,7 +1566,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Listing = listing;
                 NameLabel.Text = Listing.Item.FriendlyName;
-                PriceLabel.Text = String.Format("{0:###,###,##0} {1}", Listing.Price, listing.ItemType == MarketItemType.Auction ? "Bid" : "");
+                PriceLabel.Text = String.Format("{0:###,###,##0} {1}", Listing.Price, listing.ItemType == MarketItemType.Auction ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Bid) : "");
 
                 NameLabel.ForeColour = GameScene.Scene.GradeNameColor(Listing.Item.Info.Grade);
                 if (NameLabel.ForeColour == Color.Yellow)

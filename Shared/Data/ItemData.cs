@@ -59,7 +59,7 @@ public class ItemInfo
             string temp = string.IsNullOrEmpty(NameLocale) ? Name : NameLocale;
             // string temp = Name;
             temp = Regex.Replace(temp, @"\d+$", string.Empty); //hides end numbers
-            temp = Regex.Replace(temp, @"\[[^]]*\]", string.Empty); //hides square brackets
+            temp = Regex.Replace(temp, @"\[[^\]]*\]", string.Empty); //hides square brackets
 
             return temp;
         }
@@ -290,7 +290,7 @@ public class UserItem
     public ItemInfo Info;
     public ushort CurrentDura, MaxDura;
     public ushort Count = 1,
-                GemCount = 0;
+        GemCount = 0;
 
     public RefinedValue RefinedValue = RefinedValue.None;
     public byte RefineAdded = 0;
@@ -343,7 +343,7 @@ public class UserItem
         ItemIndex = info.Index;
         Info = info;
         AddedStats = new Stats();
-
+        
         SetSlotSize();
     }
     public UserItem(BinaryReader reader, int version = int.MaxValue, int customVersion = int.MaxValue)
@@ -838,8 +838,8 @@ public class GameShopItem
         Date = DateTime.FromBinary(reader.ReadInt64());
         if (version > 105)
         {
-            CanBuyGold = reader.ReadBoolean();
             CanBuyCredit = reader.ReadBoolean();
+            CanBuyGold = reader.ReadBoolean();
         }
 
     }
@@ -899,8 +899,9 @@ public class Awake
     public static byte Awake_HelmetRate = 1;
     public static byte Awake_ArmorRate = 5;
     public static byte AwakeChanceMin = 1;
-    public static float[] AwakeMaterialRate = new float[4] { 1.0F, 1.0F, 1.0F, 1.0F };
-    public static byte[] AwakeChanceMax = new byte[5] { 1, 2, 3, 4, 5 }; // 最大加点数 （白板1点， 蓝装2， 传奇3 神话4， 史诗5）
+    public static float[] AwakeMaterialRate = new float[5] { 1.0F, 1.0F, 1.0F, 1.0F, 1.0F };
+    // AwakeChanceMax 最大加点数 （白板1点， 蓝装2， 传奇3 神话4， 史诗5）
+    public static byte[] AwakeChanceMax = new byte[5] { 1, 2, 3, 4, 5 };
     public static List<List<byte>[]> AwakeMaterials = new List<List<byte>[]>();
 
     public AwakeType Type = AwakeType.None;
@@ -1005,14 +1006,14 @@ public class Awake
 
     public int UpgradeAwake(UserItem item, AwakeType type, out bool[] isHit)
     {
-        //return -1 condition error, -1 = dont upgrade, 0 = failed, 1 = Succeed,
+        //return -1 condition error, -1 = dont upgrade, 0 = failed, 1 = Succeed,  
         isHit = null;
         if (CheckAwakening(item, type) != true)
             return -1;
 
         Random rand = new Random(DateTime.Now.Millisecond);
 
-        // ZZ 觉醒成功几率 这里改为 100% 成功
+        // ZZ 【平衡】【概率】觉醒成功几率 这里加个 true || 改为 100% 成功
         if (true || rand.Next(0, 100) <= AwakeSuccessRate)
         {
             isHit = Awakening(item);
@@ -1137,6 +1138,7 @@ public class ItemSets
 {
     public ItemSet Set;
     public List<ItemType> Type;
+
     private byte Amount
     {
         get
@@ -1190,8 +1192,8 @@ public class ItemSets
         get
         {
             return Count >= Amount;
-        }
     }
+}
 }
 
 
@@ -1270,6 +1272,7 @@ public class RandomItemStat
         AccuracyStatChance = 20;
         AccuracyMaxStat = 2;
     }
+
     public void SetArmour()
     {
         MaxDuraChance = 2;
@@ -1323,6 +1326,7 @@ public class RandomItemStat
         MaxScStatChance = 20;
         MaxScMaxStat = 7;
     }
+
     public void SetBeltBoots()
     {
         MaxDuraChance = 2;
@@ -1353,6 +1357,7 @@ public class RandomItemStat
         AgilityStatChance = 30;
         AgilityMaxStat = 3;
     }
+
     public void SetNecklace()
     {
         MaxDuraChance = 2;
@@ -1379,6 +1384,7 @@ public class RandomItemStat
         AgilityStatChance = 30;
         AgilityMaxStat = 7;
     }
+
     public void SetBracelet()
     {
         MaxDuraChance = 2;
@@ -1405,6 +1411,7 @@ public class RandomItemStat
         MaxScStatChance = 30;
         MaxScMaxStat = 6;
     }
+
     public void SetRing()
     {
         MaxDuraChance = 2;

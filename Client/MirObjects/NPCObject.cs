@@ -20,7 +20,7 @@ namespace Client.MirObjects
         public Frame Frame;
 
         public long QuestTime;
-        public int BaseIndex, FrameIndex, FrameInterval, 
+        public int BaseIndex, FrameIndex, FrameInterval,
             EffectFrameIndex, EffectFrameInterval, QuestIndex;
 
         public ushort Image;
@@ -151,7 +151,7 @@ namespace Client.MirObjects
                     break;
                 case PoisonType.Paralysis:
                 case PoisonType.LRParalysis:
-                //case PoisonType.FlamingMutantWeb:
+                    //case PoisonType.FlamingMutantWeb:
                     DrawColour = Color.Gray;
                     break;
             }
@@ -192,17 +192,17 @@ namespace Client.MirObjects
                     }
 
                     if(EffectFrameInterval > 0)
-                    if (CMain.Time >= NextMotion2)
-                    {
-                        GameScene.Scene.MapControl.TextureValid = false;
+                        if (CMain.Time >= NextMotion2)
+                        {
+                            GameScene.Scene.MapControl.TextureValid = false;
 
-                        if (SkipFrames) UpdateFrame2();
+                            if (SkipFrames) UpdateFrame2();
 
-                        if (UpdateFrame2() >= Frame.EffectCount)
-                            EffectFrameIndex = Frame.EffectCount - 1;
-                        else
-                            NextMotion2 += EffectFrameInterval;
-                    }
+                            if (UpdateFrame2() >= Frame.EffectCount)
+                                EffectFrameIndex = Frame.EffectCount - 1;
+                            else
+                                NextMotion2 += EffectFrameInterval;
+                        }
                     break;
 
             }
@@ -231,7 +231,7 @@ namespace Client.MirObjects
             if (ActionFeed.Count == 0)
             {
                 if (CMain.Random.Next(2) == 0 && Frames.Count > 1)
-                    CurrentAction = MirAction.Harvest;  
+                    CurrentAction = MirAction.Harvest;
                 else
                     CurrentAction = MirAction.Standing;
 
@@ -272,7 +272,7 @@ namespace Client.MirObjects
 
                 //if(CanChangeDir)
                 //    Direction = action.Direction;
-                
+
                 FrameIndex = 0;
                 EffectFrameIndex = 0;
 
@@ -302,7 +302,7 @@ namespace Client.MirObjects
             var size = BodyLibrary.GetSize(BaseIndex);
 
             int imageIndex = 981 + ((int)QuestIcon * 2) + QuestIndex;
-            
+
             Libraries.Prguse.Draw(imageIndex, DrawLocation.Add(offSet).Add(size.Width / 2 - 28, -40), Color.White, false);
         }
 
@@ -328,7 +328,7 @@ namespace Client.MirObjects
         // ZZ 客户端显示NPC名字
         public override void DrawName()
         {
-            if (!Name.Contains('_'))
+            if (!Name.Contains("_"))
             {
                 base.DrawName();
                 return;
@@ -336,13 +336,11 @@ namespace Client.MirObjects
 
             string[] splitName = Name.Split('_');
 
-            for (int s = 0; s < splitName.Count(); s++)
+            for (int s = 0; s < splitName.Length; s++)
             {
                 CreateNPCLabel(splitName[s], s);
-
-                TempLabel.Text = splitName[s];
-                // 这里原来是 s * 12 改为 s * 18, NPC名字有时候两行, 每行间距调宽点
-                TempLabel.Location = new Point(DisplayRectangle.X + (48 - TempLabel.Size.Width) / 2, DisplayRectangle.Y - (32 - TempLabel.Size.Height / 2) + (Dead ? 35 : 8) - (((splitName.Count() - 1) * 10) / 2) + (s * 18));
+                // 【NPC名字】这里原来是 s * 12 改为 s * 18, NPC名字有时候两行, 每行间距调宽点
+                TempLabel.Location = new Point(DisplayRectangle.X + (48 - TempLabel.Size.Width) / 2, DisplayRectangle.Y - (32 - TempLabel.Size.Height / 2) + (Dead ? 35 : 8) - (((splitName.Length - 1) * 10) / 2) + (s * 18));
                 TempLabel.Draw();
             }
         }
@@ -350,10 +348,10 @@ namespace Client.MirObjects
         public void CreateNPCLabel(string word, int wordOrder)
         {
             TempLabel = null;
-
+            var setForeColour = (wordOrder == 0 ? NameColour : Color.White);
             for (int i = 0; i < LabelList.Count; i++)
             {
-                if (LabelList[i].Text != word || LabelList[i].ForeColour != (wordOrder == 0 ? NameColour : Color.White)) continue;
+                if (LabelList[i].Text != word || LabelList[i].ForeColour != setForeColour) continue;
                 TempLabel = LabelList[i];
                 break;
             }
@@ -364,7 +362,7 @@ namespace Client.MirObjects
             {
                 AutoSize = true,
                 BackColour = Color.Transparent,
-                ForeColour = wordOrder == 0 ? NameColour : Color.White,
+                ForeColour = setForeColour,
                 OutLine = true,
                 OutLineColour = Color.Black,
                 Text = word,
@@ -390,7 +388,7 @@ namespace Client.MirObjects
 
             QuestIcon = bestIcon;
         }
-    
+
         public List<ClientQuestProgress> GetAvailableQuests(bool returnFirst = false)
         {
             List<ClientQuestProgress> quests = new List<ClientQuestProgress>();
@@ -411,12 +409,12 @@ namespace Client.MirObjects
 
             foreach (ClientQuestProgress quest in (
                 from q in Quests
-                where !quests.Exists(p => p.QuestInfo.Index == q.Index) 
-                where CanAccept(q) 
-                where !User.CompletedQuests.Contains(q.Index) 
+                where !quests.Exists(p => p.QuestInfo.Index == q.Index)
+                where CanAccept(q)
+                where !User.CompletedQuests.Contains(q.Index)
                 select q).Select(
-                q => User.CurrentQuests.Exists(p => p.QuestInfo.Index == q.Index) ? 
-                    new ClientQuestProgress { QuestInfo = q, Taken = true, Completed = false } : 
+                q => User.CurrentQuests.Exists(p => p.QuestInfo.Index == q.Index) ?
+                    new ClientQuestProgress { QuestInfo = q, Taken = true, Completed = false } :
                     new ClientQuestProgress { QuestInfo = q }))
             {
                 quests.Add(quest);

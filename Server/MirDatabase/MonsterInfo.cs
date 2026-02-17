@@ -51,6 +51,8 @@ namespace Server.MirDatabase
         public List<DropInfo> Drops = new List<DropInfo>();
 
         public bool CanTame = true, CanPush = true, AutoRev = true, Undead = false;
+        public bool CanRecall = false;
+        public bool IsBoss = false;
 
         public bool HasSpawnScript;
         public bool HasDieScript;
@@ -147,12 +149,63 @@ namespace Server.MirDatabase
             if (Envir.LoadVersion < 89) return;
 
             DropPath = reader.ReadString();
+
+            if (Envir.LoadVersion >= 115)
+            {
+                CanRecall = reader.ReadBoolean();
+            }
+
+            if (Envir.LoadVersion >= 116)
+            {
+                IsBoss = reader.ReadBoolean();
+            }
         }
 
         public string GameName
         {
             // ZZ 客户端显示怪物名称
             get { return Regex.Replace(/*Name*/FriendlyName, @"[\d-]", string.Empty); }
+        }
+
+        public ClientMonsterInfo ClientInformation
+        {
+            get
+            {
+                Stats tooltipStats = new Stats();
+                tooltipStats[Stat.HP] = Stats[Stat.HP];
+                tooltipStats[Stat.MinAC] = Stats[Stat.MinAC];
+                tooltipStats[Stat.MaxAC] = Stats[Stat.MaxAC];
+                tooltipStats[Stat.MinMAC] = Stats[Stat.MinMAC];
+                tooltipStats[Stat.MaxMAC] = Stats[Stat.MaxMAC];
+                tooltipStats[Stat.MinDC] = Stats[Stat.MinDC];
+                tooltipStats[Stat.MaxDC] = Stats[Stat.MaxDC];
+                tooltipStats[Stat.MinMC] = Stats[Stat.MinMC];
+                tooltipStats[Stat.MaxMC] = Stats[Stat.MaxMC];
+                tooltipStats[Stat.MinSC] = Stats[Stat.MinSC];
+                tooltipStats[Stat.MaxSC] = Stats[Stat.MaxSC];
+
+                return new ClientMonsterInfo
+                {
+                    Index = Index,
+                    Name = Name,
+                    GameName = GameName,
+                    Image = Image,
+                    AI = AI,
+                    Effect = Effect,
+                    ViewRange = ViewRange,
+                    CoolEye = CoolEye,
+                    Level = Level,
+                    Light = Light,
+                    AttackSpeed = AttackSpeed,
+                    MoveSpeed = MoveSpeed,
+                    Experience = Experience,
+                    CanTame = CanTame,
+                    CanPush = CanPush,
+                    AutoRev = AutoRev,
+                    Undead = Undead,
+                    Stats = tooltipStats
+                };
+            }
         }
 
         public void Save(BinaryWriter writer)
@@ -183,6 +236,8 @@ namespace Server.MirDatabase
             writer.Write(Undead);
 
             writer.Write(DropPath);
+            writer.Write(CanRecall);
+            writer.Write(IsBoss);
         }
 
         public static void FromText(string text)
@@ -316,7 +371,7 @@ namespace Server.MirDatabase
                 info.Item = Envir.GetItemInfo(parts[1]);
                 if (info.Item == null) return null;
 
-                // ZZ 修改爆率, 爆率极低的都调整下, 使得低概率爆的装备几率控制在200附近, 不然刷到天荒地老也爆不出来
+                // ZZ 【爆率】修改爆率, 爆率极低的都调整下, 使得低概率爆的装备几率控制在200附近, 不然刷到天荒地老也爆不出来
                 float scale = 1.0f;
                 var newChance = info.Chance;
                 if (info.Chance > 1000) newChance = (int)(info.Chance * (10 / (10 + Math.Pow(info.Chance, 0.8))) / scale) + 80;
@@ -325,6 +380,7 @@ namespace Server.MirDatabase
                 else if(info.Chance > 5) newChance -= 1;
                 //if (info.Chance == 10000) MessageQueue.Enqueue($"调整爆率: {info.Item.NameLocale} 1/{info.Chance} => 1/{newChance}");
                 info.Chance = newChance;
+                // ZZ 【爆率】修改爆率结束 -----
 
                 if (parts.Length > 2)
                 {
@@ -377,7 +433,7 @@ namespace Server.MirDatabase
 
                 if (drop == null)
                 {
-                    MessageQueue.Enqueue(string.Format("无法加载爆率文件: {0}, 行 {1}", name, lines[i]));
+                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CouldNotLoadDropLine), name, lines[i]));
                     continue;
                 }
 
@@ -433,7 +489,7 @@ namespace Server.MirDatabase
 
                 if (drop == null)
                 {
-                    MessageQueue.Enqueue(string.Format("无法加载爆率文件: {0}, 行 {1}", name, line));
+                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CouldNotLoadDropLine), name, line));
                     continue;
                 }
 

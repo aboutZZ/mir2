@@ -218,9 +218,10 @@ namespace Server.MirObjects
 
         public override void Despawn()
         {
+            Envir.Heroes.Remove(this);
+            
             if (Node != null)
             {
-                Envir.Heroes.Remove(this);
                 CurrentMap.RemoveObject(this);
 
                 for (int i = Buffs.Count - 1; i >= 0; i--)
@@ -251,6 +252,21 @@ namespace Server.MirObjects
 
             BroadcastHealthChange();
             BroadcastManaChange();
+            BroadcastColourChange();
+        }
+
+        public override void Add(HumanObject player)
+        {
+            base.Add(player);
+
+            if (player is PlayerObject viewer)
+            {
+                viewer.Enqueue(new S.ObjectColourChanged
+                {
+                    ObjectID = ObjectID,
+                    NameColour = viewer.GetNameColour(this)
+                });
+            }
         }
 
         protected virtual void GetItemInfo()
@@ -348,11 +364,11 @@ namespace Server.MirObjects
                         case 2: //MysteryWater
                             if (UnlockCurse)
                             {
-                                ReceiveChat("您已经可以卸下被诅咒的物品了", ChatType.Hint);
+                                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.ReincarnationFailed), ChatType.Hint);
                                 Owner.Enqueue(p);
                                 return;
                             }
-                            ReceiveChat("您现在可以卸下被诅咒的物品了", ChatType.Hint);
+                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouCanUnequipCursedItem), ChatType.Hint);
                             UnlockCurse = true;
                             break;
                         case 3: //Buff
@@ -433,7 +449,7 @@ namespace Server.MirObjects
                             temp.CurrentDura = (ushort)Math.Min(temp.MaxDura, temp.CurrentDura + 5000);
                             temp.DuraChanged = false;
 
-                            ReceiveChat("英雄的武器已部分修复", ChatType.Hint);
+                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.HeroWeaponPartiallyRepaired), ChatType.Hint);
                             Owner.Enqueue(new S.ItemRepaired { UniqueID = temp.UniqueID, MaxDura = temp.MaxDura, CurrentDura = temp.CurrentDura });
                             break;
                         case 5: //WarGodOil
@@ -451,13 +467,13 @@ namespace Server.MirObjects
                             temp.CurrentDura = temp.MaxDura;
                             temp.DuraChanged = false;
 
-                            ReceiveChat("英雄的武器已完全修复", ChatType.Hint);
+                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.HeroWeaponRepaired), ChatType.Hint);
                             Owner.Enqueue(new S.ItemRepaired { UniqueID = temp.UniqueID, MaxDura = temp.MaxDura, CurrentDura = temp.CurrentDura });
                             break;
                         case 6: //ResurrectionScroll
                             if (CurrentMap.Info.NoReincarnation)
                             {
-                                ReceiveChat(string.Format("不能在此地图中使用"), ChatType.System);
+                                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotUseOnThisMap), ChatType.System);
                                 Owner.Enqueue(p);
                                 return;
                             }
@@ -470,12 +486,13 @@ namespace Server.MirObjects
                         case 15: //Increase Hero inventory
                             if (Info.Inventory.Length >= 42)
                             {
-                                ReceiveChat(string.Format("英雄背包已达到最大"), ChatType.System);
+                                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.HeroInventoryMax)
+                                    , ChatType.System);
                                 Owner.Enqueue(p);
                                 return;
                             }
                             Enqueue(new S.ResizeInventory { Size = Info.ResizeInventory() });
-                            ReceiveChat(string.Format("英雄背包已扩展"), ChatType.System);
+                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.HeroInventoryIncreased), ChatType.System);
                             Owner.Enqueue(p);
                             break;
                     }
@@ -513,7 +530,7 @@ namespace Server.MirObjects
                     temp.CurrentDura = (ushort)Math.Min(temp.MaxDura, temp.CurrentDura + item.CurrentDura);
                     temp.DuraChanged = false;
 
-                    ReceiveChat("已喂食英雄的坐骑", ChatType.Hint);
+                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.HeroMountFed), ChatType.Hint);
                     Owner.Enqueue(new S.ItemRepaired { UniqueID = temp.UniqueID, MaxDura = temp.MaxDura, CurrentDura = temp.CurrentDura });
 
                     RefreshStats();
@@ -554,7 +571,7 @@ namespace Server.MirObjects
                     {
                         if (Pets.Count(t => !t.Dead && t.Race != ObjectType.Creature) >= Globals.MaxPets)
                         {
-                            ReceiveChat("已达到最大宠物数量", ChatType.Hint);
+                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.MaximumPetsReached), ChatType.Hint);
                             Owner.Enqueue(p);
                             return;
                         }
@@ -571,7 +588,7 @@ namespace Server.MirObjects
                         var con = CurrentMap.GetConquest(CurrentLocation);
                         if (con == null)
                         {
-                            ReceiveChat(string.Format("{0} 只能在攻城期间召唤", monsterInfo.GameName), ChatType.Hint);
+                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.MonsterOnlySpawnDuringConquest), monsterInfo.GameName), ChatType.Hint);
                             Owner.Enqueue(p);
                             return;
                         }
@@ -615,7 +632,7 @@ namespace Server.MirObjects
                     item.CurrentDura = (ushort)(item.CurrentDura - 1000);
                     Enqueue(new S.DuraChanged { UniqueID = item.UniqueID, CurrentDura = item.CurrentDura });
                     RefreshStats();
-                    ReceiveChat("英雄获得了第二次生命", ChatType.System);
+                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.HeroSecondChanceLife), ChatType.System);
                     return;
                 }
             }
@@ -753,15 +770,25 @@ namespace Server.MirObjects
 
         public override void Process()
         {
-            base.Process();
 
             if (Node == null || Info == null) return;
+            
+            if (Owner != null && Owner.CurrentMap != null && Owner.CurrentMap.Info.NoHero)
+            {
+                Owner.DespawnHero();
+                return;
+            }
+
+            base.Process();
 
             if (Target != null && (Target.CurrentMap != CurrentMap || !Target.IsAttackTarget(this) || !Functions.InRange(CurrentLocation, Target.CurrentLocation, Globals.DataRange)))
                 Target = null;
 
-            if ((!Functions.InRange(CurrentLocation, Owner.CurrentLocation, Globals.DataRange) || CurrentMap != Owner.CurrentMap) && CanMove)
-                OwnerRecall();
+            if (Owner != null && !Owner.CurrentMap.Info.NoHero)
+            {
+                if ((!Functions.InRange(CurrentLocation, Owner.CurrentLocation, Globals.DataRange) || CurrentMap != Owner.CurrentMap) && CanMove)
+                    OwnerRecall();
+            }
 
             if (Dead) return;            
 
@@ -1018,6 +1045,9 @@ namespace Server.MirObjects
         {
             if (Owner == null) return;
 
+            if (Owner.CurrentMap != null && Owner.CurrentMap.Info.NoHero)
+                return;
+            
             if (Dead)
             {
                 Despawn(false);
@@ -1127,17 +1157,19 @@ namespace Server.MirObjects
         {
             if (amount == 0) return;
 
+            if (CurrentMap?.Info?.NoExperience == true) return;
+            
             for (int i = 0; i < Pets.Count; i++)
             {
                 MonsterObject monster = Pets[i];
                 if (monster.CurrentMap == CurrentMap && Functions.InRange(monster.CurrentLocation, CurrentLocation, Globals.DataRange) && !monster.Dead)
-                    // ZZ 宠物经验 10 倍, 快速升 7 级
+                    // ZZ 【宠物经验】 10 倍, 快速升 7 级
                     monster.PetExp(amount * 10);
             }
 
             if (!CanGainExp) return;
 
-            // ZZ 调整低等级经验获取, 以方便快速升级至30,
+            // ZZ 【宠物经验】调整低等级经验获取, 以方便快速升级至30,
             if (Level < 10) amount *= 4; // 10级以下5倍经验
             else if (Level < 15) amount *= 3; // 10-14级4倍经验
             else if (Level < 20) amount *= 3; // 15-19级3倍经验
@@ -1241,7 +1273,17 @@ namespace Server.MirObjects
         }
         protected override void SendBaseStats()
         {
-            Owner.Enqueue(new S.HeroBaseStatsInfo { Stats = Settings.ClassBaseStats[(byte)Class] });
+            Owner.Enqueue(new S.HeroBaseStatsInfo { Stats = Settings.HeroBaseStats[(byte)Class] });
+        }
+
+        protected override void RefreshLevelStats()
+        {
+            RefreshMaxExperience();
+
+            foreach (var stat in Settings.HeroBaseStats[(byte)Class].Stats)
+            {
+                Stats[stat.Type] = stat.Calculate(Class, Level);
+            }
         }
         public override void RefreshMaxExperience()
         {

@@ -184,10 +184,10 @@ namespace Client.MirScenes.Dialogs
 
             PaymentTypeGold = new MirCheckBox
             {
-                LabelText = "金币购买",
+                LabelText = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BuyWithGold),
                 Location = new Point(250, 449),
                 Parent = this,
-                Hint = "使用金币购买物品",
+                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BuyItemsWithGold),
                 Index = 2086,
                 UnTickedIndex = 2086,
                 TickedIndex = 2087,
@@ -198,10 +198,10 @@ namespace Client.MirScenes.Dialogs
 
             PaymentTypeCredit = new MirCheckBox
             {
-                LabelText = "元宝购买",
+                LabelText = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BuyWithCredits),
                 Location = new Point(340, 449),
                 Parent = this,
-                Hint = "使用元宝购买物品",
+                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BuyItemsWithCredits),
                 Index = 2086,
                 UnTickedIndex = 2086,
                 TickedIndex = 2087,
