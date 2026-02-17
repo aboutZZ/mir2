@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using System.Drawing;
 using S = ServerPackets;
 

@@ -60,7 +60,7 @@ namespace Client.MirScenes.Dialogs
                 PressedIndex = 752,
                 HoverIndex = 753,
                 Library = Libraries.Title,
-                Hint = "Overall TOP 20",
+                Hint = "TOP 20",
                 Location = new Point(10, 38),
                 Parent = this,
                 Sound = SoundList.ButtonA,
@@ -73,7 +73,7 @@ namespace Client.MirScenes.Dialogs
                 PressedIndex = 761,
                 HoverIndex = 762,
                 Library = Libraries.Title,
-                Hint = "TOP 20 Taoists",
+                Hint = "TOP 20 道士",
                 Location = new Point(40, 38),
                 Parent = this,
                 Sound = SoundList.ButtonA,
@@ -97,7 +97,7 @@ namespace Client.MirScenes.Dialogs
                 PressedIndex = 764,
                 HoverIndex = 765,
                 Library = Libraries.Title,
-                Hint = "TOP 20 Wizards",
+                Hint = "TOP 20 法师",
                 Location = new Point(80, 38),
                 Parent = this,
                 Sound = SoundList.ButtonA,
@@ -109,7 +109,7 @@ namespace Client.MirScenes.Dialogs
                 PressedIndex = 758,
                 HoverIndex = 759,
                 Library = Libraries.Title,
-                Hint = "TOP 20 Assasins",
+                Hint = "TOP 20 刺客",
                 Location = new Point(100, 38),
                 Parent = this,
                 Sound = SoundList.ButtonA,
@@ -121,7 +121,7 @@ namespace Client.MirScenes.Dialogs
                 PressedIndex = 767,
                 HoverIndex = 768,
                 Library = Libraries.Title,
-                Hint = "TOP 20 Archers",
+                Hint = "TOP 20 弓箭手",
                 Location = new Point(120, 38),
                 Parent = this,
                 Sound = SoundList.ButtonA,
@@ -139,7 +139,7 @@ namespace Client.MirScenes.Dialogs
                 Sound = SoundList.ButtonA,
             };
             NextButton.Click += (o, e) => Move(1);
-            
+
             PrevButton = new MirButton
             {
                 Index = 197,
@@ -181,7 +181,7 @@ namespace Client.MirScenes.Dialogs
             };
 
             OnlineOnlyButton = new MirCheckBox { Index = 2086, UnTickedIndex = 2086, TickedIndex = 2087, Parent = this, Location = new Point(190, Size.Height - 20), Library = Libraries.Prguse };
-            OnlineOnlyButton.LabelText = "Online Only";
+            OnlineOnlyButton.LabelText = "仅在线";
             OnlineOnlyButton.Click += (o, e) =>
             {
                 OnlineOnly = OnlineOnlyButton.Checked;
@@ -205,9 +205,9 @@ namespace Client.MirScenes.Dialogs
 
             for (int i = 0; i < Rows.Count(); i++)
             {
-                Rows[i] = new RankingRow() 
-                { 
-                    Parent = this, 
+                Rows[i] = new RankingRow()
+                {
+                    Parent = this,
                     Location = new Point(32, 98 + i * 15),
                     Size = new Size(270,15),
                 };
@@ -298,7 +298,7 @@ namespace Client.MirScenes.Dialogs
                 Rows[i].Clear();
             }
             RowOffset = 0;
-            RequestRanks(RankType);            
+            RequestRanks(RankType);
         }
 
         public void UpdateRanks()
@@ -311,9 +311,9 @@ namespace Client.MirScenes.Dialogs
                     Rows[i].Update(RankList[RankType][i], RowOffset + i + 1);
             }
             if (Rank[RankType] == 0)
-                MyRank.Text = "Not Listed";
+                MyRank.Text = "未上榜";
             else
-                MyRank.Text = string.Format("Ranked: {0}", Rank[RankType]);
+                MyRank.Text = string.Format("我的排名: {0}", Rank[RankType]);
         }
 
         public sealed class RankingRow : MirControl

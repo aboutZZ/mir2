@@ -408,7 +408,7 @@ namespace Client.MirScenes.Dialogs
             if (sender == FullnessMin)
             {
                 HoverLabel.Visible = true;
-                HoverLabel.Text = "Needed " + GameScene.User.IntelligentCreatures[selectedCreature].CreatureRules.MinimalFullness.ToString();
+                HoverLabel.Text = "需要 " + GameScene.User.IntelligentCreatures[selectedCreature].CreatureRules.MinimalFullness.ToString();
                 HoverLabel.Size = new Size(150, 15);
                 HoverLabel.Location = new Point((FullnessMin.Location.X + 8) - (HoverLabel.Size.Width / 2), FullnessFG.Location.Y - 18);
             }
@@ -446,13 +446,13 @@ namespace Client.MirScenes.Dialogs
 
             if (sender == CreatureRenameButton)
             {
-                MirInputBox inputBox = new MirInputBox("Please enter a new name for the creature.");
+                MirInputBox inputBox = new MirInputBox("请为你的宠物取个名字");
                 inputBox.InputTextBox.Text = GameScene.User.IntelligentCreatures[selectedCreature].CustomName;
                 inputBox.OKButton.Click += (o1, e1) =>
                 {
                     if (!CreatureNameReg.IsMatch(inputBox.InputTextBox.Text))
                     {
-                        MirMessageBox failedMessage = new MirMessageBox(string.Format("Creature name must be between {0} and {1} characters.", Globals.MinCharacterNameLength, Globals.MaxCharacterNameLength), MirMessageBoxButtons.OK);
+                        MirMessageBox failedMessage = new MirMessageBox(string.Format("名字长度必须为 {0} ~ {1} 个字符", Globals.MinCharacterNameLength, Globals.MaxCharacterNameLength), MirMessageBoxButtons.OK);
                         failedMessage.Show();
                     }
                     else
@@ -493,12 +493,12 @@ namespace Client.MirScenes.Dialogs
             }
             if (sender == ReleaseButton)
             {
-                MirInputBox verificationBox = new MirInputBox("Please enter the creature's name for verification.");
+                MirInputBox verificationBox = new MirInputBox("验证您宠物的名字");
                 verificationBox.OKButton.Click += (o1, e1) =>
                 {
                     if (String.Compare(verificationBox.InputTextBox.Text, GameScene.User.IntelligentCreatures[selectedCreature].CustomName, StringComparison.OrdinalIgnoreCase) != 0)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat("Verification Failed!!", ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat("验证失败!", ChatType.System);
                     }
                     else
                     {
@@ -726,13 +726,13 @@ namespace Client.MirScenes.Dialogs
 
             var rules = GameScene.User.IntelligentCreatures[selectedCreature].CreatureRules;
 
-            var semi = rules.SemiAutoPickupEnabled ? string.Format("{0}x{0} {1}{2}{3}", rules.AutoPickupRange, rules.AutoPickupEnabled ? "auto/" : "", rules.SemiAutoPickupEnabled ? "semi-auto" : "", rules.MousePickupEnabled ? ", " : "") : "";
-            var mouse = rules.SemiAutoPickupEnabled ? string.Format("{0}x{0} mouse", rules.MousePickupRange) : "";
+            var semi = rules.SemiAutoPickupEnabled ? string.Format("{0}x{0} {1}{2}{3}", rules.AutoPickupRange, rules.AutoPickupEnabled ? "自动/" : "", rules.SemiAutoPickupEnabled ? "半自动" : "", rules.MousePickupEnabled ? ", " : "") : "";
+            var mouse = rules.SemiAutoPickupEnabled ? string.Format("{0}x{0} 手动", rules.MousePickupRange) : "";
 
             CreatureName.Text = GameScene.User.IntelligentCreatures[selectedCreature].CustomName;
-            CreatureInfo.Text = string.Format("Can pickup items ({0}{1}).", semi, mouse);
-            CreatureInfo1.Text = rules.CanProduceBlackStone ? "Can produce BlackStones." : "";
-            CreatureInfo2.Text = rules.CanProduceBlackStone ? "Can produce Pearls, used to buy Creature items." : "";
+            CreatureInfo.Text = string.Format("可拾取物品 ({0}{1}).", semi, mouse);
+            CreatureInfo1.Text = rules.CanProduceBlackStone ? "可生产黑石." : "";
+            CreatureInfo2.Text = rules.CanProduceBlackStone ? "可生产珍珠，可用于购买灵宠物品" : "";
 
             //Expire
             if (GameScene.User.IntelligentCreatures[selectedCreature].Expire == DateTime.MinValue)
@@ -1127,7 +1127,7 @@ namespace Client.MirScenes.Dialogs
     }
     public sealed class IntelligentCreatureOptionsDialog : MirImageControl
     {
-        public readonly string[] OptionNames = { "All Items", "Gold", "Weapons", "Armours", "Helmets", "Boots", "Belts", "Jewelry", "Others" };
+        public readonly string[] OptionNames = { "所有", "金币", "武器", "护甲", "头盔", "鞋子", "腰带", "饰品", "其它" };
         public IntelligentCreatureItemFilter Filter;
         public Point locationOffset = new Point(450, 63);
 
@@ -1264,7 +1264,7 @@ namespace Client.MirScenes.Dialogs
     }
     public sealed class IntelligentCreatureOptionsGradeDialog : MirImageControl
     {
-        private string[] GradeStrings = { "All", "Common", "Rare", "Mythical", "Legendary", "Heroic" };
+        private string[] GradeStrings = { "所有", "普通", "稀有", "传奇", "神话", "史诗" };
 
         public MirButton NextButton, PrevButton;
         public MirLabel GradeLabel;
@@ -1335,6 +1335,7 @@ namespace Client.MirScenes.Dialogs
             GradeLabel.ForeColour = GradeNameColor(GradeType);
         }
 
+        // ZZ 装备字体颜色
         private Color GradeNameColor(ItemGrade grade)
         {
             switch (grade)

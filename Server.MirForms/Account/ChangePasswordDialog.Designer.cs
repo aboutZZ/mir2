@@ -29,51 +29,54 @@ namespace Server
         /// </summary>
         private void InitializeComponent()
         {
-            this.PasswordTextBox = new System.Windows.Forms.TextBox();
-            this.okButton = new System.Windows.Forms.Button();
-            this.cancelButton = new System.Windows.Forms.Button();
-            this.SuspendLayout();
-            // 
+            PasswordTextBox = new TextBox();
+            okButton = new Button();
+            cancelButton = new Button();
+            SuspendLayout();
+            //
             // PasswordTextBox
-            // 
-            this.PasswordTextBox.Location = new System.Drawing.Point(12, 12);
-            this.PasswordTextBox.Name = "PasswordTextBox";
-            this.PasswordTextBox.Size = new System.Drawing.Size(183, 20);
-            this.PasswordTextBox.TabIndex = 0;
-            // 
+            //
+            PasswordTextBox.Location = new Point(18, 18);
+            PasswordTextBox.Margin = new Padding(4, 5, 4, 5);
+            PasswordTextBox.Name = "PasswordTextBox";
+            PasswordTextBox.Size = new Size(272, 27);
+            PasswordTextBox.TabIndex = 0;
+            //
             // okButton
-            // 
-            this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(12, 38);
-            this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(75, 23);
-            this.okButton.TabIndex = 1;
-            this.okButton.Text = "OK";
-            this.okButton.UseVisualStyleBackColor = true;
-            // 
+            //
+            okButton.DialogResult = DialogResult.OK;
+            okButton.Location = new Point(18, 58);
+            okButton.Margin = new Padding(4, 5, 4, 5);
+            okButton.Name = "okButton";
+            okButton.Size = new Size(112, 35);
+            okButton.TabIndex = 1;
+            okButton.Text = "确定";
+            okButton.UseVisualStyleBackColor = true;
+            //
             // cancelButton
-            // 
-            this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(120, 38);
-            this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(75, 23);
-            this.cancelButton.TabIndex = 2;
-            this.cancelButton.Text = "Cancel";
-            this.cancelButton.UseVisualStyleBackColor = true;
-            // 
+            //
+            cancelButton.DialogResult = DialogResult.Cancel;
+            cancelButton.Location = new Point(180, 58);
+            cancelButton.Margin = new Padding(4, 5, 4, 5);
+            cancelButton.Name = "cancelButton";
+            cancelButton.Size = new Size(112, 35);
+            cancelButton.TabIndex = 2;
+            cancelButton.Text = "取消";
+            cancelButton.UseVisualStyleBackColor = true;
+            //
             // ChangePasswordDialog
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(207, 70);
-            this.Controls.Add(this.cancelButton);
-            this.Controls.Add(this.okButton);
-            this.Controls.Add(this.PasswordTextBox);
-            this.Name = "ChangePasswordDialog";
-            this.Text = "Set Password";
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            //
+            AutoScaleDimensions = new SizeF(9F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(310, 108);
+            Controls.Add(cancelButton);
+            Controls.Add(okButton);
+            Controls.Add(PasswordTextBox);
+            Margin = new Padding(4, 5, 4, 5);
+            Name = "ChangePasswordDialog";
+            Text = "设置密码";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

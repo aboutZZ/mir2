@@ -44,7 +44,7 @@ namespace Server.MirObjects.Monsters
                     _drops = null;
                     Broadcast(new S.ObjectHarvested { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation });
                 }
-                else player.ReceiveChat("You cannot carry anymore.", ChatType.System);
+                else player.ReceiveChat("背包已满, 无法再携带更多的物品", ChatType.System);
 
                 return true;
             }
@@ -84,7 +84,7 @@ namespace Server.MirObjects.Monsters
 
             if (_drops.Count == 0)
             {
-                player.ReceiveChat("Nothing was found.", ChatType.System);
+                player.ReceiveChat("未收获任何东西", ChatType.System);
                 Harvested = true;
                 _drops = null;
                 Broadcast(new S.ObjectHarvested { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation });

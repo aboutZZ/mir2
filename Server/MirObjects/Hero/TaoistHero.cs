@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 
 namespace Server.MirObjects
 {
@@ -92,7 +92,7 @@ namespace Server.MirObjects
         }
 
         protected override void ProcessAttack()
-        {           
+        {
             if (Target == null || Target.Dead) return;
             TargetDistance = Functions.MaxDistance(CurrentLocation, Target.CurrentLocation);
             if (!CanCast) return;
@@ -121,7 +121,7 @@ namespace Server.MirObjects
                     return;
                 }
 
-                if (Target.AutoRev == false && Envir.Time > Target.RevTime) 
+                if (Target.AutoRev == false && Envir.Time > Target.RevTime)
                 {
                     magic = GetMagic(Spell.Revelation);
                     if (CanUseMagic(magic) && amuletItem != null)

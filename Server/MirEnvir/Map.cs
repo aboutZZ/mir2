@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirObjects;
@@ -56,7 +57,7 @@ namespace Server.MirEnvir
             Doors.Add(DoorInfo);
             return DoorInfo;
         }
-        
+
         public bool OpenDoor(byte DoorIndex)
         {
             for (int i = 0; i < Doors.Count; i++)
@@ -149,7 +150,7 @@ namespace Server.MirEnvir
                         Cells[x, y].FishingAttribute = (sbyte)(light - 100);
                 }
         }
-        
+
         private void LoadMapCellsv1(byte[] fileBytes)
         {
             int offSet = 21;
@@ -425,7 +426,7 @@ namespace Server.MirEnvir
                     if (light >= 100 && light <= 119)
                         Cells[x, y].FishingAttribute = (sbyte)(light - 100);
                 }
-                
+
         }
 
         public bool Load()
@@ -468,7 +469,6 @@ namespace Server.MirEnvir
                     }
 
                     GetWalkableCells();
-                    
                     for (int i = 0; i < Info.Respawns.Count; i++)
                     {
                         MapRespawn info = new MapRespawn(Info.Respawns[i]);
@@ -485,7 +485,6 @@ namespace Server.MirEnvir
                         if ((info.Info.SaveRespawnTime) && (info.Info.RespawnTicks != 0))
                             Envir.SavedSpawns.Add(info);
                     }
-
                     for (int i = 0; i < Info.NPCs.Count; i++)
                     {
                         NPCInfo info = Info.NPCs[i];
@@ -507,8 +506,6 @@ namespace Server.MirEnvir
                 MessageQueue.Enqueue(ex);
             }
 
-            MessageQueue.Enqueue("Failed to Load Map: " + Info.Title);
-            MessageQueue.Enqueue("Filename: " + Info.FileName);
             return false;
         }
 
@@ -525,6 +522,7 @@ namespace Server.MirEnvir
             }
         }
 
+        // ZZ 绘制安全区边界
         private void CreateSafeZone(SafeZoneInfo info)
         {
             if (Settings.SafeZoneBorder)
@@ -556,6 +554,7 @@ namespace Server.MirEnvir
                 }
             }
 
+            // ZZ 安全区治疗
             if (Settings.SafeZoneHealing)
             {
                 for (int y = info.Location.Y - info.Size; y <= info.Location.Y + info.Size; y++)
@@ -569,14 +568,14 @@ namespace Server.MirEnvir
                         if (!Cells[x, y].Valid) continue;
 
                         SpellObject spell = new SpellObject
-                            {
-                                ExpireTime = long.MaxValue,
-                                Value = 25,
-                                TickSpeed = 2000,
-                                Spell = Spell.Healing,
-                                CurrentLocation = new Point(x, y),
-                                CurrentMap = this
-                            };
+                        {
+                            ExpireTime = long.MaxValue,
+                            Value = 25,
+                            TickSpeed = 2000,
+                            Spell = Spell.Healing,
+                            CurrentLocation = new Point(x, y),
+                            CurrentMap = this
+                        };
 
                         Cells[x, y].Add(spell);
 
@@ -672,7 +671,7 @@ namespace Server.MirEnvir
                     Point location;
                     if (Envir.Random.Next(4) == 0)
                     {
-                        location = player.CurrentLocation;          
+                        location = player.CurrentLocation;
                     }
                     else
                         location = new Point(player.CurrentLocation.X - 10 + Envir.Random.Next(20), player.CurrentLocation.Y - 10 + Envir.Random.Next(20));
@@ -1081,7 +1080,9 @@ namespace Server.MirEnvir
                                                 [type == BuffType.SoulShield ? Stat.MaxMAC : Stat.MaxAC] = target.Level / 7 + 4
                                             };
 
-                                            target.AddBuff(type, player, Settings.Second * value, stats);
+                                            // ZZ 修改幽灵盾的持续时间, 增加 1999 秒
+                                            // ZZ 修改神圣战甲术的持续时间, 增加 1999 秒
+                                            target.AddBuff(type, player, Settings.Second * (value + 1999), stats);
                                             target.OperateTime = 0;
                                             train = true;
                                         }
@@ -1136,6 +1137,51 @@ namespace Server.MirEnvir
                             ob.Spawned();
                         }
                     }
+
+                    // ZZ 修改火墙范围 BEGIN
+                    int fwRange = 5; // 火墙范围: 修改为 5X5 
+                    // 定位至左上角
+                    Point lt = Functions.PointMove((Point)data[3], MirDirection.UpLeft, fwRange / 2);
+                    // 开始循环
+                    for(int rowIndex = 0; rowIndex < fwRange; rowIndex++) {
+                        // 这一行开始所在点(第一格)
+                        Point rowStartPoint = Functions.PointMove(lt, MirDirection.Down, rowIndex);
+                        for (int i = 0; i < fwRange; i++)
+                        {
+                            location = Functions.PointMove(rowStartPoint, MirDirection.Right, i);
+                            if (!ValidPoint(location)) continue;
+
+                            cell = GetCell(location);
+                            bool cast = true;
+
+                            if (cell.Objects != null)
+                                for (int o = 0; o < cell.Objects.Count; o++)
+                                {
+                                    MapObject target = cell.Objects[o];
+                                    if (target.Race != ObjectType.Spell || ((SpellObject)target).Spell != Spell.FireWall) continue;
+
+                                    cast = false;
+                                    break;
+                                }
+
+                            if (!cast) continue;
+
+                            SpellObject ob = new SpellObject
+                            {
+                                Spell = Spell.FireWall,
+                                Value = value,
+                                ExpireTime = Envir.Time + (10 + value / 2) * 1000,
+                                TickSpeed = 2000,
+                                Caster = player,
+                                CurrentLocation = location,
+                                CurrentMap = this,
+                            };
+                            AddObject(ob);
+                            ob.Spawned();
+                        }
+                    }
+                    break;
+                    // ZZ 修改火墙范围 END
 
                     dir = MirDirection.Up;
                     for (int i = 0; i < 4; i++)
@@ -1480,7 +1526,7 @@ namespace Server.MirEnvir
                             AddObject(ob);
                             ob.Spawned();
                         }
-                    } 
+                    }
 
                     break;
 
@@ -1676,7 +1722,7 @@ namespace Server.MirEnvir
                             AddObject(ob);
                             ob.Spawned();
                         }
-                    } 
+                    }
 
                     break;
 
@@ -1773,7 +1819,7 @@ namespace Server.MirEnvir
                                 {
                                     centerTarget = (MonsterObject)target;
                                 }
-                                
+
                                 switch (target.Race)
                                 {
                                     case ObjectType.Monster:
@@ -2172,7 +2218,7 @@ namespace Server.MirEnvir
 
                 #region Portal
 
-                case Spell.Portal:                  
+                case Spell.Portal:
                     value = (int)data[2];
                     location = (Point)data[3];
                     value2 = (int)data[4];
@@ -2363,7 +2409,28 @@ namespace Server.MirEnvir
             if (ob.Race == ObjectType.Spell) Spells.Add((SpellObject)ob);
             if (ob.Race == ObjectType.Hero) Heroes.Add((HeroObject)ob);
 
-            GetCell(ob.CurrentLocation).Add(ob);
+            var cell = GetCell(ob.CurrentLocation);
+            cell.Add(ob);
+
+            // ZZ 稀有装备展示光柱效果
+            if(/* !cell.HasRareItemLight() */
+                ob.Race == ObjectType.Item
+                && ob is ItemObject item
+                && (item.Item?.Info?.Grade ?? ItemGrade.Common) >= ItemGrade.Rare)
+            {
+                SpellObject 光柱 = new SpellObject
+                {
+                    Name = "稀有装备光柱",
+                    ExpireTime = long.MaxValue,
+                    Spell = Spell.TrapHexagon,
+                    TickSpeed = int.MaxValue,
+                    CurrentLocation = new Point(ob.CurrentLocation.X, ob.CurrentLocation.Y),
+                    CurrentMap = this,
+                    Decoration = true
+                };
+                AddObject(光柱);
+                光柱.Spawned();
+            }
         }
 
         public void RemoveObject(MapObject ob)
@@ -2374,6 +2441,17 @@ namespace Server.MirEnvir
             if (ob.Race == ObjectType.Hero) Heroes.Remove((HeroObject)ob);
 
             GetCell(ob.CurrentLocation).Remove(ob);
+
+            // ZZ 稀有装备展示光柱效果
+            if (ob.Race == ObjectType.Item && ob is ItemObject item && item?.Item?.Info?.Grade >= ItemGrade.Rare)
+            {
+                var 光柱 = GetCell(ob.CurrentLocation).Objects.FirstOrDefault(o => o is SpellObject s && "稀有装备光柱".Equals(s.Name));
+                if (光柱 != null)
+                {
+                    RemoveObject(光柱);
+                    光柱.Despawn();
+                }
+            }
         }
 
 
@@ -2437,7 +2515,7 @@ namespace Server.MirEnvir
                 PlayerObject player = Players[i];
 
                 if (Functions.InRange(location, player.CurrentLocation, Globals.DataRange))
-                    player.Enqueue(p);                   
+                    player.Enqueue(p);
             }
         }
 
@@ -2463,7 +2541,7 @@ namespace Server.MirEnvir
             if (Functions.InRange(location, Player.CurrentLocation, Globals.DataRange))
             {
                 Player.Enqueue(p);
-            }    
+            }
         }
     }
     public class Cell
@@ -2485,11 +2563,62 @@ namespace Server.MirEnvir
             if (Objects == null) Objects = new List<MapObject>();
 
             Objects.Add(mapObject);
+
+            // 稀有装备展示光柱效果
+            // if(mapObject.Race == ObjectType.Item && mapObject is ItemObject item && item.Item.Info.Grade >= ItemGrade.Rare)
+            // {
+            //     CheckItemLightBeam();
+            // }
         }
         public void Remove(MapObject mapObject)
         {
             Objects.Remove(mapObject);
-            if (Objects.Count == 0) Objects = null;
+            if (Objects?.Count == 0) Objects = null;
+        }
+
+        // 稀有装备展示光柱效果
+        public void CheckItemLightBeam()
+        {
+            if (Objects == null) return;
+            foreach (MapObject ob in Objects)
+            {
+                if (ob.Race != ObjectType.Item) continue;
+                if (HasRareItem)
+                {
+                    // TODO 添加一个光柱效果
+                }
+            }
+        }
+
+        public bool HasRareItem
+        {
+            get
+            {
+                if (Objects == null) return false;
+
+                foreach (MapObject ob in Objects)
+                {
+                    if (ob.Race == ObjectType.Item && ob is ItemObject item && item.Item.Info.Grade >= ItemGrade.Rare)
+                        return true;
+                }
+                return false;
+            }
+        }
+
+        public bool HasRareItemLight()
+        {
+                if (Objects == null) return false;
+                return Objects.Any(ob => ob != null && ob.Race == ObjectType.Spell && ob is SpellObject spell && "稀有装备光柱".Equals(spell.Name));
+        }
+ 
+        public bool HasRareItemLight0
+        {
+            get
+            {
+                if (Objects == null) return false;
+
+                return Objects.Any(ob => ob.Race == ObjectType.Spell && ob is SpellObject spell && "稀有装备光柱".Equals(spell.Name));
+            }
         }
     }
     public class MapRespawn

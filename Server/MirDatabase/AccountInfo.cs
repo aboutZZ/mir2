@@ -6,7 +6,7 @@ using C = ClientPackets;
 namespace Server.MirDatabase
 {
     public class AccountInfo
-    {       
+    {
         protected static Envir Envir
         {
             get { return Envir.Main; }
@@ -22,10 +22,10 @@ namespace Server.MirDatabase
         {
             get { return password; }
             set
-            {                
+            {
                 Salt = Crypto.GenerateSalt();
                 password = Crypto.HashPassword(value, Salt);
-                
+
             }
         }
 
@@ -58,7 +58,7 @@ namespace Server.MirDatabase
         public uint Credit;
 
         public MirConnection Connection;
-        
+
         public LinkedList<AuctionInfo> Auctions = new LinkedList<AuctionInfo>();
         public bool AdminAccount;
 
@@ -117,24 +117,27 @@ namespace Server.MirDatabase
             for (int i = 0; i < count; i++)
             {
                 var info = new CharacterInfo(reader, Envir.LoadVersion, Envir.LoadCustomVersion) { AccountInfo = this };
+                // ZZ 对不活跃账号，暂时不进行归档操作
+                // MessageQueue.Enqueue($"读取到玩家角色信息 {info.Name} {info.Level} {info.Class}");
+                Characters.Add(info);continue;
 
                 if (info.Deleted && info.DeleteDate.AddMonths(Settings.ArchiveDeletedCharacterAfterMonths) <= Envir.Now)
                 {
-                    MessageQueue.Enqueue($"Player {info.Name} has been archived due to {Settings.ArchiveDeletedCharacterAfterMonths} month deletion.");
+                    MessageQueue.Enqueue($"玩家 {info.Name} 已被归档，由于其被删除超过了 {Settings.ArchiveDeletedCharacterAfterMonths} 个月.");
                     Envir.SaveArchivedCharacter(info);
                     continue;
                 }
 
                 if (info.LastLoginDate == DateTime.MinValue && info.CreationDate.AddMonths(Settings.ArchiveInactiveCharacterAfterMonths) <= Envir.Now)
                 {
-                    MessageQueue.Enqueue($"Player {info.Name} has been archived due to no login after {Settings.ArchiveInactiveCharacterAfterMonths} months.");
+                    MessageQueue.Enqueue($"玩家 {info.Name} 已被归档，由于其超过 {Settings.ArchiveInactiveCharacterAfterMonths} 个月从未登录.");
                     Envir.SaveArchivedCharacter(info);
                     continue;
                 }
-                
+
                 if (info.LastLoginDate > DateTime.MinValue && info.LastLoginDate.AddMonths(Settings.ArchiveInactiveCharacterAfterMonths) <= Envir.Now)
                 {
-                    MessageQueue.Enqueue($"Player {info.Name} has been archived due to {Settings.ArchiveInactiveCharacterAfterMonths} months inactivity.");
+                    MessageQueue.Enqueue($"玩家 {info.Name} 已被归档，由于其超过 {Settings.ArchiveInactiveCharacterAfterMonths} 个月未登录.");
                     Envir.SaveArchivedCharacter(info);
                     continue;
                 }
@@ -147,7 +150,7 @@ namespace Server.MirDatabase
                 HasExpandedStorage = reader.ReadBoolean();
                 ExpandedStorageExpiryDate = DateTime.FromBinary(reader.ReadInt64());
             }
-            
+
             Gold = reader.ReadUInt32();
             if (Envir.LoadVersion >= 63) Credit = reader.ReadUInt32();
 

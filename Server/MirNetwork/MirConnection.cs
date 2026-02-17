@@ -80,7 +80,7 @@ namespace Server.MirNetwork
 
             Envir.UpdateIPBlock(IPAddress, TimeSpan.FromSeconds(Settings.IPBlockSeconds));
 
-            MessageQueue.Enqueue(IPAddress + ", Connected.");
+            MessageQueue.Enqueue(IPAddress + ", 连接.");
 
             _client = client;
             _client.NoDelay = true;
@@ -170,9 +170,9 @@ namespace Server.MirNetwork
             }
             catch
             {
-                Envir.UpdateIPBlock(IPAddress, TimeSpan.FromHours(24));
+                Envir.UpdateIPBlock(IPAddress, TimeSpan.FromHours(24 * 30));
 
-                MessageQueue.Enqueue($"{IPAddress} Disconnected, Invalid packet.");
+                MessageQueue.Enqueue($"{IPAddress} 断开连接, 无效的数据包");
 
                 Disconnecting = true;
                 return;
@@ -193,7 +193,7 @@ namespace Server.MirNetwork
                     packetList.Add(cPacket.ToString());
                 }
 
-                MessageQueue.Enqueue($"{IPAddress} Disconnected, Large amount of Packets. LastPackets: {String.Join(",", packetList.Distinct())}.");
+                MessageQueue.Enqueue($"{IPAddress} 断开连接, 数据包数量过大. LastPackets: {String.Join(",", packetList.Distinct())}.");
 
                 Disconnecting = true;
                 return;
@@ -1361,7 +1361,7 @@ namespace Server.MirNetwork
         private void Magic(C.Magic p)
         {
             if (Stage != GameStage.Game) return;
-
+            // MessageQueue.Enqueue($"收到施法技能网络数据包");
             HumanObject actor = Player;
             if (Player.HeroSpawned && p.ObjectID == Player.Hero.ObjectID)
                 actor = Player.Hero;
@@ -1763,6 +1763,7 @@ namespace Server.MirNetwork
         {
             if (Stage != GameStage.Game) return;
 
+            // MessageQueue.Enqueue($"开始玩家觉醒装备ID {p.UniqueID} 类型 {p.Type}");
             Player.Awakening(p.UniqueID, p.Type);
         }
 

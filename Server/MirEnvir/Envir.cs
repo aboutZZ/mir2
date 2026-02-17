@@ -55,7 +55,10 @@ namespace Server.MirEnvir
         public const int MinVersion = 60;
         public const int Version = 112;
         public const int CustomVersion = 0;
+        // ZZ 注意这里对数据库文件 魔改了一下，Items加了个NameLocale字段，因此你用他原来的数据库绝对会挂
         public static readonly string DatabasePath = Path.Combine(".", "Server.MirDB");
+        public static readonly string ItemCnCSVPath = Path.Combine(".", "物品汉化.csv");
+        public static readonly string MonsterCnCSVPath = Path.Combine(".", "怪物汉化.csv");
         public static readonly string AccountPath = Path.Combine(".", "Server.MirADB");
         public static readonly string BackUpPath = Path.Combine(".", "Back Up");
         public static readonly string AccountsBackUpPath = Path.Combine(".", "Back Up", "Accounts");
@@ -464,7 +467,7 @@ namespace Server.MirEnvir
                 if (GetMonsterInfo(Settings.ScrollMob3, true) == null) return "Cannot start server without mob: " + Settings.ScrollMob3;
                 if (GetMonsterInfo(Settings.ScrollMob4, true) == null) return "Cannot start server without mob: " + Settings.ScrollMob4;
 
-                if (GetItemInfo(Settings.RefineOreName) == null) return "Cannot start server without item: " + Settings.RefineOreName;
+                if (GetItemInfoByLocaleName(Settings.RefineOreName) == null) return "Cannot start server without item: " + Settings.RefineOreName;
             }
 
             WorldMapIcon wmi = ValidateWorldMap();
@@ -684,6 +687,7 @@ namespace Server.MirEnvir
                 SaveAccounts();
                 SaveGuilds(true);
                 SaveConquests(true);
+                MessageQueue.Enqueue("已成功停止服务器");
             }
             catch (Exception ex)
             {
@@ -881,13 +885,13 @@ namespace Server.MirEnvir
                 {
                     if (info.ItemType == MarketItemType.Auction && info.CurrentBid > info.Price)
                     {
-                        string message = string.Format("You won {0} for {1:#,##0} Gold.", info.Item.FriendlyName, info.CurrentBid);
+                        string message = string.Format("您以 {1:#,##0} 金币成功拍得 {0}", info.Item.FriendlyName, info.CurrentBid);
 
                         info.Sold = true;
                         MailCharacter(info.CurrentBuyerInfo, item: info.Item, customMessage: message);
 
-                        MessageAccount(info.CurrentBuyerInfo.AccountInfo, string.Format("You bought {0} for {1:#,##0} Gold", info.Item.FriendlyName, info.CurrentBid), ChatType.Hint);
-                        MessageAccount(info.SellerInfo.AccountInfo, string.Format("You sold {0} for {1:#,##0} Gold", info.Item.FriendlyName, info.CurrentBid), ChatType.Hint);
+                        MessageAccount(info.CurrentBuyerInfo.AccountInfo, string.Format("您花费 {1:#,##0} 金币购买了 {0}", info.Item.FriendlyName, info.CurrentBid), ChatType.Hint);
+                        MessageAccount(info.SellerInfo.AccountInfo, string.Format("您以 {1:#,##0} 金币成功拍卖出{0}", info.Item.FriendlyName, info.CurrentBid), ChatType.Hint);
                     }
                     else
                     {
@@ -1289,15 +1293,16 @@ namespace Server.MirEnvir
 
                     if (LoadVersion < MinVersion)
                     {
-                        MessageQueue.Enqueue($"Cannot load a database version {LoadVersion}. Mininum supported is {MinVersion}.");
+                        MessageQueue.Enqueue($"无法加载数据库版本 {LoadVersion}. 最低支持版本为 {MinVersion}.");
                         return false;
                     }
                     else if (LoadVersion > Version)
                     {
-                        MessageQueue.Enqueue($"Cannot load a database version {LoadVersion}. Maximum supported is {Version}.");
+                        MessageQueue.Enqueue($"无法加载数据库版本 {LoadVersion}. 最高支持版本为 {Version}.");
                         return false;
 
                     }
+                    MessageQueue.Enqueue($"当前数据库版本 {LoadVersion} 最低支持版本为 {MinVersion} 最高支持版本为 {Version}.");
 
                     MapIndex = reader.ReadInt32();
                     ItemIndex = reader.ReadInt32();
@@ -1391,9 +1396,15 @@ namespace Server.MirEnvir
                         RespawnTick = new RespawnTimer(reader);
                     }
                 Settings.LinkGuildCreationItems(ItemInfoList);
+                读取汉化();
             }
 
             return true;
+        }
+
+        public void 读取汉化()
+        {
+            Localization.读取汉化(MessageQueue, ItemInfoList, MonsterInfoList, QuestInfoList, NPCInfoList, MapInfoList);
         }
 
         public void LoadAccounts()
@@ -1750,7 +1761,7 @@ namespace Server.MirEnvir
         {
             new Thread(() =>
             {
-                MessageQueue.Enqueue("Server rebooting...");
+                MessageQueue.Enqueue("服务器重启中...");
                 Stop();
                 Start();
             }).Start();
@@ -1781,7 +1792,7 @@ namespace Server.MirEnvir
                 BuffInfoList.Add(buff);
             }
 
-            MessageQueue.Enqueue($"{BuffInfoList.Count} Buffs Loaded.");
+            MessageQueue.Enqueue($"已加载 {BuffInfoList.Count} 个 Buff.");
 
             RecipeInfoList.Clear();
             foreach (var recipe in Directory.GetFiles(Settings.RecipePath, "*.txt")
@@ -1791,7 +1802,7 @@ namespace Server.MirEnvir
                 RecipeInfoList.Add(new RecipeInfo(recipe));
             }
 
-            MessageQueue.Enqueue($"{RecipeInfoList.Count} Recipes Loaded.");
+            MessageQueue.Enqueue($"已加载 {RecipeInfoList.Count} 个合成配方.");
 
             for (var i = 0; i < MapInfoList.Count; i++)
             {
@@ -1830,7 +1841,7 @@ namespace Server.MirEnvir
                 }
             }
 
-            MessageQueue.Enqueue($"{MapInfoList.Count} Maps Loaded.");
+            MessageQueue.Enqueue($"已加载{MapInfoList.Count} 个地图");
 
             for (var i = 0; i < ItemInfoList.Count; i++)
             {
@@ -1853,14 +1864,14 @@ namespace Server.MirEnvir
                     if (DragonSystem.Load()) DragonSystem.Info.LoadDrops();
                 }
 
-                MessageQueue.Enqueue("Dragon Loaded.");
+                MessageQueue.Enqueue("龙 已启动.");
             }
 
             DefaultNPC = NPCScript.GetOrAdd((uint)Random.Next(1000000, 1999999), Settings.DefaultNPCFilename, NPCScriptType.AutoPlayer);
             MonsterNPC = NPCScript.GetOrAdd((uint)Random.Next(2000000, 2999999), Settings.MonsterNPCFilename, NPCScriptType.AutoMonster);
             RobotNPC = NPCScript.GetOrAdd((uint)Random.Next(3000000, 3999999), Settings.RobotNPCFilename, NPCScriptType.Robot);
 
-            MessageQueue.Enqueue("Envir Started.");
+            MessageQueue.Enqueue("Envir 已启动.");
         }
 
         private void StartNetwork()
@@ -1885,7 +1896,7 @@ namespace Server.MirEnvir
                 _StatusPort.BeginAcceptTcpClient(StatusConnection, null);
             }
 
-            MessageQueue.Enqueue("Network Started.");
+            MessageQueue.Enqueue("网络已启动.");
         }
 
         private void StopEnvir()
@@ -1904,7 +1915,7 @@ namespace Server.MirEnvir
 
             GC.Collect();
 
-            MessageQueue.Enqueue("Envir Stopped.");
+            MessageQueue.Enqueue("Envir 已停止.");
         }
         private void StopNetwork()
         {
@@ -1950,7 +1961,7 @@ namespace Server.MirEnvir
 
 
             StatusConnections.Clear();
-            MessageQueue.Enqueue("Network Stopped.");
+            MessageQueue.Enqueue("网络已停止.");
         }
 
         private void CleanUp()
@@ -2044,7 +2055,7 @@ namespace Server.MirEnvir
                     {
                         UpdateIPBlock(ipAddress, TimeSpan.FromSeconds(Settings.IPBlockSeconds));
 
-                        MessageQueue.Enqueue(ipAddress + " Disconnected, Too many connections.");
+                        MessageQueue.Enqueue(ipAddress + " 已断开连接, 原因：该IP连接数过多.");
                     }
                     else
                     {
@@ -2339,7 +2350,7 @@ namespace Server.MirEnvir
                 if (account.WrongPasswordCount++ >= 5)
                 {
                     account.Banned = true;
-                    account.BanReason = "Too many Wrong Login Attempts.";
+                    account.BanReason = "过多的错误登录次数";
                     account.ExpiryDate = Now.AddMinutes(2);
 
                     c.Enqueue(new ServerPackets.LoginBanned
@@ -2374,7 +2385,7 @@ namespace Server.MirEnvir
             account.LastDate = Now;
             account.LastIP = c.IPAddress;
 
-            MessageQueue.Enqueue(account.Connection.SessionID + ", " + account.Connection.IPAddress + ", User logged in.");
+            MessageQueue.Enqueue(account.Connection.SessionID + ", " + account.Connection.IPAddress + ", 用户已登录.");
             c.Enqueue(new ServerPackets.LoginSuccess { Characters = account.GetSelectInfo() });
         }
 
@@ -2417,7 +2428,7 @@ namespace Server.MirEnvir
                 if (account.WrongPasswordCount++ >= 5)
                 {
                     account.Banned = true;
-                    account.BanReason = "Too many Wrong Login Attempts.";
+                    account.BanReason = "过多的错误登录次数";
                     account.ExpiryDate = Now.AddMinutes(2);
                     return 5;
                 }
@@ -3174,6 +3185,18 @@ namespace Server.MirEnvir
             return null;
         }
 
+        // ZZ 汉化, 通过汉化后的名字查找物品
+        public ItemInfo GetItemInfoByLocaleName(string name)
+        {
+            for (var i = 0; i < ItemInfoList.Count; i++)
+            {
+                var info = ItemInfoList[i];
+                if (string.Compare(info.NameLocale, name) != 0) continue;
+                return info;
+            }
+            return null;
+        }
+
         public QuestInfo GetQuestInfo(int index)
         {
             return QuestInfoList.FirstOrDefault(info => info.Index == index);
@@ -3200,7 +3223,7 @@ namespace Server.MirEnvir
                 return info;
             }
 
-            throw new NotImplementedException($"{type} has not been implemented.");
+            throw new NotImplementedException($"{type} 尚未实装");
         }
 
         public void MessageAccount(AccountInfo account, string message, ChatType type)
@@ -3218,20 +3241,20 @@ namespace Server.MirEnvir
 
         public void MailCharacter(CharacterInfo info, UserItem item = null, uint gold = 0, int reason = 0, string customMessage = null)
         {
-            string sender = "Bichon Administrator";
+            string sender = "比奇管理员";
 
             string message = "You have been mailed due to the following reason:\r\n\r\n";
 
             switch (reason)
             {
                 case 1:
-                    message += "Could not return item to bag after trade.";
+                    message += "交易后无法将商品退回背包";
                     break;
                 case 99:
-                    message += "Code didn't correctly handle checking inventory space.";
+                    message += "代码未正确处理检查背包空间。";
                     break;
                 default:
-                    message += customMessage ?? "No reason provided.";
+                    message += customMessage ?? "未提供原因";
                     break;
             }
 
@@ -3330,7 +3353,7 @@ namespace Server.MirEnvir
                             continue;
                         }
 
-                        rentingPlayer.Player.ReceiveChat($"{item.Info.FriendlyName} has just expired from your inventory.", ChatType.Hint);
+                        rentingPlayer.Player.ReceiveChat($"{item.Info.FriendlyName} 刚刚从您的背包中过期", ChatType.Hint);
                         rentingPlayer.Player.Enqueue(new S.DeleteItem { UniqueID = item.UniqueID, Count = item.Count });
                         rentingPlayer.Player.RefreshStats();
                     }
@@ -3358,7 +3381,7 @@ namespace Server.MirEnvir
                             continue;
                         }
 
-                        rentingPlayer.Player.ReceiveChat($"{item.Info.FriendlyName} has just expired from your inventory.", ChatType.Hint);
+                        rentingPlayer.Player.ReceiveChat($"{item.Info.FriendlyName}已从您的背包中过期", ChatType.Hint);
                         rentingPlayer.Player.Enqueue(new S.DeleteItem { UniqueID = item.UniqueID, Count = item.Count });
                         rentingPlayer.Player.RefreshStats();
                     }
@@ -3470,7 +3493,7 @@ namespace Server.MirEnvir
             }
 
             ResetGS = false;
-            MessageQueue.Enqueue("Gameshop Purchase Logs Cleared.");
+            MessageQueue.Enqueue("游戏商城购买记录已清除。");
         }
 
         public void Inspect(MirConnection con, uint id)
@@ -3582,7 +3605,7 @@ namespace Server.MirEnvir
 
             con.Enqueue(new S.PlayerInspect
             {
-                Name = $"{ownerName}'s Hero",
+                Name = $"{ownerName}的英雄",
                 Equipment = heroInfo.Equipment,
                 GuildName = String.Empty,
                 GuildRank = String.Empty,
@@ -3822,7 +3845,7 @@ namespace Server.MirEnvir
                 Scripts[key].Load();
             }
 
-            MessageQueue.Enqueue("NPC Scripts reloaded...");
+            MessageQueue.Enqueue("NPC 脚本已重新加载");
         }
 
         public void ReloadDrops()
@@ -3881,7 +3904,7 @@ namespace Server.MirEnvir
                     if (lines[i].StartsWith(";") || string.IsNullOrWhiteSpace(lines[i])) continue;
                     LineMessages.Add(lines[i]);
                 }
-                MessageQueue.Enqueue("LineMessages reloaded.");
+                MessageQueue.Enqueue("系统公告已重新加载");
             }
         }
 
@@ -3903,7 +3926,7 @@ namespace Server.MirEnvir
             GuildList.Remove(guild.Info);
 
             GuildRefreshNeeded = true;
-            MessageQueue.Enqueue(guild.Info.Name + " guild will be deleted from the server.");
+            MessageQueue.Enqueue(guild.Info.Name + "公会将从服务器中删除");
         }
     }
 }

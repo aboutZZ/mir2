@@ -1,4 +1,4 @@
-﻿public static class Globals
+public static class Globals
 {
     public const string ProductCodename = "Crystal";
 
@@ -10,7 +10,7 @@
         MinPasswordLength = 5,
         MaxPasswordLength = 15,
 
-        MinCharacterNameLength = 3,
+        MinCharacterNameLength = 2,
         MaxCharacterNameLength = 15,
         MaxCharacterCount = 4,
 
@@ -34,7 +34,7 @@
 
         LogDelay = 10000,
 
-        DataRange = 16;//Was 24
+        DataRange = 24;//16;//Was 24
 
     public static float Commission = 0.05F;
 

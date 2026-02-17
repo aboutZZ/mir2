@@ -59,8 +59,16 @@ namespace Server.MirObjects
 
             Item = item;
 
-            if (Item.IsAdded)
-                NameColour = Color.Cyan;
+            // ZZ 物品装备等级颜色.
+			if (Item.IsAdded && item.Info.Grade < ItemGrade.Legendary)
+            {
+                // 极品点+5以上的, 显示特殊颜色
+                if (Item.AddedStats.Count >= 5) NameColour = Color.SpringGreen;
+                else if (item.Info.Grade == ItemGrade.None) NameColour = Color.Yellow;
+                else if (item.Info.Grade == ItemGrade.Common) NameColour = Color.Yellow;
+                else if (item.Info.Grade == ItemGrade.Rare) NameColour = Color.Cyan;
+                else NameColour = Color.Wheat;
+            }
 			else
 			{
 				if (item.Info.Grade == ItemGrade.None)
@@ -86,22 +94,30 @@ namespace Server.MirObjects
 
             Item = item;
 
-			if (Item.IsAdded)
-				NameColour = Color.Cyan;
-			else
-			{
-				if (item.Info.Grade == ItemGrade.None)
-					NameColour = Color.White;
-				if (item.Info.Grade == ItemGrade.Common)
-					NameColour = Color.White;
-				if (item.Info.Grade == ItemGrade.Rare)
-					NameColour = Color.DeepSkyBlue;
-				if (item.Info.Grade == ItemGrade.Legendary)
-					NameColour = Color.DarkOrange;
-				if (item.Info.Grade == ItemGrade.Mythical)
-					NameColour = Color.Plum;
+            // ZZ 物品装备等级颜色.
+			if (Item.IsAdded && item.Info.Grade < ItemGrade.Legendary)
+            {
+                // 极品点+5以上的, 显示特殊颜色
+                if (Item.AddedStats.Count >= 5) NameColour = Color.SpringGreen;
+                else if (item.Info.Grade == ItemGrade.None) NameColour = Color.Yellow;
+                else if (item.Info.Grade == ItemGrade.Common) NameColour = Color.Yellow;
+                else if (item.Info.Grade == ItemGrade.Rare) NameColour = Color.Cyan;
+                else NameColour = Color.Wheat;
+            }
+            else
+            {
+                if (item.Info.Grade == ItemGrade.None)
+                    NameColour = Color.White;
+                if (item.Info.Grade == ItemGrade.Common)
+                    NameColour = Color.White;
+                if (item.Info.Grade == ItemGrade.Rare)
+                    NameColour = Color.DeepSkyBlue;
+                if (item.Info.Grade == ItemGrade.Legendary)
+                    NameColour = Color.DarkOrange;
+                if (item.Info.Grade == ItemGrade.Mythical)
+                    NameColour = Color.Plum;
                 if (item.Info.Grade == ItemGrade.Heroic)
-                    NameColour = Color.Red;
+                    NameColour = Color.Crimson;
             }
 
             CurrentMap = dropper.CurrentMap;

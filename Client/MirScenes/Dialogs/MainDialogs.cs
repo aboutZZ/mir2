@@ -20,6 +20,8 @@ namespace Client.MirScenes.Dialogs
 
         public MirImageControl ExperienceBar, WeightBar, LeftCap, RightCap;
         public MirButton GameShopButton, MenuButton, InventoryButton, CharacterButton, SkillButton, QuestButton, OptionButton;
+        // ZZ 自定义个按钮：外挂按钮 帮助按钮
+        public MirButton InternalMarcoButton;
         public MirControl HealthOrb;
         public MirLabel HealthLabel, ManaLabel, TopLabel, BottomLabel, LevelLabel, CharacterName, ExperienceLabel, GoldLabel, WeightLabel, SpaceLabel, AModeLabel, PModeLabel, SModeLabel;
         public HeroInfoPanel HeroInfoPanel;
@@ -79,6 +81,19 @@ namespace Client.MirScenes.Dialogs
                     GameScene.Scene.InventoryDialog.Hide();
                 else
                     GameScene.Scene.InventoryDialog.Show();
+            };
+
+            // 外挂辅助按钮
+            InternalMarcoButton = new MirButton
+            {
+                HoverIndex = 1901,
+                Index = 1900,
+                Library = Libraries.Prguse,
+                Location = new Point(this.Size.Width - 159, 76),
+                Parent = this,
+                PressedIndex = 1902,
+                Sound = SoundList.ButtonA,
+                Hint = string.Format("辅助", CMain.InputKeys.GetKey(KeybindOptions.Equipment))
             };
 
             CharacterButton = new MirButton
@@ -347,7 +362,7 @@ namespace Client.MirScenes.Dialogs
                 });
             };
 
-            HeroInfoPanel = new HeroInfoPanel { Parent = this, Visible = false };            
+            HeroInfoPanel = new HeroInfoPanel { Parent = this, Visible = false };
 
             AModeLabel = new MirLabel
             {
@@ -426,10 +441,10 @@ namespace Client.MirScenes.Dialogs
             switch (Settings.SkillMode)
             {
                 case true:
-                    SModeLabel.Text = "[Skill Mode: ~]";
+                    SModeLabel.Text = "[技能模式: ~]";
                     break;
                 case false:
-                    SModeLabel.Text = "[Skill Mode: Ctrl]";
+                    SModeLabel.Text = "[技能模式: Ctrl]";
                     break;
             }
 
@@ -555,7 +570,8 @@ namespace Client.MirScenes.Dialogs
         public MirButton HomeButton, UpButton, EndButton, DownButton, PositionBar;
         public MirImageControl CountBar;
         public MirTextBox ChatTextBox;
-        public Font ChatFont = new Font(Settings.FontName, 8F);
+        // ZZ 画面下方聊天框字体大小, 原值为8
+        public Font ChatFont = new Font(Settings.FontName, 10F);
         public string LastPM = string.Empty;
 
         public int StartIndex, LineCount = 4, WindowSize;
@@ -867,7 +883,7 @@ namespace Client.MirScenes.Dialogs
             }
 
             chat.Add(text.Substring(index, text.Length - index));
-            
+
             if (StartIndex == History.Count - LineCount)
                 StartIndex += chat.Count;
 
@@ -998,7 +1014,8 @@ namespace Client.MirScenes.Dialogs
 
                 temp.Text = currentLine;
 
-                y += 13;
+                // ZZ 修改聊天框字体大小. y 偏移原值为13, 由于调大了字体, 这里要改为16
+                y += 16;
                 if (i - StartIndex == LineCount - 1) break;
             }
 
@@ -1424,7 +1441,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(Settings.Resolution != 800 ? 552 : 328, 1),
                 Sound = SoundList.ButtonA,
-                Hint = "Report",
+                Hint = "反馈",
                 Visible = false
             };
             ReportButton.Click += (o, e) =>
@@ -1634,7 +1651,7 @@ namespace Client.MirScenes.Dialogs
                 return CMain.InputKeys.GetKey(KeybindOptions.Bar2Skill8);
             return "";
         }
-                    
+
 
         void MagicKeyDialog_BeforeDraw(object sender, EventArgs e)
         {
@@ -1674,7 +1691,7 @@ namespace Client.MirScenes.Dialogs
                     //string key = m.Key > 8 ? string.Format("CTRL F{0}", i) : string.Format("F{0}", m.Key);
 
                     Cells[i - 1].Index = magic.Icon*2;
-                    Cells[i - 1].Hint = string.Format("{0}\nMP: {1}\nCooldown: {2}\nKey: {3}", magic.Name,
+                    Cells[i - 1].Hint = string.Format("{0}\n消耗魔法: {1}\n冷却: {2}\n快捷键: {3}", magic.Name,
                         (magic.BaseCost + (magic.LevelCost * magic.Level)), Functions.PrintTimeSpanFromMilliSeconds(magic.Delay), key);
 
                     KeyNameLabels[i - 1].Text = "";
@@ -1705,7 +1722,7 @@ namespace Client.MirScenes.Dialogs
 
                     if (timeLeft < 100)
                     {
-                        if (timeLeft > 0) { 
+                        if (timeLeft > 0) {
                             CoolDowns[i].Visible = false;
                            // CoolDowns[i].Dispose();
                         }
@@ -1741,7 +1758,7 @@ namespace Client.MirScenes.Dialogs
             Visible = false;
         }
     }
-    
+
     public sealed class MiniMapDialog : MirImageControl
     {
         public MirImageControl LightSetting, NewMail;
@@ -1827,7 +1844,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(109, 3),
                 Library = Libraries.Prguse,
                 Sound = SoundList.ButtonA,
-                Hint = "MiniMap (" + CMain.InputKeys.GetKey(KeybindOptions.Minimap) + ")"
+                Hint = "小地图 (" + CMain.InputKeys.GetKey(KeybindOptions.Minimap) + ")"
             };
             ToggleButton.Click += (o, e) => Toggle();
 
@@ -1942,7 +1959,7 @@ namespace Client.MirScenes.Dialogs
                 DXManager.Draw(DXManager.RadarTexture, new Rectangle(0, 0, 2, 2), new Vector3((float)(x - 0.5), (float)(y - 0.5), 0.0F), colour);
 
                 #region NPC Quest Icons
-
+                // ZZ NPC任务头上图标
                 if (ob is NPCObject npc && npc.GetAvailableQuests(true).Any())
                 {
                     string text = "";
@@ -2210,20 +2227,20 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 433,
                 Sound = SoundList.ButtonA,
-                Hint = "Invite to Group",
+                Hint = "邀请组队",
             };
             GroupButton.Click += (o, e) =>
             {
 
                 if (GroupDialog.GroupList.Count >= Globals.MaxGroup)
                 {
-                    GameScene.Scene.ChatDialog.ReceiveChat("Your group already has the maximum number of members.", ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat("你的小队队员已满", ChatType.System);
                     return;
                 }
                 if (GroupDialog.GroupList.Count > 0 && GroupDialog.GroupList[0] != MapObject.User.Name)
                 {
 
-                    GameScene.Scene.ChatDialog.ReceiveChat("You are not the leader of your group.", ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat("你不是队长", ChatType.System);
                 }
 
                 Network.Enqueue(new C.AddMember { Name = Name });
@@ -2239,7 +2256,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 436,
                 Sound = SoundList.ButtonA,
-                Hint = "Add to Friends List",
+                Hint = "添加好友",
             };
             FriendButton.Click += (o, e) =>
             {
@@ -2255,7 +2272,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 439,
                 Sound = SoundList.ButtonA,
-                Hint = "Send Mail",
+                Hint = "发送邮件",
             };
             MailButton.Click += (o, e) => GameScene.Scene.MailComposeLetterDialog.ComposeMail(Name);
 
@@ -2268,7 +2285,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 525,
                 Sound = SoundList.ButtonA,
-                Hint = "Trade",
+                Hint = "交易",
             };
             TradeButton.Click += (o, e) => Network.Enqueue(new C.TradeRequest());
 
@@ -2282,7 +2299,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Sound = SoundList.ButtonA,
                 Visible = false,
-                Hint = "Observe",
+                Hint = "观看",
             };
             ObserveButton.Click += (o, e) =>
             {
@@ -2666,7 +2683,7 @@ namespace Client.MirScenes.Dialogs
             HPViewOn.Click += (o, e) =>
             {
                 Settings.HPView = true;
-                GameScene.Scene.ChatDialog.ReceiveChat("[HP/MP Mode 1]", ChatType.Hint);
+                GameScene.Scene.ChatDialog.ReceiveChat("[HP/MP 模式 1]", ChatType.Hint);
             };
 
             HPViewOff = new MirButton
@@ -2681,7 +2698,7 @@ namespace Client.MirScenes.Dialogs
             HPViewOff.Click += (o, e) =>
             {
                 Settings.HPView = false;
-                GameScene.Scene.ChatDialog.ReceiveChat("[HP/MP Mode 2]", ChatType.Hint);
+                GameScene.Scene.ChatDialog.ReceiveChat("[HP/MP 模式 2]", ChatType.Hint);
             };
 
             SoundBar = new MirImageControl
@@ -2738,7 +2755,7 @@ namespace Client.MirScenes.Dialogs
             NewMoveOn.Click += (o, e) =>
             {
                 Settings.NewMove = true;
-                GameScene.Scene.ChatDialog.ReceiveChat("[New Movement Style]", ChatType.Hint);
+                GameScene.Scene.ChatDialog.ReceiveChat("[新移动方式]", ChatType.Hint);
             };
 
             NewMoveOff = new MirButton
@@ -2753,7 +2770,7 @@ namespace Client.MirScenes.Dialogs
             NewMoveOff.Click += (o, e) =>
             {
                 Settings.NewMove = false;
-                GameScene.Scene.ChatDialog.ReceiveChat("[Old Movement Style]", ChatType.Hint);
+                GameScene.Scene.ChatDialog.ReceiveChat("[经典移动方式]", ChatType.Hint);
             };
 
             ObserveOn = new MirButton
@@ -2796,7 +2813,7 @@ namespace Client.MirScenes.Dialogs
                 if (KeyCheck.Key == Keys.None)
                     continue;
                 if ((KeyCheck.function < KeybindOptions.Bar1Skill1) || (KeyCheck.function > KeybindOptions.Bar2Skill8)) continue;
-                //need to test this 
+                //need to test this
                 if ((KeyCheck.RequireCtrl != 1) && (KeyCheck.RequireTilde != 1)) continue;
                 KeyCheck.RequireCtrl = (byte)(Ctrl ? 1 : 0);
                 KeyCheck.RequireTilde = (byte)(Ctrl ? 0 : 1);
@@ -2970,7 +2987,7 @@ namespace Client.MirScenes.Dialogs
                 ObserveOff.Index = 459;
             }
             else
-            {        
+            {
                 ObserveOn.Index = 456;
                 ObserveOff.Index = 461;
             }
@@ -3055,7 +3072,7 @@ namespace Client.MirScenes.Dialogs
                 Library = Libraries.Prguse,
                 Location = new Point(3, 69),
                 Visible = true,
-                Hint = "Keyboard (" + CMain.InputKeys.GetKey(KeybindOptions.Keybind) + ")"
+                Hint = "键盘 (" + CMain.InputKeys.GetKey(KeybindOptions.Keybind) + ")"
             };
             KeyboardLayoutButton.Click += (o, e) =>
             {
@@ -3397,265 +3414,266 @@ namespace Client.MirScenes.Dialogs
                 Magic.Key > 8 ? Environment.NewLine : string.Empty,
                 (Magic.Key - 1) % 8 + 1);
 
+            // ZZ 技能描述
             switch (magic.Spell)
             {  //Warrior
                 case Spell.Fencing:
-                    SkillButton.Hint = string.Format("Fencing\n\nPassive Skill\n\nHitting accuracy will be increased in accordance\nwith practice level.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0);
+                    SkillButton.Hint = string.Format("基本剑术 \n\n被动技能\n提高准确度\n被动技能\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0);
                     break;
                 case Spell.Slaying:
-                    SkillButton.Hint = string.Format("Slaying\n\nPassive Skill\n\nHitting accuracy and destructive power will\nbe increased in accordance with practice level.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0);
+                    SkillButton.Hint = string.Format("攻杀剑术 \n\n被动技能\n提高准确度和破坏力\n被动技能\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0);
                     break;
                 case Spell.Thrusting:
-                    SkillButton.Hint = string.Format("Thrusting\n\nToggle Skill\n\nIncreases the reach of your hits destructive power\nwill increase in accordance with practice level.\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0);
+                    SkillButton.Hint = string.Format("暗元素伤害\n刺杀剑术 \n\n增加破坏力\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0);
                     break;
                 case Spell.Rage:
-                    SkillButton.Hint = string.Format("Rage\n\nBuff Skill\nMana Cost {2}\n\nEnhances your inner force to increase its power\nfor a certain time. Attack power and duration time\nwill depend on the skill level. Once the skill has been used\n you will have to wait to use it again.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("剑气爆 \n\n魔法消耗 {2}\n\n增强内力，使其威力在一定时间内增加\n攻击力和持续时间将决于技能等级\n使用该技能后，必须等待才能再次使用\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.ProtectionField:
-                    SkillButton.Hint = string.Format("Protection Field\n\nBuff Skill\nMana Cost {2}\n\nConcentrates inner force and spreads it to all\n the parts of your body. This will enhance the\nprotection from enemies. Defense power and duration\nwill be depend on the skill level. Once the skill\n has been used, you will have to wait to use it again.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("护体真气 \n\n魔法消耗 {2}\n\n集中内力并将其扩散到身体的各个部位\n这将增强抵御敌人的能力\n防御力和持续时间取决于技能等级\n使用该技能后，必须等待才能再次使用\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.HalfMoon:
-                    SkillButton.Hint = string.Format("Half Moon\n\nToggle Skill\nMana Cost: {2} per attack\n\nCause damage to enemies in a semi circle around the caster with\nthe shock waves from your fast moving weapon.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("风元素伤害\n半月弯刀 \n\n快速挥动武器，造成面前半圆范围内的伤害\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0);
                     break;
                 case Spell.FlamingSword:
-                    SkillButton.Hint = string.Format("Flaming Sword\n\nActive Skill\nMana Cost: {2}\n\nSummons the spirit of fire in to your next attack, causing\na devastating blow to the target.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("火元素伤害\n烈火剑法 \n\n召唤武器火之精灵，造成额外伤害\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0);
                     break;
                 case Spell.ShoulderDash:
-                    SkillButton.Hint = string.Format("Shoulder Dash\n\nActive Skill\nMana Cost: {2}\n\nA warrior can push a target backwards by charging\nthem with his shoulder, inflicting damage\nif they hit any obstacle.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("野蛮冲撞 \n\n用肩膀冲锋来撞开敌人\n如果撞到障碍物则会对自己造成伤害\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0);
                     break;
                 case Spell.CrossHalfMoon:
-                    SkillButton.Hint = string.Format("Cross Half-Moon\n\nToggle Skill\nMana Cost: {2} per attack\n\nA warrior uses two powerful waves of Half Moon\nto inflict damage on all mobs stood next to them.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("风元素伤害\n狂风斩\n\n使用两道强大的半月波对站在他旁边的所有怪物造成伤害\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0);
                     break;
                 case Spell.TwinDrakeBlade:
-                    SkillButton.Hint = string.Format("Twin Drake Blade\n\nActive Skill\nMana Cost {2}\n\nThe art of making multiple power attacks.\nIt has a low chance of stunning a target temporarily.\nStunned monsters receive an additional 50% damage.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("暗元素伤害\n双龙斩 \n\n发动多重强力攻击。有低概率击晕怪物。被击晕的怪物将受到 1.5 倍的伤害\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0);
                     break;
                 case Spell.Entrapment:
-                    SkillButton.Hint = string.Format("Entrapment\n\nActive Skill\nMana Cost: {2}\n\nParalyses mobs and draws them to the caster.\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("云剑捕 \n\n使怪物麻痹并将其吸引至施法者身边\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0);
                     break;
                 case Spell.LionRoar:
-                    SkillButton.Hint = string.Format("Lion Roar\n\nActive Skill\nMana Cost: {2}\n\nParalyses enemies around the caster, duration increases with skill level.\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("狮子吼 \n\n麻痹怪物，持续时间随技能等级增加。\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0);
                     break;
                 case Spell.CounterAttack:
-                    SkillButton.Hint = string.Format("Counter Attack\n\nBuff Skill\nMana Cost {2}\n\nIncreases AC and AMC for a short period of time\nChance to defend an attack and counter.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("天务 \n\n魔法消耗 {2}\n\n短时间内增加防御和魔防\n增加格挡反击的几率\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.ImmortalSkin:
-                    SkillButton.Hint = string.Format("Immortal Skin\n\nBuff Skill\nMana Cost {2}\n\nIncrease defence to reduce attacks.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("金刚不坏 \n\n魔法消耗 {2}\n\n增加防御以减少收到伤害\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Fury:
-                    SkillButton.Hint = string.Format("Fury\n\nBuff Skill\nMana Cost {2}\n\nIncreases the warriors Accuracy for a set period of time.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("血龙剑法 \n\n魔法消耗 {2}\n\n在一定时间内提高战士的准确度\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.SlashingBurst:
-                    SkillButton.Hint = string.Format("Slashing Burst\n\nActive Skill\nMana Cost: {2}\n\nAllows The Warrior to Jump 1 Space Over an Object or Monster.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("日闪\n\n魔法消耗 {2}\n\n跳过物体或怪物 1 个格子\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.BladeAvalanche:
-                    SkillButton.Hint = string.Format("Blade Avalanche\n\nActive Skill\nMana Cost {2}\n\nHurls blades in three directions in front of the\ncaster, creating a deadly storm of metal\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("空破闪 \n\n向3个方向刺杀\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0);
                     break;
 
                 //Wizard
                 case Spell.FireBall:
-                    SkillButton.Hint = string.Format("Fireball \n\nInstant Casting\nMana Cost {2}\n\nElements of fire are gathered to form\na fireball. Throw at monsters for damage.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("火球术 \n\n瞬发魔法\n魔法消耗 {2}\n\n聚集火焰元素形成火球, 投掷火球攻击怪物造成伤害\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.ThunderBolt:
-                    SkillButton.Hint = string.Format("Thunderbolt\n\nInstant Casting\nMana Cost {2}\n\nStrikes the foe with a lightning bolt \ninflicting high damage.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("雷电术 \n\n瞬发魔法\n魔法消耗 {2}\n\n用闪电攻击敌人，造成高额伤害\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.GreatFireBall:
-                    SkillButton.Hint = string.Format("Great Fireball\n\nInstant Casting\nMana Cost {2}\n\nSuccessor to fire ball, Great Fire Ball causes increased\ndamage to targets.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("大火球 \n\n瞬发魔法\n魔法消耗 {2}\n\n更大的火球, 点燃怪物\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Repulsion:
-                    SkillButton.Hint = string.Format("Repulsion\n\nInstant Casting\nMana Cost {2}\n\nPush away surrounding targets using the power of fire.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("抗拒火环 \n\n瞬发魔法\n魔法消耗 {2}\n\n推开周围的怪物\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.HellFire:
-                    SkillButton.Hint = string.Format("Hellfire\n\nInstant Casting\nMana Cost {2}\n\nShoots out a streak of fire attack\nthe monster in front.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("地狱火 \n\n瞬发魔法\n魔法消耗 {2}\n\n射出一道火焰攻击前方的怪物\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Lightning:
-                    SkillButton.Hint = string.Format("Lightning\n\nInstant Casting\nMana Cost {2}\n\nShoots out a steak of lightning to attack\nthe monster in front.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("疾光电影 \n\n瞬发魔法\n魔法消耗 {2}\n\n射出一道闪电攻击前方的怪物\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.ElectricShock:
-                    SkillButton.Hint = string.Format("Electric Shock\n\nInstant Casting\nMana Cost {2}\n\nStrong shock wave hits the mob and the\nmob will not be able to move or the mob\nwill get confused and fight for you.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("诱惑之光 \n\n瞬发魔法\n魔法消耗 {2}\n\n强烈的冲击波击中怪物，使其无法移动，并会被迷惑并为你而战\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Teleport:
-                    SkillButton.Hint = string.Format("Teleport\n\nInstant Casting\nMana Cost {2}\n\nTeleport to a random spot.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("瞬息移动 \n\n瞬发魔法\n魔法消耗 {2}\n\n传送到周围的随机地点\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.FireWall:
-                    SkillButton.Hint = string.Format("Fire Wall\n\nInstant Casting\nMana Cost {2}\n\nThis skill will build a fire wall at a designated\nspot to attack the monster passing the area.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("火墙 \n\n瞬发魔法\n魔法消耗 {2}\n\n在指定地点构筑火墙，攻击经过该区域的怪物。\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.FireBang:
-                    SkillButton.Hint = string.Format("Fire Bang\n\nInstant Casting\nMana Cost {2}\n\nFire Bang will burst out fire at a designated spot to\nburn all the monster within the area.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("爆裂火焰 \n\n瞬发魔法\n魔法消耗 {2}\n\n在指定地点喷出火焰，燃烧该区域内的所有怪物\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.ThunderStorm:
-                    SkillButton.Hint = string.Format("Thunderstorm \n\nInstant Casting\nMana Cost {2}\n\nCreates a thunder storm around the caster causing\ndamage to all Undead enemies with its range.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("地狱雷光 \n\n瞬发魔法\n魔法消耗 {2}\n\n在指定区域产生雷暴攻击怪物\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.MagicShield:
-                    SkillButton.Hint = string.Format("Magic Shield\n\nInstant Casting\nMana Cost {2}\n\nCreates a protective field around the caster that absorbs damage.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("魔法盾 \n\n瞬发魔法\n魔法消耗 {2}\n\n使用魔法在你周围创建一层护盾\n\n周围的攻击伤害将被护盾吸收\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.TurnUndead:
-                    SkillButton.Hint = string.Format("Turn Undead\n\nInstant Casting\nMana Cost {2}\n\nChance to kill any undead target that meets the level requirements, in a single cast.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("圣言术 \n\n瞬发魔法\n魔法消耗 {2}\n\n这种魔法将带来明亮的光芒，攻击不死怪物\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.IceStorm:
-                    SkillButton.Hint = string.Format("Ice Storm\n\nInstant Castin\nMana Cost {2}\n\nThis skill will make an ice storm with in a designated \narea to attack the monsters with in\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("冰咆哮 \n\n瞬发\n魔法消耗 {2}\n\n此技能会在指定区域内制造暴风雪，攻击指定区域的怪物。\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.FlameDisruptor:
-                    SkillButton.Hint = string.Format("Flame Disruptor\n\nInstant Casting\nMana Cost {2}\n\nFlame from the underground will be brought\ninto surface to attack the mobs.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("灭天火 \n\n瞬发魔法\n魔法消耗 {2}\n\n使用地狱之火攻击怪物\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.FrostCrunch:
-                    SkillButton.Hint = string.Format("Frost Crunch\n\nInstant Casting\nMana Cost {2}\n\nFreeze the elements in the air around the \nmonster to slow them down\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("寒冰掌 \n\n瞬发魔法\n魔法消耗 {2}\n\n冻结怪物周围空气中的元素以减缓它们的速度\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Mirroring:
-                    SkillButton.Hint = string.Format("Mirroring\n\nInstant Casting\nMana Cost {2}\n\nCreate a mirror image of yourself to attack\nthe monsters together\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("分身术 \n\n瞬发魔法\n魔法消耗 {2}\n\n创造自己的镜像来一起攻击怪物\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.FlameField:
-                    SkillButton.Hint = string.Format("Flame Field\n\nInstant Casting\nMana Cost {2}\n\nA powerful spell of fire is used to \ndamage surrounding enemies.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("火龙气焰 \n\n瞬发魔法\n魔法消耗 {2}\n\n强大的火焰法术\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Vampirism:
-                    SkillButton.Hint = string.Format("Vampirism\n\nInstant Casting\nMana Cost {2}\n\nUsing Mp take away monsters Hp to\nincrease your Hp.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("噬血术 \n\n瞬发魔法\n魔法消耗 {2}\n\n吸血\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Blizzard:
-                    SkillButton.Hint = string.Format("Blizzard\n\nChannelling Casting\nMana Cost {2}\n\nConcentrate inner force and spreads it to all\nthe parts of your body.This will enhance the\nprotection from enemies. Defence power and duration\ntime will depend on the skill level. Once the skill\nhas been used, you will have to wait to use it again.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("天霜冰环 \n\n引导施法\n魔法消耗 {2}\n\n凝聚内力将其扩散至全身以增强防御力\n持续时间取决于技能等级\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.MeteorStrike:
-                    SkillButton.Hint = string.Format("Meteor Strike\n\nChannelling Casting\nMana Cost {2}\n\nAttacks all monsters within 5x5 square area with lumps \nof fire falling from the sky.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("流星火雨 \n\n引导施法\n魔法消耗 {2}\n\n召唤从天而降的火焰攻击5X5范围内的目标\n有较长的施法时间. 施法者被攻击将打断施法\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.IceThrust:
-                    SkillButton.Hint = string.Format("Ice Thrust\n\nInstant Casting\nMana Cost {2}\n\nAttack monsters by creating an ice pillar.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("冰焰术 \n\n瞬发魔法魔法消耗 {2}\n\n制造冰柱来攻击怪物\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.MagicBooster:
-                    SkillButton.Hint = string.Format("Magic Booster\n\nLasting Effect\nMana Cost {2}\n\nIncrease magical damage, but consume additional MP.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("深延术 \n\n持续效果魔法消耗 {2}\n\n增加魔法伤害，但会消耗额外魔法\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.FastMove:
-                    SkillButton.Hint = string.Format("Fast Move\n\nChannelling Casting\nMana Cost {2}\n\nIncrease movement with rooted skills.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("天上秘术 \n\n引导施法\n魔法消耗 {2}\n\n开启后天霜冰环和流星火雨无需引导\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.StormEscape:
-                    SkillButton.Hint = string.Format("Storm Escape\n\nChannelling Casting\nMana Cost {2}\n\nParalyze nearby enemies and teleport to the designated location.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("雷仙风 \n\n引导施法\n魔法消耗 {2}\n\n麻痹附近的敌人并传送到指定位置\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Blink:
-                    SkillButton.Hint = string.Format("Blink\n\nInstant Casting\nMana Cost {2}\n\nTeleport to a random spot near you.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("移行换位 \n\n瞬发魔法\n魔法消耗 {2}\n\n瞬移至你附近的随机位置\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
 
                 //Taoist
                 case Spell.SpiritSword:
-                    SkillButton.Hint = string.Format("Spirit Sword\n\nIncreases the chance of hitting the target in\n melee combat.\nPassive Skill\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("精神力战法 \n\n增加命中率\n被动技能\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Healing:
-                    SkillButton.Hint = string.Format("Healing\n\nInstant Casting\nMana Cost {2}\n\nHeals a single target \nrecovering HP over time.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("治愈术 \n\n瞬发魔法\n魔法消耗 {2}\n\n治愈单个目标持续回血\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Poisoning:
-                    SkillButton.Hint = string.Format("Poisoning\n\nInstant Casting\nMana Cost {2}\n\nRequired Items: Poison Powder\n\nThrow poison at mobs to weaken them.\nUse green poison to weaken Hp.\nUse red poison to weaken defense.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("施毒术 \n\n瞬发魔法\n魔法消耗 {2}\n\n需要物品: 毒粉\n\nThrow poison at mobs to weaken them.\nUse green poison to weaken Hp.\nUse red poison to weaken defense.\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.SoulFireBall:
-                    SkillButton.Hint = string.Format("Soul FireBall\n\nInstant Casting\nMana Cost {2}\n\nRequired Items: Amulet\n\nPut power into a scroll and throw it at \na mob. The scroll will burst into fire.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("灵魂火符 \n\n瞬发魔法\n魔法消耗 {2}\n\n需要物品: 护身符\n\nPut power into a scroll and throw it at \na mob. The scroll will burst into fire.\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.SoulShield:
-                    SkillButton.Hint = string.Format("Soul Shield\n\nInstant Casting\nMana Cost {2}\n\nRequired Items: Amulet\n\nBless caster and party members to strengthen their magic\ndefence.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("幽灵盾 \n\n瞬发魔法\n魔法消耗 {2}\n\n需要物品: 护身符\n\nBless the partymembers to strengthen there magic\ndefence.\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.BlessedArmour:
-                    SkillButton.Hint = string.Format("Blessed Armour\n\nInstant Casting\nMana Cost {2}\n\nRequired Items: Amulet\n\nBless caster and party members to strengthen their defence.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("神圣战甲术 \n\n瞬发魔法\n魔法消耗 {2}\n\n需要物品: 护身符\n\nBless the partymemebers to strenghten there defence.\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.TrapHexagon:
-                    SkillButton.Hint = string.Format("Trap Hexagon\n\nInstant Casting\nMana Cost {2}\n\nRequired Items: Amulet\n\nTrap the monster with this magical power\n to stop them from moving. Any damages\nfrom outside source will allow the monsters\nto move again.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("困魔咒 \n\n瞬发魔法\n魔法消耗 {2}\n\n需要物品: 护身符\n\nTrap the monster with this magical power\n to stop them from moving. Any damages\nfrom outside source will allow the monsters\nto move again.\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.SummonSkeleton:
-                    SkillButton.Hint = string.Format("Summon Skeleton\n\nInstant Casting\nMana Cost {2}\n\nSummons a Powerful AOE Skeleton, Which will Fight Side By Side With You\n\nRequired Items: Amulet.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("召唤骷髅 \n\n\n瞬发魔法\n魔法消耗 {2}\n\nSummons a Powerful AOE Skeleton, Which will Fight Side By Side With You\n\nRequired Items: Amulet.\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Hiding:
-                    SkillButton.Hint = string.Format("Hiding\n\nInstant Casting\nMana Cost {2}\n\nRequired Items: Amulet\n\nMobs will not be able to spot you for a short\nmoment.Mobs will notice you if you start\nto move around.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("隐身术 \n\n瞬发魔法\n魔法消耗 {2}\n\nn需要物品: 护身符\n\nMobs will not be able to spot you for a short\nmoment.Mobs will notice you if you start\nto move around.\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.MassHiding:
-                    SkillButton.Hint = string.Format("Mass-Hiding\n\nInstant Casting\nMana Cost {2}\n\nRequired Items: Amulet\n\nMobs will not be able to spot you or your \nparty members for a short moment. \nMobs will notice you and your party if \nyou start to move around.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("集体隐身术 \n\n瞬发魔法\n魔法消耗 {2}\n\nn需要物品: 护身符\n\nMobs will not be able to spot you or your \nparty members for a short moment. \nMobs will notice you and your party if \nyou start to move around.\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Revelation:
-                    SkillButton.Hint = string.Format("Revelation\n\nInstant Casting\nMana Cost {2}\n\nYou will be able to read Hp of others\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("心灵启示 \n\n瞬发魔法\n魔法消耗 {2}\n\n您将能够查看其他人的 HP\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.MassHealing:
-                    SkillButton.Hint = string.Format("Mass-Healing\n\nInstant Casting\nMana Cost {2}\n\nHeal all injured players in the specified\narea by surrounding them with mana.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("群体治疗术 \n\n瞬发魔法\n魔法消耗 {2}\n\n范围性群体治疗\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.SummonShinsu:
-                    SkillButton.Hint = string.Format("Summon Shinsu\n\nInstant Casting\nMana Cost {2}\n\nSummons a Dog, That Will fight Side By Side with you.\nRequired Items: Amulet.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("召唤神兽 \n\n瞬发魔法\n魔法消耗 {2}\n\n召唤一只狗与你并肩作战\n需要物品: 护身符.\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.UltimateEnhancer:
-                    SkillButton.Hint = string.Format("Ultimate Enhancer\n\nInstant Casting\nMana Cost {2}\n\nRequired Items: Amulet\n\nAbsorb the energy from the surroundings to increase the stats.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("无极真气 \n\n瞬发魔法\n魔法消耗 {2}\n\n需要物品: 护身符\n\n吸收天地灵气来增加属性\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.EnergyRepulsor:
-                    SkillButton.Hint = string.Format("Energy Repulsor\n\nInstant Casting\nMana Cost {2}\n\nConcentrate your energy for one big blast to push away the monsters around you.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("气功波 \n\n瞬发魔法\n魔法消耗 {2}\n\n集中能量将周围的怪物推开\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Purification:
-                    SkillButton.Hint = string.Format("Purification\n\nInstant Casting\nMana Cost {2}\n\nHelp others to recover from poisoning and\nparalysis using this skill.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("净化术 \n\n瞬发魔法\n魔法消耗 {2}\n\n帮助其他人从中毒和麻痹中恢复\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.SummonHolyDeva:
-                    SkillButton.Hint = string.Format("Summon HolyDeva\n\nInstant Casting\nMana Cost {2}\n\nRequired Items: Amulet\n\nSummon a holy spirit.This holy spirit will\nuse strong thunder to attack monsters.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("召唤月灵 \n\n瞬发魔法\n魔法消耗 {2}\n\n需要物品: 护身符\n\n召唤一个圣灵\n这个圣灵会使用强大的雷电来攻击怪物\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Curse:
-                    SkillButton.Hint = string.Format("Curse\n\nInstant Casting\nMana Cost {2}\n\nRequired Items: Amulet + Poison\n\nReduces targets AttackSpeed, DC ,MC and SC.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("诅咒术 \n\n瞬发魔法\n魔法消耗 {2}\n\n需要物品: 护身符 + Poison\n\n削弱怪物攻击 (攻击速度, 攻击力 ,魔法力 ,道术力)\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Hallucination:
-                    SkillButton.Hint = string.Format("Hallucination\n\nInstant Casting\nMana Cost {2}\n\nRequired Items: Amulet\n\nThe monster will only see hallucination \nand attack anyone on the way\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("迷魂术 \n\n瞬发魔法\n魔法消耗 {2}\n\n需要物品: 护身符\n\nThe monster will only see hallucination \nand attack anyone on the way\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Reincarnation:
-                    SkillButton.Hint = string.Format("Reincarnation\n\nInstant Casting\nMana Cost {2}\n\nRequired Items: Amulet\n\nRevives a dead players\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("复活术 \n\n瞬发魔法\n魔法消耗 {2}\n\n需要物品: 护身符\n\n复活死去的玩家\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.PoisonCloud:
-                    SkillButton.Hint = string.Format("Poison Cloud\n\nInstant Casting\nMana Cost {2}\n\nRequired Items: GreenPoison\n\nThrow the amulet and a very strong\npoison cloud will appear in the area.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("毒云 \n\n瞬发魔法\n魔法消耗 {2}\n\n需要物品: GreenPoison\n\nThrow the amulet and a very strong\npoison cloud will appear in the area.\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.EnergyShield:
-                    SkillButton.Hint = string.Format("Energy Shield\n\nInstant Casting\nMana Cost {2}\n\nRequired Items: Amulet\n\nCastable on self and friendly targets.\nReflects a percentage of received damage, back to the attacker.\n\nCurrent Skill Level {0}\n\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("先天气功 \n\n瞬发魔法\n魔法消耗 {2}\n\n需要物品: 护身符\n\n受到怪物攻击时，创建一个能量盾以立即治疗\n当前等级 {0}\n\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Plague:
-                    SkillButton.Hint = string.Format("Plague\n\nInstant Casting\nMana Cost {2}\n\nRequired Items: Amulet + Poison\n\nDecreases targets MP and inflict target with various debuffs\nExample: Stun , Curse , Poison and Slow.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("瘟疫 \n\n瞬发魔法\n魔法消耗 {2}\n\n需要物品: 护身符 + Poison\n\nDecreases targets MP and inflict target with various debuffs\nExample: Stun , Curse , Poison and Slow.\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.HealingCircle:
-                    SkillButton.Hint = string.Format("Healing Circle\n\nInstant Casting\nMana Cost {2}\n\nTreatment area friendly target, and the enemy caused spell damage.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("阴阳五行阵 \n\n瞬发魔法\n魔法消耗 {2}\n\n治疗区域内的友方目标，并对敌人造成法术伤害\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.PetEnhancer:
-                    SkillButton.Hint = string.Format("Pet Enhancer\n\nInstant Casting\nMana Cost {2}\n\nStrengthening pets defence and power.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("血龙水 \n\n瞬发魔法\n魔法消耗 {2}\n\n增强宠物的防御和力量\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
 
                 //Assassin
                 case Spell.FatalSword:
-                    SkillButton.Hint = string.Format("Fatal Sword\n\nPassive Skill\n\nIncrease attack damage on the monsters.\nalso increases accuracy a little.\nPassive Skill\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("绝命剑法 \n\n增加伤害以及少许准确\n\nPassive Skill\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.DoubleSlash:
-                    SkillButton.Hint = string.Format("Double Slash\n\nToggle Skill\nMana Cost {2} per attack\n\nSlash the monster twice in a quick motion\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("风剑术 \n\n魔法消耗 {2}\n\n猛击敌人两次\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Haste:
-                    SkillButton.Hint = string.Format("Haste\n\nBuff Skill\nMana Cost {2}\n\nIncrease the attack speed\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("体迅风 \n\n魔法消耗 {2}\n\n增加攻速\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.FlashDash:
-                    SkillButton.Hint = string.Format("Flash Dash\n\nActive Skill\nMana Cost {2}\n\nAttack a monster with quick slash and\nparalyse the monster\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("拔刀术 \n\n魔法消耗 {2}\n\n攻击一个目标,并有一定几率令其立刻沉默且不可移动\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.HeavenlySword:
-                    SkillButton.Hint = string.Format("Heavenly Sword\n\nActive Skill\nMana Cost {2}\n\nAttack monsters with in 2 steps radius\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("迁移剑 \n\n魔法消耗 {2}\n\n集中力量到武器上, 攻击两步内的敌人\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.FireBurst:
-                    SkillButton.Hint = string.Format("Fire Burst\n\nActive Skill\nMana Cost {2}\n\nPush away mobs surrounding you\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("烈风击 \n\n魔法消耗 {2}\n\n推开等级低于你的敌人\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Trap:
-                    SkillButton.Hint = string.Format("Trap\n\nInstant casting\nCooldown Time 60 secs\n\nMana Cost {2}\n\nTrap the monster for a short while.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("捕缚术 \n\n瞬发魔法 CoolTime 60 secs\n\n魔法消耗 {2}\n\n设置一个屏障来困住目标, 被攻击时脱离\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.MoonLight:
-                    SkillButton.Hint = string.Format("Moonlight\n\nBuff Skill\nMana Cost {2}\n\nHide yourself from monster by turning invisible\nGreater damage is done when you attack monster using\nthis skill.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("月影术 \n\n魔法消耗 {2}\n\n使自己隐身\n在此状态下攻击怪物将造成更高的伤害\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.MPEater:
-                    SkillButton.Hint = string.Format("MP Eater\n\nPassive Skill\n\nAbsorb monsters MP to recharge casters MP\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("吸气 \n\n被动\n魔法消耗 {2}\n\n汲取目标法力来恢复自己的法力\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.SwiftFeet:
-                    SkillButton.Hint = string.Format("Swift Feet\n\nBuff Skill\nMana Cost {2}\n\nIncreased Running Speed whilst active\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("轻身步 \n\n魔法消耗 {2}\n\n增加移动速度\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.LightBody:
-                    SkillButton.Hint = string.Format("Light Body\n\nBuff Skill\nMana Cost {2}\n\nLighten your body using this skill and move faster\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("风身术 \n\n魔法消耗 {2}\n\n身体变轻, 移动速度加快\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.PoisonSword:
-                    SkillButton.Hint = string.Format("Poison Sword\n\nActive Skill\nMana Cost {2}\n\nPoison the monsters with a slash of you\nsword.Poison effect will damage the monster\nover time.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("猛毒剑气 \n\n魔法消耗 {2}\n\n在攻击时释放毒气\n对目标造成持续伤害\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.DarkBody:
-                    SkillButton.Hint = string.Format("Dark Body\n\nActive Skill\nMana Cost {2}\n\nCreate an illusion of yourself to attack\nthe monster while you become invisible.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("烈火身 \n\n魔法消耗 {2}\n\n制造一个幻象攻击目标\n而自己处于隐身状态\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.CrescentSlash:
-                    SkillButton.Hint = string.Format("Crescent Slash\n\nMana Cost {2}\n\nBurst out of the power of your sword and attack all monsters around you.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("CrescentSlash \n\n魔法消耗 {2}\n\n爆发剑的力量, 攻击扇形范围内的所有敌人\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.Hemorrhage:
-                    SkillButton.Hint = string.Format("Hemorrhage\n\nPassive Skill\n\nChance to deal critical damage and inflict bleeding damage.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("血风击 \n\n魔法消耗 {2}\n\n被动\n一定几率暴击并造成流血伤害\n\n当前等级 {0}\n下一等级 {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
                 case Spell.MoonMist:
-                    SkillButton.Hint = string.Format("Moon Mist\n\nBuff Skill\nMana Cost {2}\n\nAbility to hide your self from Monster\nYour first attack will be stronger than normal.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
+                    SkillButton.Hint = string.Format("月华乱舞\n\nBuff Skill\n魔法消耗 {2}\n\nAbility to hide your self from Monster\nYour first attack will be stronger than normal.\n\nCurrent Skill Level {0}\nNext Level {1}", Magic.Level, Magic.Level == 0 ? Magic.Level1 : Magic.Level == 1 ? Magic.Level2 : Magic.Level == 2 ? Magic.Level3 : 0, Magic.BaseCost);
                     break;
 
                 //Archer
@@ -3722,7 +3740,7 @@ namespace Client.MirScenes.Dialogs
 
                     break;
             }
-            
+
 
             SkillButton.Index = Magic.Icon * 2;
             SkillButton.PressedIndex = Magic.Icon * 2 + 1;

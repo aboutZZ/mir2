@@ -400,12 +400,12 @@ namespace Client.MirScenes.Dialogs
         {
             if (SelectedNPC == null || !SelectedNPC.Info.CanTeleportTo) return;
 
-            MirMessageBox messageBox = new MirMessageBox($"Teleport to this NPC for {GameScene.TeleportToNPCCost} Gold?", MirMessageBoxButtons.YesNo);
+            MirMessageBox messageBox = new MirMessageBox($"花费 {GameScene.TeleportToNPCCost} 金币以传送至该 NPC？", MirMessageBoxButtons.YesNo);
             messageBox.YesButton.Click += (o, e) =>
             {
                 if (GameScene.Gold < GameScene.TeleportToNPCCost)
                 {
-                    MirMessageBox messageBox2 = new MirMessageBox("Not enough Gold.", MirMessageBoxButtons.OK);
+                    MirMessageBox messageBox2 = new MirMessageBox("金币不足", MirMessageBoxButtons.OK);
                     messageBox2.Show();
                     return;
                 }
@@ -618,7 +618,7 @@ namespace Client.MirScenes.Dialogs
 
             if (path == null || path.Count == 0)
             {
-                GameScene.Scene.ChatDialog.ReceiveChat("Could not find suitable path.", ChatType.System);
+                GameScene.Scene.ChatDialog.ReceiveChat("无法自动寻路，找不到合适的路径", ChatType.System);
             }
             else
             {

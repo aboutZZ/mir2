@@ -207,7 +207,7 @@ namespace Server.MirObjects
                         {
                             if (player.Account.AdminAccount && player.Observer) return;
                             player.Struck(Value, DefenceType.MAC);
-                        }                 
+                        }
                     }
                     break;
                 case Spell.MapQuake1:
@@ -598,7 +598,7 @@ namespace Server.MirObjects
             if (Spell == Spell.Portal && Caster != null)
             {
                 var portal = Envir.Spells.SingleOrDefault(ob => ob.Node != null && ob != this
-                    && ob.Spell == Spell.Portal    
+                    && ob.Spell == Spell.Portal
                     && ob.Caster == Caster);
 
                 if (portal != null)

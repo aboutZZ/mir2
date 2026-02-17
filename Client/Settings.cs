@@ -66,6 +66,9 @@ namespace Client
         public static bool LogChat = true;
         public static int RemainingErrorLogs = 100;
 
+        // 内挂
+        public static HashSet<string> ItemFilterNames = new HashSet<string>();
+
         //Graphics
         public static bool FullScreen = true, Borderless = true, TopMost = true, MouseClip = false;
         public static string FontName = "Arial"; //"MS Sans Serif"
@@ -199,6 +202,7 @@ namespace Client
 
         public static void Load()
         {
+            MirMarco.LoadMarcoConfig(ItemFilterNames);
             GameLanguage.LoadClientLanguage(@".\Language.ini");
 
             if (!Directory.Exists(DataPath)) Directory.CreateDirectory(DataPath);

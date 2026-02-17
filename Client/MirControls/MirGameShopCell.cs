@@ -33,12 +33,13 @@ namespace Client.MirControls
 
             nameLabel = new MirLabel
             {
-                Size = new Size(125, 15),
+                Size = new Size(125, 18), // 原值13, 改为 10
                 DrawFormat = TextFormatFlags.HorizontalCenter,
-                Location = new Point(0, 13),
+                Location = new Point(0, 10), // 原值13, 改为 10
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 8F),
+                // ZZ [商城]调整物品名称字体大小
+                Font = new Font(Settings.FontName, 10F),
             };
 
             goldLabel = new MirLabel
@@ -48,7 +49,7 @@ namespace Client.MirControls
                 Location = new Point(2, 102),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 8F)
+                Font = new Font(Settings.FontName, 10F)
             };
 
             gpLabel = new MirLabel
@@ -58,7 +59,7 @@ namespace Client.MirControls
                 Location = new Point(2, 81),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 8F)
+                Font = new Font(Settings.FontName, 10F)
             };
 
             StockLabel = new MirLabel
@@ -68,8 +69,8 @@ namespace Client.MirControls
                 Parent = this,
                 NotControl = true,
                 ForeColour = Color.Gray,
-                Font = new Font(Settings.FontName, 7F),
-                Text = "STOCK:"
+                Font = new Font(Settings.FontName, 10F),
+                Text = "库存:"
             };
 
             stockLabel = new MirLabel
@@ -86,10 +87,10 @@ namespace Client.MirControls
             {
                 Size = new Size(30, 20),
                 DrawFormat = TextFormatFlags.Right,
-                Location = new Point(16, 60),
+                Location = new Point(56, 60),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 7F),
+                Font = new Font(Settings.FontName, 10F),
             };
 
 

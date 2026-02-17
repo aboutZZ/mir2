@@ -33,7 +33,7 @@ namespace Client.MirScenes.Dialogs
                 PressedIndex = 522,
                 Sound = SoundList.ButtonA,
             };
-            ConfirmButton.Click += (o, e) => 
+            ConfirmButton.Click += (o, e) =>
             {
                 ChangeLockState(!GameScene.User.TradeLocked);
                 Network.Enqueue(new C.TradeConfirm { Locked = GameScene.User.TradeLocked });
@@ -81,7 +81,7 @@ namespace Client.MirScenes.Dialogs
             {
                 if (GameScene.SelectedCell == null && GameScene.Gold > 0)
                 {
-                    MirAmountBox amountBox = new MirAmountBox("Trade Amount:", 116, GameScene.Gold);
+                    MirAmountBox amountBox = new MirAmountBox("交易金额:", 116, GameScene.Gold);
 
                     amountBox.OKButton.Click += (c, a) =>
                     {

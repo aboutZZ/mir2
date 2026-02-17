@@ -112,7 +112,7 @@ namespace Client.MirScenes.Dialogs
             };
             HPButton.Click += (o1, e) =>
             {
-                MirAmountBox amountBox = new MirAmountBox("Enter a value", 116, 99);
+                MirAmountBox amountBox = new MirAmountBox("请输入阈值百分比", 116, 99);
                 amountBox.OKButton.Click += (o, a) => Network.Enqueue(new C.SetAutoPotValue { Stat = Stat.HP, Value = amountBox.Amount });
                 amountBox.Show();
             };
@@ -131,7 +131,7 @@ namespace Client.MirScenes.Dialogs
             };
             MPButton.Click += (o1, e) =>
             {
-                MirAmountBox amountBox = new MirAmountBox("Enter a value", 116, 99);
+                MirAmountBox amountBox = new MirAmountBox("请输入阈值百分比", 116, 99);
                 amountBox.OKButton.Click += (o, a) => Network.Enqueue(new C.SetAutoPotValue { Stat = Stat.MP, Value = amountBox.Amount });
                 amountBox.Show();
             };
@@ -586,7 +586,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(71, 41),
                 DrawFormat = TextFormatFlags.Default,
                 Parent = this,
-            }; 
+            };
             ExperienceBar = new MirImageControl
             {
                 Index = 1953,
@@ -771,11 +771,11 @@ namespace Client.MirScenes.Dialogs
                     Library = Libraries.Prguse,
                     Parent = this,
                     Sound = SoundList.ButtonA,
-                    Hint = $"Hero Behaviour: {Enum.GetName(typeof(HeroBehaviour), i)}",
+                    Hint = $"英雄行为: {Enum.GetName(typeof(HeroBehaviour), i)}",
                     AllowDisabledMouseOver = true
                 };
                 BehaviourButtons[i].Click += (o, e) =>
-                {                    
+                {
                     SetBehaviour(hb);
                 };
             }
@@ -825,7 +825,7 @@ namespace Client.MirScenes.Dialogs
                 Avatars[i] = new HeroManageAvatar() { Parent = this };
                 Avatars[i].Click += (o, e) =>
                 {
-                    MirMessageBox messageBox = new MirMessageBox($"Would you like to make {Avatars[index].Info.Name} your active Hero?", MirMessageBoxButtons.YesNo);
+                    MirMessageBox messageBox = new MirMessageBox($"您想让 {Avatars[index].Info.Name} 成为您的当前英雄吗?", MirMessageBoxButtons.YesNo);
                     messageBox.YesButton.Click += (o, e) => Network.Enqueue(new C.ChangeHero { ListIndex = index + 1 });
                     messageBox.Show();
                 };
@@ -889,7 +889,7 @@ namespace Client.MirScenes.Dialogs
         public HeroManageAvatar()
         {
             Index = DefaultIndex;
-            Library = Libraries.Prguse;            
+            Library = Libraries.Prguse;
         }
     }
 }

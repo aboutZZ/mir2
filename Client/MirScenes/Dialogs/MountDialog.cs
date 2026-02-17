@@ -75,7 +75,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Sound = SoundList.ButtonA,
             };
-            HelpButton.Click += (o, e) => GameScene.Scene.HelpDialog.DisplayPage("Mounts");
+            HelpButton.Click += (o, e) => GameScene.Scene.HelpDialog.DisplayPage("坐骑");
 
             MountImage = new MirAnimatedControl
             {
@@ -218,7 +218,7 @@ namespace Client.MirScenes.Dialogs
                 if (item != null)
                 {
                     MountName.Text = item.FriendlyName;
-                    MountLoyalty.Text = string.Format("{0} / {1} Loyalty", item.CurrentDura, item.MaxDura);
+                    MountLoyalty.Text = string.Format("{0} / {1} 忠诚度", item.CurrentDura, item.MaxDura);
                 }
             }
 

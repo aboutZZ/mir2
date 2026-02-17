@@ -1,4 +1,4 @@
-﻿using SlimDX;
+using SlimDX;
 using SlimDX.Direct3D9;
 using System.IO.Compression;
 using Frame = Client.MirObjects.Frame;
@@ -460,7 +460,7 @@ namespace Client.MirGraphics
                 TransformMounts[i].Initialize();
                 Progress++;
             }
-            
+
             Loaded = true;
         }
 
@@ -677,7 +677,7 @@ namespace Client.MirGraphics
             if (point.X >= Settings.ScreenWidth || point.Y >= Settings.ScreenHeight || point.X + mi.Width < 0 || point.Y + mi.Height < 0)
                 return;
 
-            DXManager.DrawOpaque(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new Vector3((float)point.X, (float)point.Y, 0.0F), colour, opacity); 
+            DXManager.DrawOpaque(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new Vector3((float)point.X, (float)point.Y, 0.0F), colour, opacity);
 
             mi.CleanTime = CMain.Time + Settings.CleanDelay;
         }
@@ -742,7 +742,7 @@ namespace Client.MirGraphics
             if (section.Bottom > mi.Height)
                 section.Height -= section.Bottom - mi.Height;
 
-            DXManager.DrawOpaque(mi.Image, section, new Vector3((float)point.X, (float)point.Y, 0.0F), colour, opacity); 
+            DXManager.DrawOpaque(mi.Image, section, new Vector3((float)point.X, (float)point.Y, 0.0F), colour, opacity);
 
             mi.CleanTime = CMain.Time + Settings.CleanDelay;
         }
@@ -761,7 +761,7 @@ namespace Client.MirGraphics
 
             Matrix matrix = Matrix.Scaling(scaleX, scaleY, 0);
             DXManager.Sprite.Transform = matrix;
-            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new Vector3((float)point.X / scaleX, (float)point.Y / scaleY, 0.0F), Color.White); 
+            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new Vector3((float)point.X / scaleX, (float)point.Y / scaleY, 0.0F), Color.White);
 
             DXManager.Sprite.Transform = Matrix.Identity;
 
@@ -962,9 +962,9 @@ namespace Client.MirGraphics
             {
                 int x = p.X;
                 int y = p.Y;
-                
+
                 int index = (y * (w << 2)) + (x << 2) + 3;
-                
+
                 byte col = Data[index];
 
                 if (col == 0) return false;

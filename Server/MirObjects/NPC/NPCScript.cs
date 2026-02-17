@@ -1114,7 +1114,7 @@ namespace Server.MirObjects
                 case HeroCreateKey:
                     if (player.Info.Level < Settings.Hero_RequiredLevel)
                     {
-                        player.ReceiveChat(String.Format("You have to be at least level {0} to create a hero.", Settings.Hero_RequiredLevel), ChatType.System);
+                        player.ReceiveChat(String.Format("需要等级 {0} 才能创建英雄", Settings.Hero_RequiredLevel), ChatType.System);
                         break;
                     }
                     player.CanCreateHero = true;

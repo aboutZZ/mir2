@@ -1,4 +1,6 @@
-﻿public enum MouseCursor : byte
+﻿using System.ComponentModel;
+
+public enum MouseCursor : byte
 {
     None,
     Default,
@@ -89,12 +91,19 @@ public enum GMOptions : byte
 
 public enum AwakeType : byte
 {
+    [Description("-")]
     None = 0,
+    [Description("攻击")]
     DC,
+    [Description("魔法")]
     MC,
+    [Description("道术")]
     SC,
+    [Description("防御")]
     AC,
+    [Description("魔御")]
     MAC,
+    [Description("HPMP")]
     HPMP,
 }
 
@@ -1052,12 +1061,19 @@ public enum SpecialItemMode : short
 [Flags]
 public enum RequiredClass : byte
 {
+    [Description("战士")]
     Warrior = 1,
+    [Description("法师")]
     Wizard = 2,
+    [Description("道士")]
     Taoist = 4,
+    [Description("刺客")]
     Assassin = 8,
+    [Description("弓箭手")]
     Archer = 16,
+    [Description("战法道")]
     WarWizTao = Warrior | Wizard | Taoist,
+    [Description("所有职业")]
     None = WarWizTao | Assassin | Archer
 }
 
@@ -1381,6 +1397,7 @@ public enum BuffType : byte
     MagicDefence,
     WonderDrug,
     Knapsack,
+    Accuracy, // 准确
 }
 
 [Flags]

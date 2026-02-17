@@ -1,4 +1,4 @@
-﻿using Server.Library.MirDatabase;
+using Server.Library.MirDatabase;
 using Server.MirEnvir;
 using Server.MirObjects;
 
@@ -654,7 +654,7 @@ namespace Server
             SelectedBuff.Icon = temp;
             GuildsChanged = true;
         }
-        #region GT  
+        #region GT
         private void GTPriceBox_TextChanged(object sender, EventArgs e)
         {
             if (ActiveControl != sender) return;

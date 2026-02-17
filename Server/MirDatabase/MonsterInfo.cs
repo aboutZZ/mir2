@@ -23,6 +23,20 @@ namespace Server.MirDatabase
         public int Index;
         public string Name = string.Empty;
 
+        public string NameLocale = string.Empty;
+        public string FriendlyName
+        {
+            get
+            {
+                // ZZ 客户端显示汉化名字
+                string temp = string.IsNullOrEmpty(NameLocale) ? Name : NameLocale;
+                // string temp = Name;
+                temp = Regex.Replace(temp, @"\d+$", string.Empty); //hides end numbers
+                temp = Regex.Replace(temp, @"\[[^]]*\]", string.Empty); //hides square brackets
+                return temp;
+            }
+        }
+
         public Monster Image;
         public byte AI, Effect, ViewRange = 7, CoolEye;
         public ushort Level;
@@ -137,7 +151,8 @@ namespace Server.MirDatabase
 
         public string GameName
         {
-            get { return Regex.Replace(Name, @"[\d-]", string.Empty); }
+            // ZZ 客户端显示怪物名称
+            get { return Regex.Replace(/*Name*/FriendlyName, @"[\d-]", string.Empty); }
         }
 
         public void Save(BinaryWriter writer)
@@ -301,6 +316,16 @@ namespace Server.MirDatabase
                 info.Item = Envir.GetItemInfo(parts[1]);
                 if (info.Item == null) return null;
 
+                // ZZ 修改爆率, 爆率极低的都调整下, 使得低概率爆的装备几率控制在200附近, 不然刷到天荒地老也爆不出来
+                float scale = 1.0f;
+                var newChance = info.Chance;
+                if (info.Chance > 1000) newChance = (int)(info.Chance * (10 / (10 + Math.Pow(info.Chance, 0.8))) / scale) + 80;
+                if (info.Chance > 100) newChance = (int)(info.Chance * (10 / (10 + Math.Pow(info.Chance, 0.7))) / scale) + 20;
+                else if (info.Chance > 10) newChance = (int)(info.Chance * (10 / (10 + Math.Pow(info.Chance, 0.4))) / scale);
+                else if(info.Chance > 5) newChance -= 1;
+                //if (info.Chance == 10000) MessageQueue.Enqueue($"调整爆率: {info.Item.NameLocale} 1/{info.Chance} => 1/{newChance}");
+                info.Chance = newChance;
+
                 if (parts.Length > 2)
                 {
                     string dropRequirement = parts[2];
@@ -352,7 +377,7 @@ namespace Server.MirDatabase
 
                 if (drop == null)
                 {
-                    MessageQueue.Enqueue(string.Format("Could not load Drop: {0}, Line {1}", name, lines[i]));
+                    MessageQueue.Enqueue(string.Format("无法加载爆率文件: {0}, 行 {1}", name, lines[i]));
                     continue;
                 }
 
@@ -408,7 +433,7 @@ namespace Server.MirDatabase
 
                 if (drop == null)
                 {
-                    MessageQueue.Enqueue(string.Format("Could not load Drop: {0}, Line {1}", name, line));
+                    MessageQueue.Enqueue(string.Format("无法加载爆率文件: {0}, 行 {1}", name, line));
                     continue;
                 }
 
@@ -454,16 +479,17 @@ namespace Server.MirDatabase
 
         public DropRewardInfo AttemptDrop(int itemDropRatePercentOffset = 0, int goldDropRatePercentOffset = 0)
         {
-            int rate = (int)(Chance / (Settings.DropRate));
+            var rate = (Chance / (Settings.DropRate));
 
-            if (itemDropRatePercentOffset > 0)
+            if (itemDropRatePercentOffset > 0) // 爆率加成
             {
                 rate -= (rate * itemDropRatePercentOffset) / 100;
             }
 
             if (rate < 1) rate = 1;
 
-            if (Envir.Random.Next(rate) != 0)
+            // 这里把 rate 乘 100. 避免像 1/2 这种概率, 爆率加成 25% 后, 就会变成必爆, 而不是 1/1.6
+            if (Envir.Random.Next((int)(rate * 100)) > 100)
             {
                 return null;
             }
@@ -476,7 +502,7 @@ namespace Server.MirDatabase
                 int lowerGoldRange = (int)(Gold / 2);
                 int upperGoldRange = (int)(Gold + Gold / 2);
 
-                if (goldDropRatePercentOffset > 0)
+                if (goldDropRatePercentOffset > 0) // 金币掉落加成
                 {
                     lowerGoldRange += (lowerGoldRange * goldDropRatePercentOffset) / 100;
                 }

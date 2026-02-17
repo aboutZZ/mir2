@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 
 public class SelectInfo
 {
@@ -81,13 +81,14 @@ public class QuestItemReward
 
     public QuestItemReward(BinaryReader reader)
     {
-        Item = new ItemInfo(reader);
+        // ZZ 物品汉化(任务奖励)
+        Item = new ItemInfo(reader, needLocale: true);
         Count = reader.ReadUInt16();
     }
 
     public void Save(BinaryWriter writer)
     {
-        Item.Save(writer);
+        Item.Save(writer, needLocale: true);
         writer.Write(Count);
     }
 }

@@ -133,7 +133,7 @@ namespace Client.MirScenes.Dialogs
 
                 if (Reward.SelectedItemIndex < 0 && SelectedQuest.QuestInfo.RewardsSelectItem.Count > 0)
                 {
-                    MirMessageBox messageBox = new MirMessageBox("You must select a reward item.");
+                    MirMessageBox messageBox = new MirMessageBox("请选择一个奖励");
                     messageBox.Show();
                     return;
                 }
@@ -223,10 +223,10 @@ namespace Client.MirScenes.Dialogs
 
             _availableQuestLabel = new MirLabel
             {
-                Font = new Font(Settings.FontName, 8F),
+                Font = new Font(Settings.FontName, 10F),
                 Parent = this,
                 AutoSize = true,
-                Location = new Point(210, 8)
+                Location = new Point(210, 7)
             };
 
             MirButton closeButton = new MirButton
@@ -251,7 +251,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(266, 3),
                 Sound = SoundList.ButtonA,
             };
-            helpButton.Click += (o, e) => GameScene.Scene.HelpDialog.DisplayPage("Quests");
+            helpButton.Click += (o, e) => GameScene.Scene.HelpDialog.DisplayPage("任务");
 
         }
 
@@ -324,7 +324,7 @@ namespace Client.MirScenes.Dialogs
 
         public void RefreshInterface()
         {
-            _availableQuestLabel.Text = string.Format("List: {0}", Quests.Count);
+            _availableQuestLabel.Text = string.Format("列表: {0}", Quests.Count);
 
             int maxIndex = Quests.Count - Rows.Length;
 
@@ -442,7 +442,7 @@ namespace Client.MirScenes.Dialogs
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            
+
             Quests.Clear();
 
             SelectedQuest = null;
@@ -585,7 +585,7 @@ namespace Client.MirScenes.Dialogs
             };
             _cancelButton.Click += (o, e) =>
             {
-                MirMessageBox messageBox = new MirMessageBox("Are you sure you want to cancel this quest?", MirMessageBoxButtons.YesNo);
+                MirMessageBox messageBox = new MirMessageBox("确定要取消此任务吗?", MirMessageBoxButtons.YesNo);
 
                 messageBox.YesButton.Click += (o1, a) =>
                 {
@@ -663,7 +663,7 @@ namespace Client.MirScenes.Dialogs
 
             _takenQuestsLabel = new MirLabel
             {
-                Font = new Font(Settings.FontName, 8F),
+                Font = new Font(Settings.FontName, 10F),
                 Parent = this,
                 AutoSize = true,
                 Location = new Point(210, 7)
@@ -701,7 +701,7 @@ namespace Client.MirScenes.Dialogs
 
             Quests = GameScene.User.CurrentQuests;
 
-            _takenQuestsLabel.Text = string.Format("List: {0}/{1}", Quests.Count, Globals.MaxConcurrentQuests);
+            _takenQuestsLabel.Text = string.Format("列表: {0}/{1}", Quests.Count, Globals.MaxConcurrentQuests);
 
             var groupedQuests = Quests.GroupBy(d => d.QuestInfo.Group).ToList();
 
@@ -794,7 +794,8 @@ namespace Client.MirScenes.Dialogs
         public List<int> TrackedQuestsIds = new List<int>();
         public List<MirLabel> TaskLines = new List<MirLabel>();
 
-        public Font QuestFont = new Font(Settings.FontName, 8F);
+        // 任务列表字体
+        public Font QuestFont = new Font(Settings.FontName, 10F);
 
         private MirLabel _questNameLabel, _questTaskLabel;
 
@@ -853,7 +854,7 @@ namespace Client.MirScenes.Dialogs
                         AutoSize = true,
                         BackColour = Color.Transparent,
                         Font = QuestFont,
-                        ForeColour = Color.White, //trackedQuest.Contains("(Completed)") ? Color.LimeGreen : 
+                        ForeColour = Color.White, //trackedQuest.Contains("(Completed)") ? Color.LimeGreen :
                         Location = new Point(25, 20 + y),
                         OutLine = true,
                         Parent = this,
@@ -1017,7 +1018,7 @@ namespace Client.MirScenes.Dialogs
         public Font Font = new Font(Settings.FontName, 8F);
         public List<string> CurrentLines = new List<string>();
 
-        private const string TaskTitle = "Tasks", ProgressTitle = "Progress", ReturnTitle = "Quest Return", TimeLimitTitle = "Time Limit";
+        private const string TaskTitle = "任务内容", ProgressTitle = "进度", ReturnTitle = "任务奖励", TimeLimitTitle = "时间限制";
 
         public QuestMessage(MirButton scrollUpButton, MirButton scrollDownButton, MirButton positionBar, int lineCount, bool displayProgress = false)
         {
@@ -1389,7 +1390,7 @@ namespace Client.MirScenes.Dialogs
                 goldXOffset = -90;
                 creditXOffset -= 90;
             }
-                
+
 
             if (quest.RewardGold > 0)
                 Libraries.Prguse.Draw(965, DisplayLocation.X + 100 + goldXOffset, DisplayLocation.Y + 2);
@@ -1698,6 +1699,8 @@ namespace Client.MirScenes.Dialogs
             if (SelectedQuestChanged != null)
                 SelectedQuestChanged.Invoke(ob, EventArgs.Empty);
         }
+        
+        static int RowHeight = 22;
 
         public QuestGroupQuestItem(string group, List<ClientQuestProgress> quests, bool expanded)
         {
@@ -1721,11 +1724,12 @@ namespace Client.MirScenes.Dialogs
                 Text = Group,
                 AutoSize = true,
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F),
+                Font = new Font(Settings.FontName, 10F),
                 ForeColour = Color.LimeGreen,
                 Location = new Point(18, 0),
                 Visible = true,
             };
+
 
             for (int i = 0; i < Quests.Count; i++)
             {
@@ -1733,8 +1737,8 @@ namespace Client.MirScenes.Dialogs
                 QuestSingleQuestItem singleQuest = new QuestSingleQuestItem(Quests[i])
                 {
                     Parent = this,
-                    Location = new Point(18, (15 * (i + 1))),
-                    Size = new Size(280, 15),
+                    Location = new Point(18, (RowHeight * (i + 1))),
+                    Size = new Size(280, RowHeight),
                     Visible = Expanded
                 };
                 singleQuest.SelectedQuestChanged += (o, e) => OnSelectedQuestChanged(o);
@@ -1742,7 +1746,7 @@ namespace Client.MirScenes.Dialogs
                 _tasks.Add(singleQuest);
 
                 if (Expanded)
-                    SizeY += 15;
+                    SizeY += RowHeight;
             }
 
             Size = new Size(280, SizeY);
@@ -1750,13 +1754,13 @@ namespace Client.MirScenes.Dialogs
 
         public void UpdatePositions()
         {
-            SizeY = 15;
+            SizeY = RowHeight;
 
             foreach (var singleTask in _tasks)
             {
                 singleTask.Visible = Expanded;
 
-                if (Expanded) SizeY += 15;
+                if (Expanded) SizeY += RowHeight;
             }
 
             Size = new Size(280, SizeY);
@@ -1823,12 +1827,12 @@ namespace Client.MirScenes.Dialogs
         public QuestSingleQuestItem(ClientQuestProgress quest)
         {
             Quest = quest;
-            Size = new Size(250, 15);
+            Size = new Size(250, 20);
             TrackQuest = GameScene.Scene.QuestTrackingDialog.TrackedQuestsIds.Contains(quest.Id);
 
             string name = Quest.QuestInfo.Name;
             string level = string.Format("Lv{0}", Quest.QuestInfo.MinLevelNeeded);
-            string state = quest.Completed ? "(Complete)" : "(In Progress)";
+            string state = quest.Completed ? "(已完成)" : "(进行中)";
 
             bool lowLevelQuest = (MapObject.User.Level - quest.QuestInfo.MinLevelNeeded) > 10;
 
@@ -1848,7 +1852,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = string.Format("{0,-4} {1}", level, name),
                 AutoSize = true,
-                Font = new Font(Settings.FontName, 8F),
+                Font = new Font(Settings.FontName, 10F),
                 ForeColour = lowLevelQuest ? Color.Gray : quest.New ? Color.Yellow : Color.White,
                 Parent = this,
                 Location = new Point(0, 0),
@@ -1891,7 +1895,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = string.Format("{0}", state),
                 AutoSize = true,
-                Font = new Font(Settings.FontName, 8F),
+                Font = new Font(Settings.FontName, 10F),
                 ForeColour = lowLevelQuest ? Color.Gray : quest.New ? Color.Yellow : Color.White,
                 Parent = this,
                 Location = new Point(185, 0),

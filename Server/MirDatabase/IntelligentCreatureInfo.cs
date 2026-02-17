@@ -86,10 +86,12 @@ namespace Server.MirDatabase
             PetType = creatureType;
             Info = IntelligentCreatureInfo.GetCreatureInfo(PetType);
             CustomName = Envir.Main.GetMonsterInfo(64, (byte)PetType)?.Name ?? PetType.ToString();
-            Fullness = 7500;//starts at 75% food
+            // ZZ 宠物灵宠 初始饥饿值修改. 本来是75%, 改为100%
+            Fullness = 9900;//starts at 75% food
             SlotIndex = slot;
 
-            if (effect > 0) Expire = Envir.Now.AddDays(effect);//effect holds the amount in days
+            // ZZ 宠物灵宠过期时间修改. 本来是1~2天, 改为1~2个月
+            if (effect > 0) Expire = Envir.Now.AddMonths(effect);//Envir.Now.AddDays(effect);//effect holds the amount in days
             else Expire = DateTime.MinValue;//permanent
 
             BlackstoneTime = 0;

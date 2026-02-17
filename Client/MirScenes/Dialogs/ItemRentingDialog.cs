@@ -16,7 +16,7 @@ namespace Client.MirScenes.Dialogs
 
         private readonly MirLabel _nameLabel, _rentalPeriodLabel;
         private readonly MirButton _lockButton, _setRentalPeriodButton, _confirmButton;
-        
+
         public ItemRentingDialog()
         {
             Index = 238;
@@ -148,7 +148,7 @@ namespace Client.MirScenes.Dialogs
 
         public void InputRentalPeroid()
         {
-            var inputBox = new MirInputBox($"How long would you like to rent {RentalItem.FriendlyName} to {GameScene.Scene.GuestItemRentDialog.GuestName} for? (1 to 30 days).");
+            var inputBox = new MirInputBox($"您想借给 {GameScene.Scene.GuestItemRentDialog.GuestName} {RentalItem.FriendlyName} 几天? (1 ~ 30 天)");
 
             inputBox.OKButton.Click += (o1, e1) =>
             {
@@ -170,7 +170,7 @@ namespace Client.MirScenes.Dialogs
         public void RefreshInterface()
         {
             _nameLabel.Text = GameScene.User.Name;
-            _rentalPeriodLabel.Text = $"Rental Period: {RentalPeriod} Days";
+            _rentalPeriodLabel.Text = $"租赁期: {RentalPeriod} 天";
 
             GameScene.Scene.GuestItemRentDialog.RefreshInterface();
             GameScene.Scene.GuestItemRentingDialog.RefreshInterface();
@@ -193,7 +193,7 @@ namespace Client.MirScenes.Dialogs
             RentalPeriod = 0;
             _confirmButton.Enabled = false;
             GameScene.User.RentalGoldAmount = 0;
-            
+
             GameScene.Scene.GuestItemRentingDialog.Reset();
 
             Unlock();
@@ -229,7 +229,7 @@ namespace Client.MirScenes.Dialogs
         private string _guestName;
 
         private MirItemCell _guestItemCell;
-    
+
         public GuestItemRentingDialog()
         {
             Index = 238;
@@ -285,7 +285,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(150, 14),
                 DrawFormat = TextFormatFlags.Left | TextFormatFlags.VerticalCenter,
                 NotControl = true,
-                Text = "Rental Period: 0 Days"
+                Text = "租赁期: 0 天"
             };
 
             _guestItemCell = new MirItemCell
@@ -302,11 +302,11 @@ namespace Client.MirScenes.Dialogs
         public void RefreshInterface()
         {
             _nameLabel.Text = _guestName;
-            _rentalPeriodLabel.Text = $"Rental Period: {GuestRentalPeriod} Days";
+            _rentalPeriodLabel.Text = $"租赁期: {GuestRentalPeriod} 天";
 
             if (GuestLoanItem != null)
                 GameScene.Bind(GuestLoanItem);
-            
+
             Redraw();
         }
 

@@ -473,7 +473,7 @@ namespace Client.MirScenes.Dialogs
             MembersShowOffline = new MirLabel
             {
                 Visible = true,
-                Text = "Show Offline",
+                Text = "显示离线",
                 Location = new Point(245, 309),
                 Parent = MembersPage,
                 Size = new Size(150, 12),
@@ -485,7 +485,7 @@ namespace Client.MirScenes.Dialogs
 
             #endregion
 
-            #region StatusDialogUI 
+            #region StatusDialogUI
             StatusPage = new MirImageControl()
             {
                 Parent = this,
@@ -522,7 +522,7 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = TextFormatFlags.Right,
                 Size = new Size(75, 300),
                 NotControl = true,
-                Text = "Guild Name\n\nLevel\n\nMembers",
+                Text = "行会名\n\n等级\n\n成员",
                 Visible = true,
                 Parent = StatusPage,
                 ForeColour = Color.Gray,
@@ -607,13 +607,13 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(36, 283),
                 NotControl = true,
                 Parent = StatusPage,
-                Text = "Recruit Member",
+                Text = "新成员",
                 Size = new Size(150, 15)
             };
 
             #endregion
 
-            #region StorageDialogUI 
+            #region StorageDialogUI
             StoragePage = new MirImageControl()
             {
                 Parent = this,
@@ -759,7 +759,7 @@ namespace Client.MirScenes.Dialogs
             RankPage.BeforeDraw += (o, e) => RequestUpdateMembers();
             RanksSelectTextL = new MirLabel()
             {
-                Text = "Edit Rank",
+                Text = "编辑等级",
                 Location = new Point(42, 18),
                 Size = new Size(150, 20),
                 ForeColour = Color.White,
@@ -769,7 +769,7 @@ namespace Client.MirScenes.Dialogs
             };
             RanksSelectTextR = new MirLabel()
             {
-                Text = "Select Rank",
+                Text = "选择等级",
                 Location = new Point(198, 18),
                 Size = new Size(150, 20),
                 ForeColour = Color.White,
@@ -821,7 +821,7 @@ namespace Client.MirScenes.Dialogs
             {
                 RanksChangeName();
             };
-            String[] Options = { "Edit ranks", "Recruit member", "Kick member", "Store item", "Retrieve item", "Alter alliance", "Change notice", "Activate Buff" };
+            String[] Options = { "编辑等级", "新成员", "踢出成员", "存放物品", "取回物品", "更改联盟", "更改公告", "激活状态" };
             RanksOptionsButtons = new MirButton[8];
             RanksOptionsStatus = new MirImageControl[8];
             RanksOptionsTexts = new MirLabel[8];
@@ -965,11 +965,11 @@ namespace Client.MirScenes.Dialogs
             {
                 string Error = "";
                 if (GameScene.Scene.GuildDialog.SparePoints < BuffInfo.PointsRequirement)
-                    Error = "Insufficient points available.";
+                    Error = "积分不足";
                 if (GameScene.Scene.GuildDialog.Level < BuffInfo.LevelRequirement)
-                    Error = "Guild level too low.";
+                    Error = "行会等级不足";
                 if (!GameScene.Scene.GuildDialog.GetMyOptions().HasFlag(GuildRankOptions.CanActivateBuff))
-                    Error = "Guild rank does not allow buff activation.";
+                    Error = "当前等级不允许激活BUFF"; // Guild rank does not allow buff activation
                 if (Error != "")
                 {
                     MirMessageBox messageBox = new MirMessageBox(Error);
@@ -984,11 +984,11 @@ namespace Client.MirScenes.Dialogs
             {
                 string Error = "";
                 if (Buff.Active)
-                    Error = "Buff is still active.";
+                    Error = "该Buff状态已激活";
                 if (GameScene.Scene.GuildDialog.Gold < BuffInfo.ActivationCost)
-                    Error = "Insufficient guild funds.";
+                    Error = "行会资金不足";
                 if (!GameScene.Scene.GuildDialog.GetMyOptions().HasFlag(GuildRankOptions.CanActivateBuff))
-                    Error = "Guild rank does not allow buff activation.";
+                    Error = "当前等级不允许激活状态";
                 if (Error != "")
                 {
                     MirMessageBox messageBox = new MirMessageBox(Error);
@@ -1082,13 +1082,13 @@ namespace Client.MirScenes.Dialogs
                     {
                         if (BuffInfo.LevelRequirement > GameScene.Scene.GuildDialog.Level)
                         {
-                            Buffs[i].Info.Text = "Insufficient Level";
+                            Buffs[i].Info.Text = "等级不足";
                             Buffs[i].Info.ForeColour = Color.Red;
                             Buffs[i].Icon.Index += 2;
                         }
                         else
                         {
-                            Buffs[i].Info.Text = "Available";
+                            Buffs[i].Info.Text = "可用";
                             Buffs[i].Info.ForeColour = Buffs[i].Name.ForeColour;
                             Buffs[i].Icon.Index += 2;
                         }
@@ -1099,20 +1099,20 @@ namespace Client.MirScenes.Dialogs
                         if (BuffInfo.TimeLimit > 0)
                         {
                             if (Buff.Active)
-                                Buffs[i].Info.Text = "Counting down.";
+                                Buffs[i].Info.Text = "冷却中";
                             else
-                                Buffs[i].Info.Text = "Expired.";
+                                Buffs[i].Info.Text = "已过期";
                         }
                         else
-                            Buffs[i].Info.Text = "Obtained.";
+                            Buffs[i].Info.Text = "已获得";
                         Buffs[i].Info.ForeColour = Buffs[i].Name.ForeColour;
                         if (Buff.Active)
                         {
-                            Buffs[i].Obtained.Text = "Active";
+                            Buffs[i].Obtained.Text = "激活";
                             Buffs[i].Icon.Index += 1;
                         }
                         else
-                            Buffs[i].Obtained.Text = "Inactive";
+                            Buffs[i].Obtained.Text = "关闭";
                     }
                 }
             }
@@ -1156,9 +1156,10 @@ namespace Client.MirScenes.Dialogs
 
             foreach (var val in stats.Values)
             {
-                var c = val.Value < 0 ? "Decreases" : "Increases";
+                var c = val.Value < 0 ? "减少" : "增加";
 
-                var txt = $"{c} {val.Key} by: {val.Value}{(val.Key.ToString().Contains("Percent") ? "%" : "")}.\n";
+                // var txt = $"{c} {val.Key} by: {val.Value}{(val.Key.ToString().Contains("Percent") ? "%" : "")}.\n";
+                var txt = $"{c} {val.Key.GetDescription()}: {val.Value}{(val.Key.ToString().Contains("Percent") ? "%" : "")}\n";
 
                 text += txt;
             }
@@ -1198,17 +1199,17 @@ namespace Client.MirScenes.Dialogs
             string ReqText = "";
             if (Buff.LevelRequirement > 0)
             {
-                ReqText += "Minimum Guild Level: " + Buff.LevelRequirement.ToString();
+                ReqText += "需要行会等级: " + Buff.LevelRequirement.ToString();
             }
             if (Buff.PointsRequirement > 0)
             {
                 if (ReqText != "") ReqText += "\n";
-                ReqText += "Points Required: " + Buff.PointsRequirement.ToString();
+                ReqText += "需要积分: " + Buff.PointsRequirement.ToString();
             }
             if (Buff.ActivationCost > 0)
             {
                 if (ReqText != "") ReqText += "\n";
-                ReqText += "Activation Cost: " + Buff.ActivationCost.ToString() + " gold.";
+                ReqText += "激活需花费: " + Buff.ActivationCost.ToString() + " 金币";
                 //if (ReqText != "") ReqText += "\n";
             }
 
@@ -1234,11 +1235,11 @@ namespace Client.MirScenes.Dialogs
 
                 if (activeBuff != null && activeBuff.Active)
                 {
-                    text = string.Format("Time Remaining: {0} minutes", activeBuff.ActiveTimeRemaining);
+                    text = string.Format("剩余时间: {0} 分钟", activeBuff.ActiveTimeRemaining);
                 }
                 else
                 {
-                    text = string.Format("Buff Length: {0} minutes.", Buff.TimeLimit.ToString());
+                    text = string.Format("状态持续: {0} 分钟", Buff.TimeLimit.ToString());
                 }
                 MirLabel TimeLabel = new MirLabel
                 {
@@ -1468,7 +1469,7 @@ namespace Client.MirScenes.Dialogs
                     RankNames.Add(Ranks[i].Name);
                 }
                 else
-                    RankNames.Add("Missing Rank");
+                    RankNames.Add("未知"); // Missing Rank
             }
             for (int i = 0; i < MembersRanks.Length; i++)
             {
@@ -1478,7 +1479,7 @@ namespace Client.MirScenes.Dialogs
             RanksSelectBox.Items = RankNames.ToList();
             RanksSelectBox.MinimumOption = 0;
             if (RankNames.Count < 255)
-                RanksSelectBox.Items.Add("Add New");
+                RanksSelectBox.Items.Add("添加");
             UpdateMembers();
             UpdateRanks();
         }
@@ -1496,7 +1497,7 @@ namespace Client.MirScenes.Dialogs
         {
             if (SelectedIndex >= Ranks.Count) return;
             if (LastGuildMsg > CMain.Time) return;
-            MirMessageBox messageBox = new MirMessageBox(string.Format("Are you sure you want to change the rank of {0} to {1}?", MembersName[Index].Text, Ranks[SelectedIndex].Name), MirMessageBoxButtons.YesNo);
+            MirMessageBox messageBox = new MirMessageBox(string.Format("确定要更改等级 {0} 至 {1}?", MembersName[Index].Text, Ranks[SelectedIndex].Name), MirMessageBoxButtons.YesNo);
 
             messageBox.YesButton.Click += (o, a) =>
             {
@@ -1519,7 +1520,7 @@ namespace Client.MirScenes.Dialogs
         {
             if (MembersName[Index].Text == MapControl.User.Name) return;
             if (LastGuildMsg > CMain.Time) return;
-            MirMessageBox messageBox = new MirMessageBox(string.Format("Are you sure you want to kick {0}?", MembersName[Index].Text), MirMessageBoxButtons.YesNo);
+            MirMessageBox messageBox = new MirMessageBox(string.Format("确定要踢出 {0}?", MembersName[Index].Text), MirMessageBoxButtons.YesNo);
 
             messageBox.YesButton.Click += (o, a) =>
             {
@@ -1619,13 +1620,13 @@ namespace Client.MirScenes.Dialogs
                             switch (Diff.Days)
                             {
                                 case 0:
-                                    text = "Today";
+                                    text = "今天";
                                     break;
                                 case 1:
-                                    text = "Yesterday";
+                                    text = "昨天";
                                     break;
                                 default:
-                                    text = Diff.Days + "Days ago";
+                                    text = Diff.Days + " 天前";
                                     break;
                             }
                         }
@@ -1866,10 +1867,10 @@ namespace Client.MirScenes.Dialogs
             {
                 if (Ranks.Count == 255) return;
                 if (LastGuildMsg > CMain.Time) return;
-                MirMessageBox messageBox = new MirMessageBox("Are you sure you want to create a new rank?", MirMessageBoxButtons.YesNo);
+                MirMessageBox messageBox = new MirMessageBox("确定增加新的等级?", MirMessageBoxButtons.YesNo);
                 messageBox.YesButton.Click += (o, a) =>
                 {
-                    Network.Enqueue(new C.EditGuildMember { ChangeType = 4, RankName = String.Format("Rank-{0}", Ranks.Count - 1) });
+                    Network.Enqueue(new C.EditGuildMember { ChangeType = 4, RankName = String.Format("等级-{0}", Ranks.Count - 1) });
                     LastGuildMsg = CMain.Time + 5000;
                 };
                 messageBox.Show();
@@ -2001,7 +2002,7 @@ namespace Client.MirScenes.Dialogs
         public void StorageAddGold()
         {
             if (LastGuildMsg > CMain.Time) return;
-            MirAmountBox amountBox = new MirAmountBox("Deposit", 116, GameScene.Gold);
+            MirAmountBox amountBox = new MirAmountBox("存入", 116, GameScene.Gold);
 
             amountBox.OKButton.Click += (o, a) =>
             {
@@ -2019,7 +2020,7 @@ namespace Client.MirScenes.Dialogs
         public void StorageRemoveGold()
         {
             if (LastGuildMsg > CMain.Time) return;
-            MirAmountBox amountBox = new MirAmountBox("Gold to retrieve:", 116, Gold);
+            MirAmountBox amountBox = new MirAmountBox("可用资金:", 116, Gold);
 
             amountBox.OKButton.Click += (o, a) =>
             {

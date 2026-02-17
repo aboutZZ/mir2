@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -7,7 +7,7 @@ namespace Server.MirObjects.Monsters
     public class RedMoonEvil : MonsterObject
     {
         protected override bool CanMove { get { return false; } }
-        protected override bool CanRegen { get { return false; } }     
+        protected override bool CanRegen { get { return false; } }
 
         protected internal RedMoonEvil(MonsterInfo info) : base(info)
         {

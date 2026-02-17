@@ -387,7 +387,7 @@ namespace Server.MirDatabase
 
         public void UpdateKillTasks()
         {
-            if(Info.KillMessage.Length > 0 && Info.KillTasks.Count > 0) 
+            if(Info.KillMessage.Length > 0 && Info.KillTasks.Count > 0)
             {
                 bool allComplete = true;
                 for (int i = 0; i < KillTaskCount.Count; i++)
@@ -397,7 +397,7 @@ namespace Server.MirDatabase
                     allComplete = false;
                 }
 
-                TaskList.Add(string.Format("{0} {1}", Info.KillMessage, allComplete ? "(Completed)" : ""));
+                TaskList.Add(string.Format("{0} {1}", Info.KillMessage, allComplete ? "(已完成)" : ""));
                 return;
             }
 
@@ -405,12 +405,12 @@ namespace Server.MirDatabase
             {
                 if (string.IsNullOrEmpty(Info.KillTasks[i].Message))
                 {
-                    TaskList.Add(string.Format("Kill {0}: {1}/{2} {3}", KillTaskCount[i].Info.Monster.GameName, KillTaskCount[i].Count,
-                        KillTaskCount[i].Info.Count, KillTaskCount[i].Complete ? "(Completed)" : ""));
+                    TaskList.Add(string.Format("杀死 {0}: {1}/{2} {3}", KillTaskCount[i].Info.Monster.GameName, KillTaskCount[i].Count,
+                        KillTaskCount[i].Info.Count, KillTaskCount[i].Complete ? "(已完成)" : ""));
                 }
                 else
                 {
-                    TaskList.Add(string.Format("{0} {1}", Info.KillTasks[i].Message, KillTaskCount[i].Complete ? "(Completed)" : ""));
+                    TaskList.Add(string.Format("{0} {1}", Info.KillTasks[i].Message, KillTaskCount[i].Complete ? "(已完成)" : ""));
                 }
             }
         }
@@ -427,7 +427,7 @@ namespace Server.MirDatabase
                     allComplete = false;
                 }
 
-                TaskList.Add(string.Format("{0} {1}", Info.ItemMessage, allComplete ? "(Completed)" : ""));
+                TaskList.Add(string.Format("{0} {1}", Info.ItemMessage, allComplete ? "(已完成)" : ""));
                 return;
             }
 
@@ -435,12 +435,12 @@ namespace Server.MirDatabase
             {
                 if (string.IsNullOrEmpty(Info.ItemTasks[i].Message))
                 {
-                    TaskList.Add(string.Format("Collect {0}: {1}/{2} {3}", Info.ItemTasks[i].Item.FriendlyName, ItemTaskCount[i].Count,
-                        Info.ItemTasks[i].Count, ItemTaskCount[i].Complete ? "(Completed)" : ""));
+                    TaskList.Add(string.Format("收集 {0}: {1}/{2} {3}", Info.ItemTasks[i].Item.FriendlyName, ItemTaskCount[i].Count,
+                        Info.ItemTasks[i].Count, ItemTaskCount[i].Complete ? "(已完成)" : ""));
                 }
                 else
                 {
-                    TaskList.Add(string.Format("{0} {1}", Info.ItemTasks[i].Message, ItemTaskCount[i].Complete ? "(Completed)" : ""));
+                    TaskList.Add(string.Format("{0} {1}", Info.ItemTasks[i].Message, ItemTaskCount[i].Complete ? "(已完成)" : ""));
                 }
             }
         }
@@ -457,7 +457,7 @@ namespace Server.MirDatabase
                     allComplete = false;
                 }
 
-                TaskList.Add(string.Format("{0} {1}", Info.FlagMessage, allComplete ? "(Completed)" : ""));
+                TaskList.Add(string.Format("{0} {1}", Info.FlagMessage, allComplete ? "(已完成)" : ""));
                 return;
             }
 
@@ -465,11 +465,11 @@ namespace Server.MirDatabase
             {
                 if (string.IsNullOrEmpty(Info.FlagTasks[i].Message))
                 {
-                    TaskList.Add(string.Format("Activate Flag {0} {1}", Info.FlagTasks[i].Number, FlagTaskSet[i].Complete ? "(Completed)" : ""));
+                    TaskList.Add(string.Format("Activate Flag {0} {1}", Info.FlagTasks[i].Number, FlagTaskSet[i].Complete ? "(已完成)" : ""));
                 }
                 else
                 {
-                    TaskList.Add(string.Format("{0} {1}", Info.FlagTasks[i].Message, FlagTaskSet[i].Complete ? "(Completed)" : ""));
+                    TaskList.Add(string.Format("{0} {1}", Info.FlagTasks[i].Message, FlagTaskSet[i].Complete ? "(已完成)" : ""));
                 }
             }
         }

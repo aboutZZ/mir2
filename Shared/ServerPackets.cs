@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 
 namespace ServerPackets
@@ -253,7 +253,7 @@ namespace ServerPackets
          * 3: Bad Class
          * 4: Max Characters
          * 5: Character Exists.
-         * 
+         *
          * 10: Success
          * */
         public byte Result;
@@ -735,12 +735,12 @@ namespace ServerPackets
         {
             get { return (short)ServerPacketIds.UserSlotsRefresh; }
         }
-  
+
         public UserItem[] Inventory, Equipment;
 
         protected override void ReadPacket(BinaryReader reader)
         {
-            
+
             if (reader.ReadBoolean())
             {
                 Inventory = new UserItem[reader.ReadInt32()];
@@ -1132,12 +1132,12 @@ namespace ServerPackets
 
         protected override void ReadPacket(BinaryReader reader)
         {
-            Info = new ItemInfo(reader);
+            Info = new ItemInfo(reader, needLocale: true);
         }
 
         protected override void WritePacket(BinaryWriter writer)
         {
-            Info.Save(writer);
+            Info.Save(writer, needLocale: true);
         }
     }
     public sealed class NewHeroInfo : Packet
@@ -4832,12 +4832,12 @@ namespace ServerPackets
 
         public Stat Stat;
         public uint Value;
-        protected override void ReadPacket(BinaryReader reader) 
+        protected override void ReadPacket(BinaryReader reader)
         {
             Stat = (Stat)reader.ReadByte();
             Value = reader.ReadUInt32();
         }
-        protected override void WritePacket(BinaryWriter writer) 
+        protected override void WritePacket(BinaryWriter writer)
         {
             writer.Write((byte)Stat);
             writer.Write(Value);
@@ -5275,13 +5275,13 @@ namespace ServerPackets
 
         protected override void ReadPacket(BinaryReader reader)
         {
-            Item = new GameShopItem(reader, true);
+            Item = new GameShopItem(reader, true, needLocale: true);
             StockLevel = reader.ReadInt32();
         }
 
         protected override void WritePacket(BinaryWriter writer)
         {
-            Item.Save(writer, true);
+            Item.Save(writer, true, needLocale: true);
             writer.Write(StockLevel);
         }
     }
@@ -5447,7 +5447,7 @@ namespace ServerPackets
         }
     }
 
-    public sealed class UserAttackMove : Packet//warrior skill - SlashingBurst move packet 
+    public sealed class UserAttackMove : Packet//warrior skill - SlashingBurst move packet
     {
         public override short Index
         {
@@ -5545,7 +5545,7 @@ namespace ServerPackets
             writer.Write(Interrupted);
         }
     }
-    
+
     public sealed class SetElemental : Packet
     {
         public override short Index { get { return (short)ServerPacketIds.SetElemental; } }
@@ -5742,7 +5742,7 @@ namespace ServerPackets
             for (int i = 0; i < Materials.Length; i++)
             {
                 if (!reader.ReadBoolean()) continue;
-                Materials[i] = new ItemInfo(reader);
+                Materials[i] = new ItemInfo(reader, needLocale: true);
                 MaterialsCount[i] = reader.ReadByte();
             }
         }
@@ -5757,7 +5757,7 @@ namespace ServerPackets
                 writer.Write(Materials[i] != null);
                 if (Materials[i] == null) continue;
 
-                Materials[i].Save(writer);
+                Materials[i].Save(writer, needLocale: true);
                 writer.Write(MaterialsCount[i]);
             }
         }
@@ -6422,7 +6422,7 @@ namespace ServerPackets
             HasData = reader.ReadBoolean();
 
             if (HasData)
-                LoanItem = new UserItem(reader); 
+                LoanItem = new UserItem(reader);
         }
 
         protected override void WritePacket(BinaryWriter writer)

@@ -4,6 +4,8 @@ public class ItemInfo
 {
     public int Index;
     public string Name = string.Empty;
+    // ZZ 加汉化字段 物品
+    public string NameLocale = string.Empty;
     public ItemType Type;
     public ItemGrade Grade;
     public RequiredType RequiredType = RequiredType.Level;
@@ -16,7 +18,7 @@ public class ItemInfo
 
     public ushort Image, Durability;
 
-    public uint Price; 
+    public uint Price;
     public ushort StackSize = 1;
 
     public bool StartItem;
@@ -53,7 +55,9 @@ public class ItemInfo
     {
         get
         {
-            string temp = Name;
+            // ZZ 加汉化字段 物品 客户端显示汉化名字
+            string temp = string.IsNullOrEmpty(NameLocale) ? Name : NameLocale;
+            // string temp = Name;
             temp = Regex.Replace(temp, @"\d+$", string.Empty); //hides end numbers
             temp = Regex.Replace(temp, @"\[[^]]*\]", string.Empty); //hides square brackets
 
@@ -61,15 +65,17 @@ public class ItemInfo
         }
     }
 
-    public ItemInfo() 
+    public ItemInfo()
     {
         Stats = new Stats();
     }
 
-    public ItemInfo(BinaryReader reader, int version = int.MaxValue, int customVersion = int.MaxValue)
+    public ItemInfo(BinaryReader reader, int version = int.MaxValue, int customVersion = int.MaxValue, bool needLocale = false)
     {
         Index = reader.ReadInt32();
         Name = reader.ReadString();
+        // ZZ 加汉化字段 物品
+        if(needLocale) NameLocale = reader.ReadString();
         Type = (ItemType)reader.ReadByte();
         Grade = (ItemGrade)reader.ReadByte();
         RequiredType = (RequiredType)reader.ReadByte();
@@ -205,10 +211,12 @@ public class ItemInfo
 
 
 
-    public void Save(BinaryWriter writer)
+    public void Save(BinaryWriter writer, bool needLocale = false)
     {
         writer.Write(Index);
         writer.Write(Name);
+        // ZZ 加汉化字段 物品
+        if(needLocale) writer.Write(NameLocale);
         writer.Write((byte)Type);
         writer.Write((byte)Grade);
         writer.Write((byte)RequiredType);
@@ -239,8 +247,8 @@ public class ItemInfo
         if (CanMine) bools |= 0x10;
         if (GlobalDropNotify) bools |= 0x20;
         writer.Write(bools);
-        
-        writer.Write((short)Bind);        
+
+        writer.Write((short)Bind);
         writer.Write((short)Unique);
 
         writer.Write(RandomStatsId);
@@ -325,6 +333,9 @@ public class UserItem
     }
 
     public bool GMMade { get; set; }
+
+    public string DropSource = ""; // 掉落来源
+    public string DropTime = ""; // 掉落时间
 
     public UserItem(ItemInfo info)
     {
@@ -455,6 +466,13 @@ public class UserItem
         {
             GMMade = reader.ReadBoolean();
         }
+        if (version > 107)
+        {
+            // TODO ZZ 记录每个装备的掉落来源和时间
+            //DropSource = reader.ReadString();
+            //DropTime = reader.ReadString();
+        }
+        
     }
 
     public void Save(BinaryWriter writer)
@@ -466,7 +484,7 @@ public class UserItem
         writer.Write(MaxDura);
 
         writer.Write(Count);
-       
+
         writer.Write(SoulBoundId);
         byte Bools = 0;
         if (Identified) Bools |= 0x01;
@@ -826,11 +844,11 @@ public class GameShopItem
 
     }
 
-    public GameShopItem(BinaryReader reader, bool packet = false)
+    public GameShopItem(BinaryReader reader, bool packet = false, bool needLocale = false)
     {
         ItemIndex = reader.ReadInt32();
         GIndex = reader.ReadInt32();
-        Info = new ItemInfo(reader);
+        Info = new ItemInfo(reader, needLocale: needLocale);
         GoldPrice = reader.ReadUInt32();
         CreditPrice = reader.ReadUInt32();
         Count = reader.ReadUInt16();
@@ -845,11 +863,11 @@ public class GameShopItem
         CanBuyGold = reader.ReadBoolean();
     }
 
-    public void Save(BinaryWriter writer, bool packet = false)
+    public void Save(BinaryWriter writer, bool packet = false, bool needLocale = false)
     {
         writer.Write(ItemIndex);
         writer.Write(GIndex);
-        if (packet) Info.Save(writer);
+        if (packet) Info.Save(writer, needLocale: needLocale);
         writer.Write(GoldPrice);
         writer.Write(CreditPrice);
         writer.Write(Count);
@@ -875,14 +893,14 @@ public class Awake
 {
     //Awake Option
     public static byte AwakeSuccessRate = 70;
-    public static byte AwakeHitRate = 70;
+    public static byte AwakeHitRate = 82; // ZZ 觉醒加点数基础概率， 5次方得出最大加点数的概率 37% (原来是70, 16%)
     public static int MaxAwakeLevel = 5;
     public static byte Awake_WeaponRate = 1;
     public static byte Awake_HelmetRate = 1;
     public static byte Awake_ArmorRate = 5;
     public static byte AwakeChanceMin = 1;
     public static float[] AwakeMaterialRate = new float[4] { 1.0F, 1.0F, 1.0F, 1.0F };
-    public static byte[] AwakeChanceMax = new byte[4] { 1, 2, 3, 4 };
+    public static byte[] AwakeChanceMax = new byte[5] { 1, 2, 3, 4, 5 }; // 最大加点数 （白板1点， 蓝装2， 传奇3 神话4， 史诗5）
     public static List<List<byte>[]> AwakeMaterials = new List<List<byte>[]>();
 
     public AwakeType Type = AwakeType.None;
@@ -987,14 +1005,15 @@ public class Awake
 
     public int UpgradeAwake(UserItem item, AwakeType type, out bool[] isHit)
     {
-        //return -1 condition error, -1 = dont upgrade, 0 = failed, 1 = Succeed,  
+        //return -1 condition error, -1 = dont upgrade, 0 = failed, 1 = Succeed,
         isHit = null;
         if (CheckAwakening(item, type) != true)
             return -1;
 
         Random rand = new Random(DateTime.Now.Millisecond);
 
-        if (rand.Next(0, 100) <= AwakeSuccessRate)
+        // ZZ 觉醒成功几率 这里改为 100% 成功
+        if (true || rand.Next(0, 100) <= AwakeSuccessRate)
         {
             isHit = Awakening(item);
             return 1;

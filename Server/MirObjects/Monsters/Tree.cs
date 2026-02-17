@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -21,9 +21,9 @@ namespace Server.MirObjects.Monsters
         public override void Turn(MirDirection dir)
         {
         }
-        public override bool Walk(MirDirection dir) 
-        { 
-            return false; 
+        public override bool Walk(MirDirection dir)
+        {
+            return false;
         }
 
         protected override void ProcessTarget() { }
@@ -68,7 +68,7 @@ namespace Server.MirObjects.Monsters
             }
 
             if (armour >= damage) return 0;
-            
+
             ShockTime = 0;
 
             if (attacker.Info.AI == 6)
@@ -91,7 +91,7 @@ namespace Server.MirObjects.Monsters
 
             ChangeHP(-1);
             return 1;
-        
+
         }
 
         public override int Struck(int damage, DefenceType type = DefenceType.ACAgility)

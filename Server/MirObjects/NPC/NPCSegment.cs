@@ -2475,7 +2475,8 @@ namespace Server.MirObjects
 
                         string tempString = param[1].ToUpper();
 
-                        if (tempString == "ACTIVE")
+                        // ZZ 修复任务脚本中 CheckQuest 0 的问题
+                        if (tempString == "ACTIVE" || tempString == "0")
                         {
                             failed = !player.CurrentQuests.Any(e => e.Index == tempInt);
                         }
@@ -3897,7 +3898,11 @@ namespace Server.MirObjects
 
                             GuildObject guild = Envir.GetGuild(param[0]);
 
-                            if (guild == null) return;
+                            if (guild == null) {
+                                player.ReceiveChat(string.Format("{0}行会不存在", param[0]), ChatType.Guild);
+                                // MessageQueue.Enqueue(string.Format("Guild '{0}' 不存在", param[0]));
+                                return;
+                            }
 
                             player.PendingGuildInvite = guild;
                             player.GuildInvite(true);

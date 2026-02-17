@@ -34,6 +34,7 @@ namespace Launcher
 
         public AMain()
         {
+            AutoScaleMode = AutoScaleMode.Dpi;
             InitializeComponent();
 
             BackColor = Color.FromArgb(1, 0, 0);
@@ -190,7 +191,9 @@ namespace Launcher
             FileInformation info = GetFileInformation(Settings.P_Client + old.FileName);
             _currentCount++;
 
-            if (info == null || old.Length != info.Length || old.Creation != info.Creation)
+            // ZZ 这里修改验证方式，只要文件大小一致，就认为不用更新
+            if (info == null || old.Length != info.Length)
+            // if (info == null || old.Length != info.Length || old.Creation != info.Creation)
             {
                 DownloadList.Enqueue(old);
                 _totalBytes += old.Length;
@@ -305,7 +308,7 @@ namespace Launcher
             catch (HttpRequestException e)
             {
                 File.AppendAllText(@".\Error.txt",
-                                       $"[{DateTime.Now}] {info.FileName} could not be downloaded. ({e.Message}) {Environment.NewLine}");
+                                       $"[{DateTime.Now}] {info.FileName} 下载失败 ({e.Message}) {Environment.NewLine}");
                 ErrorFound = true;
             }
             catch (Exception ex)
@@ -321,7 +324,7 @@ namespace Launcher
             {
                 if (ErrorFound)
                 {
-                    MessageBox.Show(string.Format("Failed to download file: {0}", fileName));
+                    MessageBox.Show(string.Format("无法下载文件: {0}", fileName));
                 }
             }
 
@@ -401,6 +404,7 @@ namespace Launcher
             ProgressCurrent_pb.Width = 5;
             TotalProg_pb.Width = 5;
             Version_label.Text = string.Format("Build: {0}.{1}.{2}", Globals.ProductCodename, Settings.UseTestConfig ? "Debug" : "Release", Application.ProductVersion);
+            Version_label.Text = "版本 1.0.0";
 
             if (Settings.P_ServerName != String.Empty)
             {
@@ -529,7 +533,7 @@ namespace Launcher
         {
             if (ConfigForm.Visible) ConfigForm.Hide();
             else ConfigForm.Show(Program.PForm);
-            ConfigForm.Location = new Point(Location.X + Config_pb.Location.X - 183, Location.Y + 36);
+            ConfigForm.Location = new Point(Location.X + Config_pb.Location.X - 186, Location.Y + 42);
         }
 
         private void TotalProg_pb_SizeChanged(object sender, EventArgs e)
@@ -546,7 +550,7 @@ namespace Launcher
                 if (Completed && ActiveDownloads.Count == 0)
                 {
                     ActionLabel.Text = "";
-                    CurrentFile_label.Text = "Up to date.";
+                    CurrentFile_label.Text = "完成";
                     SpeedLabel.Text = "";
                     ProgressCurrent_pb.Width = 550;
                     TotalProg_pb.Width = 550;
@@ -557,7 +561,7 @@ namespace Launcher
                     TotalPercent_label.Text = "100%";
                     InterfaceTimer.Enabled = false;
                     Launch_pb.Enabled = true;
-                    if (ErrorFound) MessageBox.Show("One or more files failed to download, check Error.txt for details.", "Failed to Download.");
+                    if (ErrorFound) MessageBox.Show("有文件下载失败, 详情请查看 Error.txt", "下载失败");
                     ErrorFound = false;
 
                     if (CleanFiles)
@@ -615,8 +619,8 @@ namespace Launcher
                 CurrentPercent_label.Visible = true;
                 TotalPercent_label.Visible = true;
 
-                if (LabelSwitch) ActionLabel.Text = string.Format("{0} Files Remaining", _fileCount - _currentCount);
-                else ActionLabel.Text = string.Format("{0:#,##0}MB Remaining", ((_totalBytes) - (_completedBytes + currentBytes)) / 1024 / 1024);
+                if (LabelSwitch) ActionLabel.Text = string.Format("剩余文件 {0}", _fileCount - _currentCount);
+                else ActionLabel.Text = string.Format("{0:#,##0}MB 剩余", ((_totalBytes) - (_completedBytes + currentBytes)) / 1024 / 1024);
 
                 if (Settings.P_Concurrency > 1)
                 {

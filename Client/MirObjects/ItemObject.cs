@@ -43,7 +43,7 @@ namespace Client.MirObjects
         }
         public void Load(S.ObjectGold info)
         {
-            Name = string.Format("Gold ({0:###,###,###})", info.Gold);
+            Name = string.Format("金币 ({0:###,###,###})", info.Gold);
 
 
             BodyLibrary = Libraries.FloorItems;
@@ -91,6 +91,12 @@ namespace Client.MirObjects
 
         public override void DrawName()
         {
+            // ZZ 物品显示过滤
+            if(NameColour.ToArgb() == Color.White.ToArgb() && Settings.ItemFilterNames.Contains(Name))
+            {
+                NameLabel = null;
+                return;
+            }
             CreateLabel(Color.Transparent, false, true);
 
             if (NameLabel == null) return;

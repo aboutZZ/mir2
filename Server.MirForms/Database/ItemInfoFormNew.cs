@@ -75,6 +75,8 @@ namespace Server.Database
             Modified.ValueType = typeof(bool);
             ItemIndex.ValueType = typeof(int);
             ItemName.ValueType = typeof(string);
+            // ZZ 加汉化字段 物品
+            ItemNameLocale.ValueType = typeof(string);
             ItemRandomStatsId.ValueType = typeof(byte);
             ItemRequiredAmount.ValueType = typeof(byte);
             ItemImage.ValueType = typeof(ushort);
@@ -225,6 +227,8 @@ namespace Server.Database
 
                 row["ItemIndex"] = item.Index;
                 row["ItemName"] = item.Name;
+                // ZZ 加汉化字段 物品
+                row["ItemNameLocale"] = item.NameLocale;
 
                 row["ItemType"] = item.Type;
                 row["ItemGrade"] = item.Grade;
@@ -342,6 +346,8 @@ namespace Server.Database
                 }
 
                 item.Name = (string)row.Cells["ItemName"].Value;
+                // ZZ 加汉化字段 物品
+                item.NameLocale = (string)row.Cells["ItemNameLocale"].Value;
                 item.Type = (ItemType)row.Cells["ItemType"].Value;
                 item.Grade = (ItemGrade)row.Cells["ItemGrade"].Value;
                 item.RequiredType = (RequiredType)row.Cells["ItemRequiredType"].Value;
@@ -673,7 +679,7 @@ namespace Server.Database
                             if (cells.Length != columns.Length)
                             {
                                 fileError = true;
-                                MessageBox.Show($"Row {i} column count does not match the headers column count.");
+                                MessageBox.Show($"第 {i} 行的列数量为{cells.Length}, 与表头列数量{columns.Length}不匹配。 {row}");
                                 break;
                             }
 
@@ -750,13 +756,13 @@ namespace Server.Database
                         {
                             itemInfoGridView.EditMode = DataGridViewEditMode.EditOnKeystrokeOrF2;
 
-                            MessageBox.Show($"{rowsEdited} items have been imported.");
+                            MessageBox.Show($"{rowsEdited} 个物品已被导入");
                         }
                     }
                 }
                 else
                 {
-                    MessageBox.Show("No rows to import.");
+                    MessageBox.Show("没有任何物品被导入");
                 }
             }
         }
@@ -780,7 +786,7 @@ namespace Server.Database
                         catch (IOException ex)
                         {
                             fileError = true;
-                            MessageBox.Show("It wasn't possible to write the data to the disk." + ex.Message);
+                            MessageBox.Show("无法写入硬盘." + ex.Message);
                         }
                     }
                     if (!fileError)
@@ -840,18 +846,18 @@ namespace Server.Database
                             }
 
                             File.WriteAllLines(sfd.FileName, outputCsv, Encoding.UTF8);
-                            MessageBox.Show("Data Exported Successfully.", "Info");
+                            MessageBox.Show("数据导出成功.", "Info");
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show("Error :" + ex.Message);
+                            MessageBox.Show("错误 :" + ex.Message);
                         }
                     }
                 }
             }
             else
             {
-                MessageBox.Show("No Items To Export.", "Info");
+                MessageBox.Show("没有物品可以导出", "Info");
             }
         }
 
@@ -861,6 +867,8 @@ namespace Server.Database
 
             row.Cells["Modified"].Value = (bool)true;
             row.Cells["ItemName"].Value = "";
+            // ZZ 加汉化字段 物品
+            row.Cells["ItemNameLocale"].Value = "";
 
             row.Cells["ItemType"].Value = (ItemType)0;
             row.Cells["ItemGrade"].Value = (ItemGrade)0;
@@ -916,7 +924,7 @@ namespace Server.Database
 
         private void ItemInfoGridView_MouseClick(object sender, MouseEventArgs e)
         {
-            
+
             if (e.Button == MouseButtons.Right &&
                 itemInfoGridView.SelectedRows.Count > 1)
             {
@@ -955,7 +963,7 @@ namespace Server.Database
                         }
 
                         // for some reason datagridview doesn't reflect selected cell value updating like this
-                        // so re-assigning value fixes it. 
+                        // so re-assigning value fixes it.
                         if(itemInfoGridView.Rows[mouseOverRow].Cells[mouseOverCol] is DataGridViewCheckBoxCell)
                         {
                             itemInfoGridView.Rows[mouseOverRow].Cells[mouseOverCol].Value = updateValue;
@@ -1022,7 +1030,7 @@ namespace Server.Database
                 var itemType = itemInfoGridView.CurrentRow.Cells["ItemType"];
                 bool isGemSelected = (global::ItemType)itemType.Value == global::ItemType.Gem;
                 SwapGemContext(isGemSelected);
-            }   
+            }
         }
 
         private void CurrentCellDirtyStateChanged(object sender, EventArgs e)

@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using Server.MirDatabase;
 using Server.MirObjects;
 
@@ -333,7 +333,7 @@ namespace Server
         }
 
         public static void Load()
-        {            
+        {
             //General
             VersionPath = Reader.ReadString("General", "VersionPath", VersionPath);
             CheckVersion = Reader.ReadBoolean("General", "CheckVersion", CheckVersion);
@@ -510,7 +510,7 @@ namespace Server
             if (!Directory.Exists(ExportPath))
                 Directory.CreateDirectory(ExportPath);
             if (!Directory.Exists(RoutePath))
-                Directory.CreateDirectory(RoutePath);         
+                Directory.CreateDirectory(RoutePath);
             if (!Directory.Exists(NameListPath))
                 Directory.CreateDirectory(NameListPath);
             if (!Directory.Exists(RecipePath))
@@ -728,7 +728,7 @@ namespace Server
 
             Reader.Write("DropGold", "DropGold", DropGold);
             Reader.Write("DropGold", "MaxDropGold", MaxDropGold);
-            
+
             Reader.Write("Items", "MagicResistWeight", MagicResistWeight);
             Reader.Write("Items", "PoisonResistWeight", PoisonResistWeight);
             Reader.Write("Items", "CriticalRateWeight", CriticalRateWeight);
@@ -830,7 +830,7 @@ namespace Server
 
             if (reader == null)
                 reader = new InIReader(path);
-            
+
             WorldMapSetup.Enabled = reader.ReadBoolean("Setup", "Enabled", false);
 
             int c = 0;
@@ -1151,7 +1151,7 @@ namespace Server
                 reader.Write("Mine" + i.ToString(), "HitRate", mine.HitRate);
                 reader.Write("Mine" + i.ToString(), "DropRate", mine.DropRate);
                 reader.Write("Mine" + i.ToString(), "TotalSlots", mine.TotalSlots);
-                
+
                 for (int j = 0; j < mine.Drops.Count; j++)
                 {
                     MineDrop Drop = mine.Drops[j];
@@ -1170,7 +1170,7 @@ namespace Server
         {
             Array.Resize(ref Hero_CanCreateClass, Enum.GetNames(typeof(MirClass)).Length);
             if (!File.Exists(Path.Combine(ConfigPath, "HeroSettings.ini")))
-            {                
+            {
                 for (int i = 0; i < Hero_CanCreateClass.Length; i++)
                     Hero_CanCreateClass[i] = true;
                 SaveHeroSettings();
@@ -1289,7 +1289,7 @@ namespace Server
                         Guild_CreationCostList[i].Item = ItemList[j];
                         break;
                     }
-                  
+
             }
         }
 
@@ -1508,7 +1508,7 @@ namespace Server
             reader.Write("Config", "MarriageCooldown", MarriageCooldown);
             reader.Write("Config", "AllowLoverRecall", WeddingRingRecall);
             reader.Write("Config", "MinimumLevel", MarriageLevelRequired);
-            reader.Write("Config", "ReplaceRingCost", ReplaceWedRingCost); 
+            reader.Write("Config", "ReplaceRingCost", ReplaceWedRingCost);
         }
 
         public static void LoadMentor()

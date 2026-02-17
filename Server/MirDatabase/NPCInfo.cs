@@ -13,6 +13,8 @@ namespace Server.MirDatabase
         public int Index;
 
         public string FileName = string.Empty, Name = string.Empty;
+        // ZZ NPC汉化
+        public string NameLocale = string.Empty;
 
         public int MapIndex;
         public Point Location;
@@ -194,8 +196,10 @@ namespace Server.MirDatabase
         {
             get
             {
-                string s = Name;
-                if (s.Contains("_"))
+                // ZZ NPC汉化
+                // string s = Name;
+                string s = string.IsNullOrEmpty(NameLocale) ? Name : NameLocale;
+                if (s.Contains('_'))
                 {
                     string[] splitName = s.Split('_');
                     s = splitName[splitName.Length - 1];

@@ -127,9 +127,9 @@ namespace Server
             StatusBar.SuspendLayout();
             MainMenu.SuspendLayout();
             SuspendLayout();
-            // 
+            //
             // MainTabs
-            // 
+            //
             MainTabs.Controls.Add(tabPage1);
             MainTabs.Controls.Add(tabPage2);
             MainTabs.Controls.Add(tabPage3);
@@ -143,9 +143,9 @@ namespace Server
             MainTabs.Size = new Size(566, 407);
             MainTabs.TabIndex = 5;
             MainTabs.SelectedIndexChanged += MainTabs_SelectedIndexChanged;
-            // 
+            //
             // tabPage1
-            // 
+            //
             tabPage1.Controls.Add(LogTextBox);
             tabPage1.Location = new Point(4, 24);
             tabPage1.Margin = new Padding(4, 3, 4, 3);
@@ -155,9 +155,9 @@ namespace Server
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Logs";
             tabPage1.UseVisualStyleBackColor = true;
-            // 
+            //
             // LogTextBox
-            // 
+            //
             LogTextBox.Dock = DockStyle.Fill;
             LogTextBox.Location = new Point(4, 3);
             LogTextBox.Margin = new Padding(4, 3, 4, 3);
@@ -167,9 +167,9 @@ namespace Server
             LogTextBox.ScrollBars = ScrollBars.Vertical;
             LogTextBox.Size = new Size(550, 373);
             LogTextBox.TabIndex = 2;
-            // 
+            //
             // tabPage2
-            // 
+            //
             tabPage2.Controls.Add(DebugLogTextBox);
             tabPage2.Location = new Point(4, 24);
             tabPage2.Margin = new Padding(4, 3, 4, 3);
@@ -179,9 +179,9 @@ namespace Server
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Debug Logs";
             tabPage2.UseVisualStyleBackColor = true;
-            // 
+            //
             // DebugLogTextBox
-            // 
+            //
             DebugLogTextBox.Dock = DockStyle.Fill;
             DebugLogTextBox.Location = new Point(4, 3);
             DebugLogTextBox.Margin = new Padding(4, 3, 4, 3);
@@ -191,9 +191,9 @@ namespace Server
             DebugLogTextBox.ScrollBars = ScrollBars.Vertical;
             DebugLogTextBox.Size = new Size(550, 373);
             DebugLogTextBox.TabIndex = 3;
-            // 
+            //
             // tabPage3
-            // 
+            //
             tabPage3.Controls.Add(groupBox1);
             tabPage3.Controls.Add(ChatLogTextBox);
             tabPage3.Location = new Point(4, 24);
@@ -204,9 +204,9 @@ namespace Server
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Chat Logs";
             tabPage3.UseVisualStyleBackColor = true;
-            // 
+            //
             // groupBox1
-            // 
+            //
             groupBox1.Controls.Add(GlobalMessageButton);
             groupBox1.Controls.Add(GlobalMessageTextBox);
             groupBox1.Dock = DockStyle.Bottom;
@@ -218,9 +218,9 @@ namespace Server
             groupBox1.TabIndex = 7;
             groupBox1.TabStop = false;
             groupBox1.Text = "Send Message";
-            // 
+            //
             // GlobalMessageButton
-            // 
+            //
             GlobalMessageButton.Location = new Point(457, 16);
             GlobalMessageButton.Margin = new Padding(4, 3, 4, 3);
             GlobalMessageButton.Name = "GlobalMessageButton";
@@ -229,17 +229,17 @@ namespace Server
             GlobalMessageButton.Text = "Send";
             GlobalMessageButton.UseVisualStyleBackColor = true;
             GlobalMessageButton.Click += GlobalMessageButton_Click;
-            // 
+            //
             // GlobalMessageTextBox
-            // 
+            //
             GlobalMessageTextBox.Location = new Point(7, 20);
             GlobalMessageTextBox.Margin = new Padding(4, 3, 4, 3);
             GlobalMessageTextBox.Name = "GlobalMessageTextBox";
             GlobalMessageTextBox.Size = new Size(443, 23);
             GlobalMessageTextBox.TabIndex = 0;
-            // 
+            //
             // ChatLogTextBox
-            // 
+            //
             ChatLogTextBox.Location = new Point(4, 3);
             ChatLogTextBox.Margin = new Padding(4, 3, 4, 3);
             ChatLogTextBox.Multiline = true;
@@ -248,9 +248,9 @@ namespace Server
             ChatLogTextBox.ScrollBars = ScrollBars.Vertical;
             ChatLogTextBox.Size = new Size(549, 310);
             ChatLogTextBox.TabIndex = 4;
-            // 
+            //
             // tabPage4
-            // 
+            //
             tabPage4.BackColor = SystemColors.Control;
             tabPage4.Controls.Add(PlayersOnlineListView);
             tabPage4.Location = new Point(4, 24);
@@ -260,9 +260,9 @@ namespace Server
             tabPage4.Size = new Size(558, 379);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Players Online";
-            // 
+            //
             // PlayersOnlineListView
-            // 
+            //
             PlayersOnlineListView.Activation = ItemActivation.OneClick;
             PlayersOnlineListView.BackColor = SystemColors.Window;
             PlayersOnlineListView.Columns.AddRange(new ColumnHeader[] { indexHeader, nameHeader, levelHeader, classHeader, genderHeader });
@@ -279,34 +279,34 @@ namespace Server
             PlayersOnlineListView.View = View.Details;
             PlayersOnlineListView.ColumnWidthChanging += PlayersOnlineListView_ColumnWidthChanging;
             PlayersOnlineListView.DoubleClick += PlayersOnlineListView_DoubleClick;
-            // 
+            //
             // indexHeader
-            // 
+            //
             indexHeader.Text = "Index";
             indexHeader.Width = 71;
-            // 
+            //
             // nameHeader
-            // 
+            //
             nameHeader.Text = "Name";
             nameHeader.Width = 93;
-            // 
+            //
             // levelHeader
-            // 
+            //
             levelHeader.Text = "Level";
             levelHeader.Width = 90;
-            // 
+            //
             // classHeader
-            // 
+            //
             classHeader.Text = "Class";
             classHeader.Width = 100;
-            // 
+            //
             // genderHeader
-            // 
+            //
             genderHeader.Text = "Gender";
             genderHeader.Width = 98;
-            // 
+            //
             // tabPage5
-            // 
+            //
             tabPage5.Controls.Add(GuildListView);
             tabPage5.Location = new Point(4, 24);
             tabPage5.Name = "tabPage5";
@@ -315,9 +315,9 @@ namespace Server
             tabPage5.TabIndex = 4;
             tabPage5.Text = "Guilds";
             tabPage5.UseVisualStyleBackColor = true;
-            // 
+            //
             // GuildListView
-            // 
+            //
             GuildListView.Activation = ItemActivation.OneClick;
             GuildListView.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3, columnHeader4, columnHeader5, columnHeader6, columnHeader7 });
             GuildListView.Dock = DockStyle.Fill;
@@ -330,44 +330,44 @@ namespace Server
             GuildListView.UseCompatibleStateImageBehavior = false;
             GuildListView.View = View.Details;
             GuildListView.DoubleClick += GuildListView_DoubleClick;
-            // 
+            //
             // columnHeader1
-            // 
+            //
             columnHeader1.Text = "Index";
             columnHeader1.Width = 45;
-            // 
+            //
             // columnHeader2
-            // 
+            //
             columnHeader2.Text = "Name";
             columnHeader2.Width = 80;
-            // 
+            //
             // columnHeader3
-            // 
+            //
             columnHeader3.Text = "Leader";
             columnHeader3.Width = 80;
-            // 
+            //
             // columnHeader4
-            // 
+            //
             columnHeader4.Text = "Members";
             columnHeader4.Width = 70;
-            // 
+            //
             // columnHeader5
-            // 
+            //
             columnHeader5.Text = "Level";
             columnHeader5.Width = 75;
-            // 
+            //
             // columnHeader6
-            // 
+            //
             columnHeader6.Text = "Gold";
             columnHeader6.Width = 75;
-            // 
+            //
             // columnHeader7
-            // 
+            //
             columnHeader7.Text = "GT";
             columnHeader7.Width = 120;
-            // 
+            //
             // StatusBar
-            // 
+            //
             StatusBar.Items.AddRange(new ToolStripItem[] { PlayersLabel, MonsterLabel, ConnectionsLabel, BlockedIPsLabel, CycleDelayLabel });
             StatusBar.Location = new Point(0, 431);
             StatusBar.Name = "StatusBar";
@@ -376,44 +376,44 @@ namespace Server
             StatusBar.SizingGrip = false;
             StatusBar.TabIndex = 4;
             StatusBar.Text = "statusStrip1";
-            // 
+            //
             // PlayersLabel
-            // 
+            //
             PlayersLabel.BorderSides = ToolStripStatusLabelBorderSides.Left | ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Right | ToolStripStatusLabelBorderSides.Bottom;
             PlayersLabel.Name = "PlayersLabel";
             PlayersLabel.Size = new Size(60, 19);
             PlayersLabel.Text = "Players: 0";
-            // 
+            //
             // MonsterLabel
-            // 
+            //
             MonsterLabel.BorderSides = ToolStripStatusLabelBorderSides.Left | ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Right | ToolStripStatusLabelBorderSides.Bottom;
             MonsterLabel.Name = "MonsterLabel";
             MonsterLabel.Size = new Size(72, 19);
             MonsterLabel.Text = "Monsters: 0";
-            // 
+            //
             // ConnectionsLabel
-            // 
+            //
             ConnectionsLabel.BorderSides = ToolStripStatusLabelBorderSides.Left | ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Right | ToolStripStatusLabelBorderSides.Bottom;
             ConnectionsLabel.Name = "ConnectionsLabel";
             ConnectionsLabel.Size = new Size(90, 19);
             ConnectionsLabel.Text = "Connections: 0";
-            // 
+            //
             // BlockedIPsLabel
-            // 
+            //
             BlockedIPsLabel.BorderSides = ToolStripStatusLabelBorderSides.Left | ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Right | ToolStripStatusLabelBorderSides.Bottom;
             BlockedIPsLabel.Name = "BlockedIPsLabel";
             BlockedIPsLabel.Size = new Size(83, 19);
             BlockedIPsLabel.Text = "Blocked IPs: 0";
-            // 
+            //
             // CycleDelayLabel
-            // 
+            //
             CycleDelayLabel.BorderSides = ToolStripStatusLabelBorderSides.Left | ToolStripStatusLabelBorderSides.Top | ToolStripStatusLabelBorderSides.Right | ToolStripStatusLabelBorderSides.Bottom;
             CycleDelayLabel.Name = "CycleDelayLabel";
             CycleDelayLabel.Size = new Size(81, 19);
             CycleDelayLabel.Text = "CycleDelay: 0";
-            // 
+            //
             // MainMenu
-            // 
+            //
             MainMenu.BackColor = Color.Transparent;
             MainMenu.Items.AddRange(new ToolStripItem[] { controlToolStripMenuItem, accountToolStripMenuItem, databaseFormsToolStripMenuItem, configToolStripMenuItem1, CharacterToolStripMenuItem, UpTimeLabel });
             MainMenu.Location = new Point(0, 0);
@@ -422,351 +422,351 @@ namespace Server
             MainMenu.Size = new Size(566, 24);
             MainMenu.TabIndex = 3;
             MainMenu.Text = "menuStrip1";
-            // 
+            //
             // controlToolStripMenuItem
-            // 
+            //
             controlToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { startServerToolStripMenuItem, stopServerToolStripMenuItem, rebootServerToolStripMenuItem, clearBlockedIPsToolStripMenuItem, toolStripMenuItem1, toolStripSeparator1, closeServerToolStripMenuItem, reloadToolStripMenuItem });
             controlToolStripMenuItem.Name = "controlToolStripMenuItem";
             controlToolStripMenuItem.Size = new Size(59, 20);
             controlToolStripMenuItem.Text = "Control";
-            // 
+            //
             // startServerToolStripMenuItem
-            // 
+            //
             startServerToolStripMenuItem.Name = "startServerToolStripMenuItem";
             startServerToolStripMenuItem.Size = new Size(164, 22);
             startServerToolStripMenuItem.Text = "Start Server";
             startServerToolStripMenuItem.Click += startServerToolStripMenuItem_Click;
-            // 
+            //
             // stopServerToolStripMenuItem
-            // 
+            //
             stopServerToolStripMenuItem.Name = "stopServerToolStripMenuItem";
             stopServerToolStripMenuItem.Size = new Size(164, 22);
             stopServerToolStripMenuItem.Text = "Stop Server";
             stopServerToolStripMenuItem.Click += stopServerToolStripMenuItem_Click;
-            // 
+            //
             // rebootServerToolStripMenuItem
-            // 
+            //
             rebootServerToolStripMenuItem.Name = "rebootServerToolStripMenuItem";
             rebootServerToolStripMenuItem.Size = new Size(164, 22);
             rebootServerToolStripMenuItem.Text = "Reboot Server";
             rebootServerToolStripMenuItem.Click += rebootServerToolStripMenuItem_Click;
-            // 
+            //
             // clearBlockedIPsToolStripMenuItem
-            // 
+            //
             clearBlockedIPsToolStripMenuItem.Name = "clearBlockedIPsToolStripMenuItem";
             clearBlockedIPsToolStripMenuItem.Size = new Size(164, 22);
             clearBlockedIPsToolStripMenuItem.Text = "Clear Blocked IPs";
             clearBlockedIPsToolStripMenuItem.Click += clearBlockedIPsToolStripMenuItem_Click;
-            // 
+            //
             // toolStripMenuItem1
-            // 
+            //
             toolStripMenuItem1.Name = "toolStripMenuItem1";
             toolStripMenuItem1.Size = new Size(161, 6);
-            // 
+            //
             // toolStripSeparator1
-            // 
+            //
             toolStripSeparator1.Name = "toolStripSeparator1";
             toolStripSeparator1.Size = new Size(161, 6);
-            // 
+            //
             // closeServerToolStripMenuItem
-            // 
+            //
             closeServerToolStripMenuItem.Name = "closeServerToolStripMenuItem";
             closeServerToolStripMenuItem.Size = new Size(164, 22);
             closeServerToolStripMenuItem.Text = "Close Server";
             closeServerToolStripMenuItem.Click += closeServerToolStripMenuItem_Click;
-            // 
+            //
             // reloadToolStripMenuItem
-            // 
+            //
             reloadToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { nPCsToolStripMenuItem, dropsToolStripMenuItem, lineMessageToolStripMenuItem });
             reloadToolStripMenuItem.Name = "reloadToolStripMenuItem";
             reloadToolStripMenuItem.Size = new Size(164, 22);
             reloadToolStripMenuItem.Text = "Reload";
-            // 
+            //
             // nPCsToolStripMenuItem
-            // 
+            //
             nPCsToolStripMenuItem.Name = "nPCsToolStripMenuItem";
             nPCsToolStripMenuItem.Size = new Size(145, 22);
             nPCsToolStripMenuItem.Text = "NPCs";
             nPCsToolStripMenuItem.Click += nPCsToolStripMenuItem_Click;
-            // 
+            //
             // dropsToolStripMenuItem
-            // 
+            //
             dropsToolStripMenuItem.Name = "dropsToolStripMenuItem";
             dropsToolStripMenuItem.Size = new Size(145, 22);
             dropsToolStripMenuItem.Text = "Drops";
             dropsToolStripMenuItem.Click += dropsToolStripMenuItem_Click;
-            // 
+            //
             // lineMessageToolStripMenuItem
-            // 
+            //
             lineMessageToolStripMenuItem.Name = "lineMessageToolStripMenuItem";
             lineMessageToolStripMenuItem.Size = new Size(145, 22);
             lineMessageToolStripMenuItem.Text = "Line Message";
             lineMessageToolStripMenuItem.Click += lineMessageToolStripMenuItem_Click;
-            // 
+            //
             // accountToolStripMenuItem
-            // 
+            //
             accountToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { accountsToolStripMenuItem1, marketToolStripMenuItem, namelistsToolStripMenuItem });
             accountToolStripMenuItem.Name = "accountToolStripMenuItem";
             accountToolStripMenuItem.Size = new Size(64, 20);
             accountToolStripMenuItem.Text = "Account";
-            // 
+            //
             // accountsToolStripMenuItem1
-            // 
+            //
             accountsToolStripMenuItem1.Name = "accountsToolStripMenuItem1";
             accountsToolStripMenuItem1.Size = new Size(126, 22);
             accountsToolStripMenuItem1.Text = "Accounts";
             accountsToolStripMenuItem1.Click += accountsToolStripMenuItem1_Click;
-            // 
+            //
             // marketToolStripMenuItem
-            // 
+            //
             marketToolStripMenuItem.Name = "marketToolStripMenuItem";
             marketToolStripMenuItem.Size = new Size(126, 22);
             marketToolStripMenuItem.Text = "Market";
             marketToolStripMenuItem.Click += marketToolStripMenuItem_Click;
-            // 
+            //
             // namelistsToolStripMenuItem
-            // 
+            //
             namelistsToolStripMenuItem.Name = "namelistsToolStripMenuItem";
             namelistsToolStripMenuItem.Size = new Size(126, 22);
             namelistsToolStripMenuItem.Text = "Namelists";
             namelistsToolStripMenuItem.Click += namelistsToolStripMenuItem_Click;
-            // 
+            //
             // databaseFormsToolStripMenuItem
-            // 
+            //
             databaseFormsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { mapInfoToolStripMenuItem, itemInfoToolStripMenuItem, monsterInfoToolStripMenuItem, itemNEWToolStripMenuItem, monsterExperimentalToolStripMenuItem, nPCInfoToolStripMenuItem, questInfoToolStripMenuItem, magicInfoToolStripMenuItem, gameshopToolStripMenuItem, recipeToolStripMenuItem });
             databaseFormsToolStripMenuItem.Name = "databaseFormsToolStripMenuItem";
             databaseFormsToolStripMenuItem.Size = new Size(67, 20);
             databaseFormsToolStripMenuItem.Text = "Database";
-            // 
+            //
             // mapInfoToolStripMenuItem
-            // 
+            //
             mapInfoToolStripMenuItem.Name = "mapInfoToolStripMenuItem";
             mapInfoToolStripMenuItem.Size = new Size(203, 22);
             mapInfoToolStripMenuItem.Text = "Map";
             mapInfoToolStripMenuItem.Click += mapInfoToolStripMenuItem_Click;
-            // 
+            //
             // itemInfoToolStripMenuItem
-            // 
+            //
             itemInfoToolStripMenuItem.Name = "itemInfoToolStripMenuItem";
             itemInfoToolStripMenuItem.ShowShortcutKeys = false;
             itemInfoToolStripMenuItem.Size = new Size(203, 22);
             itemInfoToolStripMenuItem.Text = "Item (OLD- HIDDEN)";
             itemInfoToolStripMenuItem.Visible = false;
             itemInfoToolStripMenuItem.Click += itemInfoToolStripMenuItem_Click;
-            // 
+            //
             // monsterInfoToolStripMenuItem
-            // 
+            //
             monsterInfoToolStripMenuItem.Name = "monsterInfoToolStripMenuItem";
             monsterInfoToolStripMenuItem.Size = new Size(203, 22);
             monsterInfoToolStripMenuItem.Text = "Monster(OLD - HIDDEN)";
             monsterInfoToolStripMenuItem.Visible = false;
             monsterInfoToolStripMenuItem.Click += monsterInfoToolStripMenuItem_Click;
-            // 
+            //
             // itemNEWToolStripMenuItem
-            // 
+            //
             itemNEWToolStripMenuItem.Name = "itemNEWToolStripMenuItem";
             itemNEWToolStripMenuItem.Size = new Size(203, 22);
             itemNEWToolStripMenuItem.Text = "Item";
             itemNEWToolStripMenuItem.Click += itemNEWToolStripMenuItem_Click;
-            // 
+            //
             // monsterExperimentalToolStripMenuItem
-            // 
+            //
             monsterExperimentalToolStripMenuItem.Name = "monsterExperimentalToolStripMenuItem";
             monsterExperimentalToolStripMenuItem.Size = new Size(203, 22);
             monsterExperimentalToolStripMenuItem.Text = "Monster";
             monsterExperimentalToolStripMenuItem.Click += monsterExperimentalToolStripMenuItem_Click;
-            // 
+            //
             // nPCInfoToolStripMenuItem
-            // 
+            //
             nPCInfoToolStripMenuItem.Name = "nPCInfoToolStripMenuItem";
             nPCInfoToolStripMenuItem.Size = new Size(203, 22);
             nPCInfoToolStripMenuItem.Text = "NPC";
             nPCInfoToolStripMenuItem.Click += nPCInfoToolStripMenuItem_Click;
-            // 
+            //
             // questInfoToolStripMenuItem
-            // 
+            //
             questInfoToolStripMenuItem.Name = "questInfoToolStripMenuItem";
             questInfoToolStripMenuItem.Size = new Size(203, 22);
             questInfoToolStripMenuItem.Text = "Quest";
             questInfoToolStripMenuItem.Click += questInfoToolStripMenuItem_Click;
-            // 
+            //
             // magicInfoToolStripMenuItem
-            // 
+            //
             magicInfoToolStripMenuItem.Name = "magicInfoToolStripMenuItem";
             magicInfoToolStripMenuItem.Size = new Size(203, 22);
             magicInfoToolStripMenuItem.Text = "Magic";
             magicInfoToolStripMenuItem.Click += magicInfoToolStripMenuItem_Click;
-            // 
+            //
             // gameshopToolStripMenuItem
-            // 
+            //
             gameshopToolStripMenuItem.Name = "gameshopToolStripMenuItem";
             gameshopToolStripMenuItem.Size = new Size(203, 22);
             gameshopToolStripMenuItem.Text = "Gameshop";
             gameshopToolStripMenuItem.Click += gameshopToolStripMenuItem_Click;
-            // 
+            //
             // recipeToolStripMenuItem
-            // 
+            //
             recipeToolStripMenuItem.Name = "recipeToolStripMenuItem";
             recipeToolStripMenuItem.Size = new Size(203, 22);
             recipeToolStripMenuItem.Text = "Recipe";
             recipeToolStripMenuItem.Click += recipeToolStripMenuItem_Click;
-            // 
+            //
             // configToolStripMenuItem1
-            // 
+            //
             configToolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { serverToolStripMenuItem, balanceToolStripMenuItem, systemToolStripMenuItem, monsterTunerToolStripMenuItem, dropBuilderToolStripMenuItem });
             configToolStripMenuItem1.Name = "configToolStripMenuItem1";
             configToolStripMenuItem1.Size = new Size(55, 20);
             configToolStripMenuItem1.Text = "Config";
-            // 
+            //
             // serverToolStripMenuItem
-            // 
+            //
             serverToolStripMenuItem.Name = "serverToolStripMenuItem";
             serverToolStripMenuItem.Size = new Size(152, 22);
             serverToolStripMenuItem.Text = "Server";
             serverToolStripMenuItem.Click += serverToolStripMenuItem_Click;
-            // 
+            //
             // balanceToolStripMenuItem
-            // 
+            //
             balanceToolStripMenuItem.Name = "balanceToolStripMenuItem";
             balanceToolStripMenuItem.Size = new Size(152, 22);
             balanceToolStripMenuItem.Text = "Balance";
             balanceToolStripMenuItem.Click += balanceToolStripMenuItem_Click;
-            // 
+            //
             // systemToolStripMenuItem
-            // 
+            //
             systemToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { dragonSystemToolStripMenuItem, miningToolStripMenuItem, guildsToolStripMenuItem, fishingToolStripMenuItem, mailToolStripMenuItem, goodsToolStripMenuItem, refiningToolStripMenuItem, relationshipToolStripMenuItem, mentorToolStripMenuItem, gemToolStripMenuItem, conquestToolStripMenuItem, respawnsToolStripMenuItem, heroesToolStripMenuItem });
             systemToolStripMenuItem.Name = "systemToolStripMenuItem";
             systemToolStripMenuItem.Size = new Size(152, 22);
             systemToolStripMenuItem.Text = "System";
-            // 
+            //
             // dragonSystemToolStripMenuItem
-            // 
+            //
             dragonSystemToolStripMenuItem.Name = "dragonSystemToolStripMenuItem";
             dragonSystemToolStripMenuItem.Size = new Size(139, 22);
             dragonSystemToolStripMenuItem.Text = "Dragon";
             dragonSystemToolStripMenuItem.Click += dragonSystemToolStripMenuItem_Click;
-            // 
+            //
             // miningToolStripMenuItem
-            // 
+            //
             miningToolStripMenuItem.Name = "miningToolStripMenuItem";
             miningToolStripMenuItem.Size = new Size(139, 22);
             miningToolStripMenuItem.Text = "Mining";
             miningToolStripMenuItem.Click += miningToolStripMenuItem_Click;
-            // 
+            //
             // guildsToolStripMenuItem
-            // 
+            //
             guildsToolStripMenuItem.Name = "guildsToolStripMenuItem";
             guildsToolStripMenuItem.Size = new Size(139, 22);
             guildsToolStripMenuItem.Text = "Guilds";
             guildsToolStripMenuItem.Click += guildsToolStripMenuItem_Click;
-            // 
+            //
             // fishingToolStripMenuItem
-            // 
+            //
             fishingToolStripMenuItem.Name = "fishingToolStripMenuItem";
             fishingToolStripMenuItem.Size = new Size(139, 22);
             fishingToolStripMenuItem.Text = "Fishing";
             fishingToolStripMenuItem.Click += fishingToolStripMenuItem_Click;
-            // 
+            //
             // mailToolStripMenuItem
-            // 
+            //
             mailToolStripMenuItem.Name = "mailToolStripMenuItem";
             mailToolStripMenuItem.Size = new Size(139, 22);
             mailToolStripMenuItem.Text = "Mail";
             mailToolStripMenuItem.Click += mailToolStripMenuItem_Click;
-            // 
+            //
             // goodsToolStripMenuItem
-            // 
+            //
             goodsToolStripMenuItem.Name = "goodsToolStripMenuItem";
             goodsToolStripMenuItem.Size = new Size(139, 22);
             goodsToolStripMenuItem.Text = "Goods";
             goodsToolStripMenuItem.Click += goodsToolStripMenuItem_Click;
-            // 
+            //
             // refiningToolStripMenuItem
-            // 
+            //
             refiningToolStripMenuItem.Name = "refiningToolStripMenuItem";
             refiningToolStripMenuItem.Size = new Size(139, 22);
             refiningToolStripMenuItem.Text = "Refining";
             refiningToolStripMenuItem.Click += refiningToolStripMenuItem_Click;
-            // 
+            //
             // relationshipToolStripMenuItem
-            // 
+            //
             relationshipToolStripMenuItem.Name = "relationshipToolStripMenuItem";
             relationshipToolStripMenuItem.Size = new Size(139, 22);
             relationshipToolStripMenuItem.Text = "Relationship";
             relationshipToolStripMenuItem.Click += relationshipToolStripMenuItem_Click;
-            // 
+            //
             // mentorToolStripMenuItem
-            // 
+            //
             mentorToolStripMenuItem.Name = "mentorToolStripMenuItem";
             mentorToolStripMenuItem.Size = new Size(139, 22);
             mentorToolStripMenuItem.Text = "Mentor";
             mentorToolStripMenuItem.Click += mentorToolStripMenuItem_Click;
-            // 
+            //
             // gemToolStripMenuItem
-            // 
+            //
             gemToolStripMenuItem.Name = "gemToolStripMenuItem";
             gemToolStripMenuItem.Size = new Size(139, 22);
             gemToolStripMenuItem.Text = "Gem";
             gemToolStripMenuItem.Click += gemToolStripMenuItem_Click;
-            // 
+            //
             // conquestToolStripMenuItem
-            // 
+            //
             conquestToolStripMenuItem.Name = "conquestToolStripMenuItem";
             conquestToolStripMenuItem.Size = new Size(139, 22);
             conquestToolStripMenuItem.Text = "Conquest";
             conquestToolStripMenuItem.Click += conquestToolStripMenuItem_Click;
-            // 
+            //
             // respawnsToolStripMenuItem
-            // 
+            //
             respawnsToolStripMenuItem.Name = "respawnsToolStripMenuItem";
             respawnsToolStripMenuItem.Size = new Size(139, 22);
             respawnsToolStripMenuItem.Text = "SpawnTick";
             respawnsToolStripMenuItem.Click += respawnsToolStripMenuItem_Click;
-            // 
+            //
             // heroesToolStripMenuItem
-            // 
+            //
             heroesToolStripMenuItem.Name = "heroesToolStripMenuItem";
             heroesToolStripMenuItem.Size = new Size(139, 22);
             heroesToolStripMenuItem.Text = "Heroes";
             heroesToolStripMenuItem.Click += heroesToolStripMenuItem_Click;
-            // 
+            //
             // monsterTunerToolStripMenuItem
-            // 
+            //
             monsterTunerToolStripMenuItem.Name = "monsterTunerToolStripMenuItem";
             monsterTunerToolStripMenuItem.Size = new Size(152, 22);
             monsterTunerToolStripMenuItem.Text = "Monster Tuner";
             monsterTunerToolStripMenuItem.Click += monsterTunerToolStripMenuItem_Click;
-            // 
+            //
             // dropBuilderToolStripMenuItem
-            // 
+            //
             dropBuilderToolStripMenuItem.Name = "dropBuilderToolStripMenuItem";
             dropBuilderToolStripMenuItem.Size = new Size(152, 22);
             dropBuilderToolStripMenuItem.Text = "Drop Builder";
             dropBuilderToolStripMenuItem.Click += dropBuilderToolStripMenuItem_Click;
-            // 
+            //
             // CharacterToolStripMenuItem
-            // 
+            //
             CharacterToolStripMenuItem.Name = "CharacterToolStripMenuItem";
             CharacterToolStripMenuItem.Size = new Size(75, 20);
             CharacterToolStripMenuItem.Text = "Characters";
             CharacterToolStripMenuItem.Click += CharacterToolStripMenuItem_Click;
-            // 
+            //
             // UpTimeLabel
-            // 
+            //
             UpTimeLabel.Alignment = ToolStripItemAlignment.Right;
             UpTimeLabel.BorderStyle = BorderStyle.None;
             UpTimeLabel.Name = "UpTimeLabel";
             UpTimeLabel.ReadOnly = true;
             UpTimeLabel.Size = new Size(200, 20);
             UpTimeLabel.Text = "Uptime:";
-            // 
+            //
             // InterfaceTimer
-            // 
+            //
             InterfaceTimer.Enabled = true;
             InterfaceTimer.Tick += InterfaceTimer_Tick;
-            // 
+            //
             // SMain
-            // 
+            //
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSizeMode = AutoSizeMode.GrowAndShrink;

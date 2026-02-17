@@ -177,7 +177,8 @@ namespace Client.MirControls
             DrawControlTexture = true;
             _drawFormat = TextFormatFlags.WordBreak;
 
-            _font = ScaleFont(new Font(Settings.FontName, 8F));
+            // ZZ 更改字体大小 原值为8
+            _font = ScaleFont(new Font(Settings.FontName, 10F));
             _outLine = true;
             _outLineColour = Color.Black; 
             _text = string.Empty;

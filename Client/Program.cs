@@ -110,7 +110,7 @@ namespace Client
             catch (Exception ex)
             {
                 CMain.SaveError(ex.ToString());
-                
+
                 throw;
             }
         }
@@ -133,7 +133,7 @@ namespace Client
                 //}
                 //catch (COMException)
                 //{
-                //    // This occurs with an HRESULT meaning 
+                //    // This occurs with an HRESULT meaning
                 //    // "A different runtime was already bound to the legacy CLR version 2 activation policy."
                 //    LegacyV2RuntimeEnabledSuccessfully = false;
                 //}
@@ -165,14 +165,14 @@ namespace Client
             var parsedOK = DisplayResolutions.GetDisplayResolutions();
             if (!parsedOK)
             {
-                MessageBox.Show("Could not get display resolutions", "Get Display Resolution Issue", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("无法获取分辨率", "分辨率错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(0);
             }
 
             if (!DisplayResolutions.IsSupported(Settings.Resolution))
             {
-                MessageBox.Show($"Client does not support {Settings.Resolution}. Setting Resolution to 1024x768.",
-                                "Invalid Client Resolution",
+                MessageBox.Show($"不支持分辨率 {Settings.Resolution}. 恢复至默认值 1024x768",
+                                "无效的分辨率设置",
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
 

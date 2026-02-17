@@ -42,19 +42,20 @@ namespace Server.MirDatabase
             }
         }
 
-        public string 
-            Name = string.Empty, 
-            Group = string.Empty, 
-            FileName = string.Empty, 
-            GotoMessage = string.Empty, 
-            KillMessage = string.Empty, 
+        public string
+            Name = string.Empty,
+            NameLocale = string.Empty,
+            Group = string.Empty,
+            FileName = string.Empty,
+            GotoMessage = string.Empty,
+            KillMessage = string.Empty,
             ItemMessage = string.Empty,
             FlagMessage = string.Empty;
 
         public List<string> Description = new List<string>();
         public List<string> TaskDescription = new List<string>();
         public List<string> ReturnDescription = new List<string>();
-        public List<string> CompletionDescription = new List<string>(); 
+        public List<string> CompletionDescription = new List<string>();
 
         public int RequiredMinLevel, RequiredMaxLevel, RequiredQuest;
         public RequiredClass RequiredClass = RequiredClass.None;
@@ -63,7 +64,7 @@ namespace Server.MirDatabase
 
         public int TimeLimitInSeconds = 0;
 
-        public List<QuestItemTask> CarryItems = new List<QuestItemTask>(); 
+        public List<QuestItemTask> CarryItems = new List<QuestItemTask>();
 
         public List<QuestKillTask> KillTasks = new List<QuestKillTask>();
         public List<QuestItemTask> ItemTasks = new List<QuestItemTask>();
@@ -160,6 +161,7 @@ namespace Server.MirDatabase
 
         public void ParseFile(List<string> lines)
         {
+            // ZZ 任务指令 自定义任务时有用
             const string
                 descriptionCollectKey = "[@DESCRIPTION]",
                 descriptionTaskKey = "[@TASKDESCRIPTION]",
@@ -175,8 +177,8 @@ namespace Server.MirDatabase
                 goldRewardKey = "[@GOLDREWARD]",
                 creditRewardKey = "[@CREDITREWARD]";
 
-            List<string> headers = new List<string> 
-            { 
+            List<string> headers = new List<string>
+            {
                 descriptionCollectKey, descriptionTaskKey, descriptionCompletionKey,
                 carryItemsKey, killTasksKey, itemTasksKey, flagTasksKey,
                 fixedRewardsKey, selectRewardsKey, expRewardKey, goldRewardKey, creditRewardKey, descriptionReturnKey
@@ -256,6 +258,7 @@ namespace Server.MirDatabase
             }
         }
 
+        // 任务奖励解析
         public void ParseReward(List<QuestItemReward> list, string line)
         {
             if (line.Length < 1) return;
@@ -389,7 +392,7 @@ namespace Server.MirDatabase
                 Index = Index,
                 NPCIndex = NpcIndex,
                 FinishNPCIndex = FinishNpcIndex,
-                Name = Name,
+                Name = string.IsNullOrEmpty(NameLocale) ? Name : NameLocale,
                 Group = Group,
                 Description = Description,
                 TaskDescription = TaskDescription,

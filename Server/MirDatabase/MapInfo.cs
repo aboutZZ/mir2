@@ -16,7 +16,7 @@ namespace Server.MirDatabase
         }
 
         public int Index;
-        public string FileName = string.Empty, Title = string.Empty;
+        public string FileName = string.Empty, Title = string.Empty, TitleLocale = string.Empty;
         public ushort MiniMap, BigMap, Music;
         public LightSetting Light;
         public byte MapDarkLight = 0, MineIndex = 0, GTIndex = 0;

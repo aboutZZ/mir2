@@ -184,10 +184,10 @@ namespace Client.MirScenes.Dialogs
 
             PaymentTypeGold = new MirCheckBox
             {
-                LabelText = "Buy with Gold",
+                LabelText = "金币购买",
                 Location = new Point(250, 449),
                 Parent = this,
-                Hint = "Buy item(s) with Gold.",
+                Hint = "使用金币购买物品",
                 Index = 2086,
                 UnTickedIndex = 2086,
                 TickedIndex = 2087,
@@ -198,10 +198,10 @@ namespace Client.MirScenes.Dialogs
 
             PaymentTypeCredit = new MirCheckBox
             {
-                LabelText = "Buy with Credits",
+                LabelText = "元宝购买",
                 Location = new Point(340, 449),
                 Parent = this,
-                Hint = "Buy item(s) with Credits.",
+                Hint = "使用元宝购买物品",
                 Index = 2086,
                 UnTickedIndex = 2086,
                 TickedIndex = 2087,
@@ -383,7 +383,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(83, 17),
                 Location = new Point(597, 446),
                 DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
-                Font = new Font(Settings.FontName, 7F),
+                Font = new Font(Settings.FontName, 10F),
             };
 
             PreviousButton = new MirButton
@@ -425,14 +425,15 @@ namespace Client.MirScenes.Dialogs
 
             for (int i = 0; i < Filters.Length; i++)
             {
+                // ZZ [商城]调整过滤器字体大小
                 Filters[i] = new MirLabel
                 {
                     Parent = this,
                     Size = new Size(90, 20),
-                    Location = new Point(15, 103 + (15 * i)),
+                    Location = new Point(15, 103 + (19 * i)), // (15 * i) 改为 (19 * i)
                     Text = "Testing - " + i.ToString(),
                     ForeColour = Color.Gray,
-                    Font = new Font(Settings.FontName, 7F),
+                    Font = new Font(Settings.FontName, 10F), // ZZ 原值是 7, 字太小, 改为10
                 };
                 Filters[i].Click += (o, e) =>
                 {

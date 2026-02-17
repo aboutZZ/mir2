@@ -325,9 +325,10 @@ namespace Client.MirObjects
                 BodyLibrary.DrawBlend(DrawWingFrame, DrawLocation, Color.White, true);
         }
 
+        // ZZ 客户端显示NPC名字
         public override void DrawName()
         {
-            if (!Name.Contains("_"))
+            if (!Name.Contains('_'))
             {
                 base.DrawName();
                 return;
@@ -340,7 +341,8 @@ namespace Client.MirObjects
                 CreateNPCLabel(splitName[s], s);
 
                 TempLabel.Text = splitName[s];
-                TempLabel.Location = new Point(DisplayRectangle.X + (48 - TempLabel.Size.Width) / 2, DisplayRectangle.Y - (32 - TempLabel.Size.Height / 2) + (Dead ? 35 : 8) - (((splitName.Count() - 1) * 10) / 2) + (s * 12));
+                // 这里原来是 s * 12 改为 s * 18, NPC名字有时候两行, 每行间距调宽点
+                TempLabel.Location = new Point(DisplayRectangle.X + (48 - TempLabel.Size.Width) / 2, DisplayRectangle.Y - (32 - TempLabel.Size.Height / 2) + (Dead ? 35 : 8) - (((splitName.Count() - 1) * 10) / 2) + (s * 18));
                 TempLabel.Draw();
             }
         }

@@ -10,6 +10,7 @@ namespace Launcher
     {
         public Config()
         {
+            AutoScaleMode = AutoScaleMode.Dpi;
             InitializeComponent();
         }
 
@@ -22,7 +23,7 @@ namespace Launcher
 
             DrawSupportedResolutions();
         }
-                                   
+
         private void Res1_pb_Click(object sender, EventArgs e)
         {
             resolutionChoice(eSupportedResolution.w1024h768);
@@ -93,7 +94,7 @@ namespace Launcher
                 this.ActiveControl = label4;
             }
             else
-            {             
+            {
                 Settings.AccountID = AccountLogin_txt.Text;
                 Settings.Password = AccountPass_txt.Text;
                 Settings.Save();

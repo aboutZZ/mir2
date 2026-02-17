@@ -44,7 +44,7 @@ namespace Client.MirScenes.Dialogs
 
             TitleTypeLabel = new MirLabel
             {
-                Text = "TYPE",
+                Text = "类型",
                 Parent = this,
                 Font = new Font(Settings.FontName, Settings.FontSize - 1, FontStyle.Italic),
                 DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
@@ -54,7 +54,7 @@ namespace Client.MirScenes.Dialogs
 
             TitleSenderLabel = new MirLabel
             {
-                Text = "SENDER",
+                Text = "发送人",
                 Parent = this,
                 Font = new Font(Settings.FontName, Settings.FontSize - 1, FontStyle.Italic),
                 DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
@@ -64,7 +64,7 @@ namespace Client.MirScenes.Dialogs
 
             TitleMessageLabel = new MirLabel
             {
-                Text = "MESSAGE",
+                Text = "信息",
                 Parent = this,
                 Font = new Font(Settings.FontName, Settings.FontSize - 1, FontStyle.Italic),
                 DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
@@ -170,7 +170,7 @@ namespace Client.MirScenes.Dialogs
                     {
                         //open letter dialog, pass in name
                         GameScene.Scene.MailComposeLetterDialog.ComposeMail(inputBox.InputTextBox.Text);
-                        
+
                         inputBox.Dispose();
                     };
 
@@ -237,7 +237,7 @@ namespace Client.MirScenes.Dialogs
 
                 if (SelectedMail.Items.Count > 0 || SelectedMail.Gold > 0)
                 {
-                    MirMessageBox messageBox = new MirMessageBox("This parcel contains items or gold. Are you sure you want to delete it?", MirMessageBoxButtons.YesNo);
+                    MirMessageBox messageBox = new MirMessageBox("该包裹包含物品或金币。 确定要删除吗？", MirMessageBoxButtons.YesNo);
 
                     messageBox.YesButton.Click += (o1, e1) =>
                     {
@@ -277,13 +277,13 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(210, 414),
                 Sound = SoundList.ButtonA,
-                Hint = "Report Bug",
+                Hint = "上报 BUG",
                 GrayScale = true,
                 Enabled = false
             };
             #endregion
 
-            
+
         }
 
         public void Reset()
@@ -584,7 +584,7 @@ namespace Client.MirScenes.Dialogs
         protected override void OnMouseEnter()
         {
             base.OnMouseEnter();
-            GameScene.Scene.CreateMailLabel(Mail);          
+            GameScene.Scene.CreateMailLabel(Mail);
         }
         protected override void OnMouseLeave()
         {
@@ -756,7 +756,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(73, 56),
                 Size = new Size(20,20),
                 Library = Libraries.Prguse2,
-                Parent = this,             
+                Parent = this,
                 Sound = SoundList.ButtonA,
             };
             StampButton.Click += (o, e) =>
@@ -809,7 +809,7 @@ namespace Client.MirScenes.Dialogs
             {
                 if (GameScene.SelectedCell == null && GameScene.Gold > 0)
                 {
-                    MirAmountBox amountBox = new MirAmountBox("Send Amount:", 116, GameScene.Gold);
+                    MirAmountBox amountBox = new MirAmountBox("金币数量:", 116, GameScene.Gold);
 
                     amountBox.OKButton.Click += (c, a) =>
                     {
@@ -1099,7 +1099,7 @@ namespace Client.MirScenes.Dialogs
             }
 
             SenderNameLabel.Text = Mail.SenderName;
-            DateSentLabel.Text = Mail.DateSent.ToString("dd/MM/yy H:mm:ss");
+            DateSentLabel.Text = Mail.DateSent.ToString("yyyy-MM-dd HH:mm:ss");
             MessageLabel.Text = Mail.Message.Replace("\\r\\n", "\r\n");
 
             Visible = true;
@@ -1186,7 +1186,7 @@ namespace Client.MirScenes.Dialogs
             };
             CollectButton.Click += (o, e) =>
             {
-                Network.Enqueue(new C.CollectParcel { MailID = Mail.MailID }); 
+                Network.Enqueue(new C.CollectParcel { MailID = Mail.MailID });
             };
 
             CancelButton = new MirButton
@@ -1216,7 +1216,7 @@ namespace Client.MirScenes.Dialogs
             ResetCells();
 
             SenderNameLabel.Text = Mail.SenderName;
-            DateSentLabel.Text = Mail.DateSent.ToString("dd/MM/yy H:mm:ss");
+            DateSentLabel.Text = Mail.DateSent.ToString("yyyy-MM-dd HH:mm:ss");
             MessageLabel.Text = Mail.Message.Replace("\\r\\n", "\r\n");
             GoldSendLabel.Text = Mail.Gold.ToString("###,###,##0");
 

@@ -149,24 +149,24 @@
                 Inputkey.RequireCtrl = Reader.ReadByte(Inputkey.function.ToString(), "RequireCtrl", Inputkey.RequireCtrl);
                 string Input = Reader.ReadString(Inputkey.function.ToString(), "RequireKey", Inputkey.Key.ToString());
                 Enum.TryParse(Input, out Inputkey.Key);
-                
+
             }
         }
 
         public void Save(List<KeyBind> keyList)
         {
             Reader.Write("Guide", "01", "RequireAlt,RequireShift,RequireTilde,RequireCtrl");
-            Reader.Write("Guide", "02", "have 3 options: 0/1/2");
-            Reader.Write("Guide", "03", "0 < you cannot have this key pressed to use the function");
-            Reader.Write("Guide", "04", "1 < you have to have this key pressed to use this function");
-            Reader.Write("Guide", "05", "2 < it doesnt matter if you press this key to use this function");
-            Reader.Write("Guide", "06", "by default just use 2, unless you have 2 functions on the same key");
-            Reader.Write("Guide", "07", "example: change attack mode (ctrl+h) and help (h)");
-            Reader.Write("Guide", "08", "if you set either of those to requireshift 2, then they wil both work at the same time or not work");
+            Reader.Write("Guide", "02", "有三个选项: 0/1/2");
+            Reader.Write("Guide", "03", "0 < 您不能按下此键来使用该功能");
+            Reader.Write("Guide", "04", "1 < 您必须按下此键才能使用此功能");
+            Reader.Write("Guide", "05", "2 < 无论是否按下此键均可使用此功能");
+            Reader.Write("Guide", "06", "默认情况下只使用 2，除非同一个键上有 2 个功能");
+            Reader.Write("Guide", "07", "例：更改攻击模式（ctrl+h）和帮助（h）");
+            Reader.Write("Guide", "08", "如果您将其中任何一个设置为 requireshift 2，那么它们将同时工作或不工作");
             Reader.Write("Guide", "09", "");
-            Reader.Write("Guide", "10", "To get the value for RequireKey look at:");
+            Reader.Write("Guide", "10", "要获取 RequireKey 的值，请查看:");
             Reader.Write("Guide", "11", "https://msdn.microsoft.com/en-us/library/system.windows.forms.keys(v=vs.110).aspx");
-        
+
             foreach (KeyBind Inputkey in keyList)
             {
                 Reader.Write(Inputkey.function.ToString(), "RequireAlt", Inputkey.RequireAlt);
@@ -410,5 +410,5 @@
         }
     }
 
-    
+
 }

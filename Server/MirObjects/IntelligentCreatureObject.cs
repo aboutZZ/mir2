@@ -70,7 +70,7 @@ namespace Server.MirObjects
 
         public override string Name
         {
-            get { return Master == null ? CustomName : (Dead ? CustomName : string.Format("{0}_{1}'s Pet", CustomName, Master.Name)); }
+            get { return Master == null ? CustomName : (Dead ? CustomName : string.Format("{0}_{1}的宠物", CustomName, Master.Name)); }
             set { throw new NotSupportedException(); }
         }
         protected override bool CanAttack
@@ -327,6 +327,7 @@ namespace Server.MirObjects
             }
         }
 
+        // ZZ 宠物自动拾取
         private void FindItemTarget()
         {
             if (Master == null) return;
@@ -619,11 +620,11 @@ namespace Server.MirObjects
 
                     if (item.Item.Info.ShowGroupPickup && IsMasterGroupMember(Master))
                         for (int j = 0; j < Master.GroupMembers.Count; j++)
-                            Master.GroupMembers[j].ReceiveChat(Name + " Picked up: {" + item.Item.FriendlyName + "}", ChatType.Hint);
+                            Master.GroupMembers[j].ReceiveChat(Name + " 捡起了: " + item.Item.FriendlyName + "", ChatType.Hint);
 
                     if (item.Item.Info.Grade == ItemGrade.Mythical || item.Item.Info.Grade == ItemGrade.Legendary || item.Item.Info.Grade == ItemGrade.Heroic)
                     {
-                        Master.ReceiveChat("Pet Picked up: {" + item.Item.FriendlyName + "}", ChatType.Hint);
+                        Master.ReceiveChat("宠物捡起了: " + item.Item.FriendlyName + "", ChatType.Hint);
                         ((PlayerObject)Master).Enqueue(new S.IntelligentCreaturePickup { ObjectID = ObjectID });
                     }
 
@@ -698,7 +699,7 @@ namespace Server.MirObjects
             FullnessTicker = Envir.Time + FullnessDelay;
             Fullness += amount;
             if (Fullness < CreatureRules.MinimalFullness) CreatureSay("*Hmmm*");
-            else CreatureSay("*Burp*");
+            else CreatureSay("*嗝~饱了饱了*");
             if (Fullness > 10000) Fullness = 10000;
         }
 
@@ -711,7 +712,7 @@ namespace Server.MirObjects
                 FullnessTicker = Envir.Time + FullnessDelay;
                 Fullness -= amount;
                 if (Fullness < 0) Fullness = 0;
-                if (Fullness < CreatureRules.MinimalFullness) CreatureTimedSay("*Me Hungry*");
+                if (Fullness < CreatureRules.MinimalFullness) CreatureTimedSay("*我饿了*");
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using Client.MirScenes;
+using Client.MirScenes;
 using Client.MirScenes.Dialogs;
 using S = ServerPackets;
 
@@ -337,7 +337,7 @@ namespace Client.MirObjects
 
                 Stats.Add(realItem.Stats);
                 Stats.Add(temp.AddedStats);
-        
+
                 if (realItem.Light > Light) Light = realItem.Light;
                 if (realItem.Unique != SpecialItemMode.None)
                 {
@@ -815,7 +815,7 @@ namespace Client.MirObjects
             NextMagicDirection = 0;
             NextMagicLocation = Point.Empty;
             NextMagicObject = null;
-        } 
+        }
     }
 }
 

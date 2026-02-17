@@ -1,4 +1,4 @@
-﻿namespace Client.MirObjects
+namespace Client.MirObjects
 {
     public class CellInfo
     {
@@ -135,7 +135,7 @@
         public CellInfo[,] MapCells;
         private string FileName;
         private byte[] Bytes;
-        
+
         public MapReader(string FileName)
         {
             this.FileName = FileName;
@@ -272,7 +272,7 @@
             try
             {
                 int offSet = 21;
-                   
+
                 int w = BitConverter.ToInt16(Bytes, offSet);
                 offSet += 2;
                 int xor = BitConverter.ToInt16(Bytes, offSet);
@@ -486,7 +486,7 @@
                 for (int x = 0; x < Width; x++)
                     for (int y = 0; y < Height; y++)
                     {
-                        
+
                         flag = Bytes[offset++];
                         MapCells[x, y].MiddleAnimationFrame = Bytes[offset++];
 
@@ -621,8 +621,8 @@
 
         private void LoadMapType100()
         {
-            try 
-            { 
+            try
+            {
                 int offset = 4;
                 if ((Bytes[0]!= 1) || (Bytes[1] != 0)) return;//only support version 1 atm
                 Width = BitConverter.ToInt16(Bytes, offset);

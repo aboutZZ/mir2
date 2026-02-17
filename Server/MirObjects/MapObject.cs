@@ -240,6 +240,7 @@ namespace Server.MirObjects
 
         public abstract void SetOperateTime();
 
+        // ZZ 幸运影响攻击力
         public int GetAttackPower(int min, int max)
         {
             if (min < 0) min = 0;
@@ -359,7 +360,7 @@ namespace Server.MirObjects
         {
             if (Node == null)
                 throw new InvalidOperationException("Node is null, Object already Despawned");
-            
+
             Broadcast(new S.ObjectRemove { ObjectID = ObjectID });
             Envir.Objects.Remove(Node);
             if (Settings.Multithreaded && (Race == ObjectType.Monster))
@@ -784,7 +785,7 @@ namespace Server.MirObjects
             CurrentMap.RemoveObject(this);
             if (effects) Broadcast(new S.ObjectTeleportOut {ObjectID = ObjectID, Type = effectnumber});
             Broadcast(new S.ObjectRemove {ObjectID = ObjectID});
-            
+
             CurrentMap = temp;
             CurrentLocation = location;
 
@@ -794,9 +795,9 @@ namespace Server.MirObjects
             BroadcastInfo();
 
             if (effects) Broadcast(new S.ObjectTeleportIn { ObjectID = ObjectID, Type = effectnumber });
-            
+
             BroadcastHealthChange();
-            
+
             return true;
         }
 
@@ -896,7 +897,7 @@ namespace Server.MirObjects
                 PlayerObject player = (PlayerObject)EXPOwner;
 
                 if (player.IsMember(Master)) return;
-                
+
                 player.Enqueue(p);
 
                 if (player.GroupMembers != null)
@@ -1000,8 +1001,8 @@ namespace Server.MirObjects
         private MapObject owner;
         public MapObject Owner
         {
-            get 
-            { 
+            get
+            {
                 return owner switch
                 {
                     HeroObject hero => hero.Owner,

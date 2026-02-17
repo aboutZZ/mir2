@@ -1,4 +1,4 @@
-﻿namespace Server.Systems
+namespace Server.Systems
 {
     partial class GuildItemForm
     {
@@ -64,9 +64,9 @@
             GuildBuffsGroupBox.SuspendLayout();
             GuildChatGroupBox.SuspendLayout();
             SuspendLayout();
-            // 
+            //
             // GuildItemListView
-            // 
+            //
             GuildItemListView.Columns.AddRange(new ColumnHeader[] { indexHeader, PlaceHeader, nameHeader, countHeader, DuraHeader });
             GuildItemListView.GridLines = true;
             GuildItemListView.Location = new Point(10, 22);
@@ -75,34 +75,34 @@
             GuildItemListView.TabIndex = 0;
             GuildItemListView.UseCompatibleStateImageBehavior = false;
             GuildItemListView.View = View.Details;
-            // 
+            //
             // indexHeader
-            // 
+            //
             indexHeader.Text = "UID";
             indexHeader.Width = 70;
-            // 
+            //
             // PlaceHeader
-            // 
+            //
             PlaceHeader.Text = "Stored By";
             PlaceHeader.Width = 130;
-            // 
+            //
             // nameHeader
-            // 
+            //
             nameHeader.Text = "Name";
             nameHeader.Width = 115;
-            // 
+            //
             // countHeader
-            // 
+            //
             countHeader.Text = "Count";
             countHeader.Width = 95;
-            // 
+            //
             // DuraHeader
-            // 
+            //
             DuraHeader.Text = "Dura";
             DuraHeader.Width = 155;
-            // 
+            //
             // MemberListView
-            // 
+            //
             MemberListView.Columns.AddRange(new ColumnHeader[] { Members, Rank });
             MemberListView.FullRowSelect = true;
             MemberListView.GridLines = true;
@@ -113,19 +113,19 @@
             MemberListView.TabIndex = 1;
             MemberListView.UseCompatibleStateImageBehavior = false;
             MemberListView.View = View.Details;
-            // 
+            //
             // Members
-            // 
+            //
             Members.Text = "Members";
             Members.Width = 160;
-            // 
+            //
             // Rank
-            // 
+            //
             Rank.Text = "Ranks";
             Rank.Width = 180;
-            // 
+            //
             // DeleteButton
-            // 
+            //
             DeleteButton.Location = new Point(104, 402);
             DeleteButton.Name = "DeleteButton";
             DeleteButton.Size = new Size(100, 23);
@@ -133,26 +133,26 @@
             DeleteButton.Text = "Delete Member";
             DeleteButton.UseVisualStyleBackColor = true;
             DeleteButton.Click += DeleteButton_Click;
-            // 
+            //
             // GuildNoticeBox
-            // 
+            //
             GuildNoticeBox.Location = new Point(8, 22);
             GuildNoticeBox.Name = "GuildNoticeBox";
             GuildNoticeBox.Size = new Size(399, 248);
             GuildNoticeBox.TabIndex = 3;
             GuildNoticeBox.Text = "";
-            // 
+            //
             // MemberCountLabel
-            // 
+            //
             MemberCountLabel.AutoSize = true;
             MemberCountLabel.Location = new Point(305, 402);
             MemberCountLabel.Name = "MemberCountLabel";
             MemberCountLabel.Size = new Size(60, 15);
             MemberCountLabel.TabIndex = 4;
             MemberCountLabel.Text = "Members:";
-            // 
+            //
             // BuffListView
-            // 
+            //
             BuffListView.Columns.AddRange(new ColumnHeader[] { BuffID, BuffName, BuffActivity, BuffTime });
             BuffListView.FullRowSelect = true;
             BuffListView.GridLines = true;
@@ -163,28 +163,28 @@
             BuffListView.TabIndex = 5;
             BuffListView.UseCompatibleStateImageBehavior = false;
             BuffListView.View = View.Details;
-            // 
+            //
             // BuffID
-            // 
+            //
             BuffID.Text = "ID";
-            // 
+            //
             // BuffName
-            // 
+            //
             BuffName.Text = "Name";
             BuffName.Width = 140;
-            // 
+            //
             // BuffActivity
-            // 
+            //
             BuffActivity.Text = "Status";
             BuffActivity.Width = 80;
-            // 
+            //
             // BuffTime
-            // 
+            //
             BuffTime.Text = "Duration (Mins)";
             BuffTime.Width = 135;
-            // 
+            //
             // GuildNoticeGroupBox
-            // 
+            //
             GuildNoticeGroupBox.Controls.Add(RefreshNoticeButton);
             GuildNoticeGroupBox.Controls.Add(GuildNoticeBox);
             GuildNoticeGroupBox.Location = new Point(442, 452);
@@ -193,9 +193,9 @@
             GuildNoticeGroupBox.TabIndex = 6;
             GuildNoticeGroupBox.TabStop = false;
             GuildNoticeGroupBox.Text = "Notice";
-            // 
+            //
             // RefreshNoticeButton
-            // 
+            //
             RefreshNoticeButton.Location = new Point(166, 276);
             RefreshNoticeButton.Name = "RefreshNoticeButton";
             RefreshNoticeButton.Size = new Size(94, 23);
@@ -203,9 +203,9 @@
             RefreshNoticeButton.Text = "Update Notice";
             RefreshNoticeButton.UseVisualStyleBackColor = true;
             RefreshNoticeButton.Click += RefreshNoticeButton_Click;
-            // 
+            //
             // GuildStorageGroupBox
-            // 
+            //
             GuildStorageGroupBox.Controls.Add(GuildItemListView);
             GuildStorageGroupBox.Location = new Point(2, 0);
             GuildStorageGroupBox.Name = "GuildStorageGroupBox";
@@ -213,9 +213,9 @@
             GuildStorageGroupBox.TabIndex = 7;
             GuildStorageGroupBox.TabStop = false;
             GuildStorageGroupBox.Text = "Storage";
-            // 
+            //
             // GuildMembersGroupBox
-            // 
+            //
             GuildMembersGroupBox.Controls.Add(GuildRanksListView);
             GuildMembersGroupBox.Controls.Add(GuildEXPLabel);
             GuildMembersGroupBox.Controls.Add(MemberListView);
@@ -227,9 +227,9 @@
             GuildMembersGroupBox.TabIndex = 8;
             GuildMembersGroupBox.TabStop = false;
             GuildMembersGroupBox.Text = "Members/Ranks";
-            // 
+            //
             // GuildRanksListView
-            // 
+            //
             GuildRanksListView.Columns.AddRange(new ColumnHeader[] { GuildRank });
             GuildRanksListView.FullRowSelect = true;
             GuildRanksListView.GridLines = true;
@@ -239,23 +239,23 @@
             GuildRanksListView.TabIndex = 7;
             GuildRanksListView.UseCompatibleStateImageBehavior = false;
             GuildRanksListView.View = View.Details;
-            // 
+            //
             // GuildRank
-            // 
+            //
             GuildRank.Text = "Guild Rank";
             GuildRank.Width = 284;
-            // 
+            //
             // GuildEXPLabel
-            // 
+            //
             GuildEXPLabel.AutoSize = true;
             GuildEXPLabel.Location = new Point(307, 425);
             GuildEXPLabel.Name = "GuildEXPLabel";
             GuildEXPLabel.Size = new Size(30, 15);
             GuildEXPLabel.TabIndex = 5;
             GuildEXPLabel.Text = "EXP:";
-            // 
+            //
             // GuildBuffsGroupBox
-            // 
+            //
             GuildBuffsGroupBox.Controls.Add(GuildPointsLabel);
             GuildBuffsGroupBox.Controls.Add(BuffListView);
             GuildBuffsGroupBox.Location = new Point(2, 452);
@@ -264,25 +264,25 @@
             GuildBuffsGroupBox.TabIndex = 9;
             GuildBuffsGroupBox.TabStop = false;
             GuildBuffsGroupBox.Text = "Buffs";
-            // 
+            //
             // GuildPointsLabel
-            // 
+            //
             GuildPointsLabel.AutoSize = true;
             GuildPointsLabel.Location = new Point(6, 19);
             GuildPointsLabel.Name = "GuildPointsLabel";
             GuildPointsLabel.Size = new Size(43, 15);
             GuildPointsLabel.TabIndex = 6;
             GuildPointsLabel.Text = "Points:";
-            // 
+            //
             // SendGuildMesageBox
-            // 
+            //
             SendGuildMesageBox.Location = new Point(6, 277);
             SendGuildMesageBox.Name = "SendGuildMesageBox";
             SendGuildMesageBox.Size = new Size(188, 23);
             SendGuildMesageBox.TabIndex = 10;
-            // 
+            //
             // SendGuildMessageButton
-            // 
+            //
             SendGuildMessageButton.Location = new Point(200, 276);
             SendGuildMessageButton.Name = "SendGuildMessageButton";
             SendGuildMessageButton.Size = new Size(75, 23);
@@ -290,9 +290,9 @@
             SendGuildMessageButton.Text = "Send";
             SendGuildMessageButton.UseVisualStyleBackColor = true;
             SendGuildMessageButton.Click += SendGuildMessageButton_Click;
-            // 
+            //
             // GuildChatGroupBox
-            // 
+            //
             GuildChatGroupBox.Controls.Add(GuildChatBox);
             GuildChatGroupBox.Controls.Add(SendGuildMessageButton);
             GuildChatGroupBox.Controls.Add(SendGuildMesageBox);
@@ -302,18 +302,18 @@
             GuildChatGroupBox.TabIndex = 12;
             GuildChatGroupBox.TabStop = false;
             GuildChatGroupBox.Text = "Guild Chat";
-            // 
+            //
             // GuildChatBox
-            // 
+            //
             GuildChatBox.Location = new Point(6, 22);
             GuildChatBox.Name = "GuildChatBox";
             GuildChatBox.ReadOnly = true;
             GuildChatBox.Size = new Size(269, 248);
             GuildChatBox.TabIndex = 12;
             GuildChatBox.Text = "";
-            // 
+            //
             // GuildItemForm
-            // 
+            //
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1154, 759);

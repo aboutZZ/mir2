@@ -251,7 +251,8 @@ namespace Server.MirObjects
 
                     var speech = Speech.OrderBy(x => x.GetWeight(Envir.Random, maxWeight)).Last();
 
-                    Broadcast(new S.ObjectChat { ObjectID = this.ObjectID, Text = $"{Info.Name.Split('_')[0]}:{speech.Message}", Type = ChatType.Normal });
+                    // ZZ NPC汉化 TODO 这里对话可能要有BUG
+                    Broadcast(new S.ObjectChat { ObjectID = this.ObjectID, Text = $"{Info.NameLocale.Split('_')[0]}:{speech.Message}", Type = ChatType.Normal });
                 }
             }
         }
@@ -397,7 +398,9 @@ namespace Server.MirObjects
 
         public override string Name
         {
-            get { return Info.Name; }
+            // ZZ NPC汉化 此处控制显示地图上显示的NPC
+            // get { return Info.Name; }
+            get { return string.IsNullOrEmpty(Info.NameLocale) ? Info.Name : Info.NameLocale; }
             set { throw new NotSupportedException(); }
         }
 

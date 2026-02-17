@@ -19,7 +19,8 @@ namespace Server.MirDatabase
 
             HP = -1;
 
-            Inventory = new UserItem[10];
+            // ZZ 英雄背包解锁更多格子
+            Inventory = new UserItem[10 + 32];
 
             CreationDate = Envir.Now;
         }
@@ -58,6 +59,8 @@ namespace Server.MirDatabase
                     Inventory[i] = item;
                 }
             }
+            // ZZ 英雄背包解锁更多格子, 原版是2+8=10, 这里解锁全部, 2个物品栏的 + 40个背包 = 42
+            if (count == 10) Array.Resize(ref Inventory, 10 + 32);
 
             count = reader.ReadInt32();
             for (int i = 0; i < count; i++)

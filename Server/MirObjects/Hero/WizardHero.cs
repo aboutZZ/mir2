@@ -155,7 +155,7 @@ namespace Server.MirObjects
                     return;
                 }
             }
-            
+
             magic = GetMagic(Spell.None);
             {
                 return;
@@ -182,7 +182,7 @@ namespace Server.MirObjects
             {
                 Magic(NextMagicSpell, NextMagicDirection, NextMagicTargetID, NextMagicLocation);
                 NextMagicSpell = Spell.None;
-            }            
+            }
 
             if (CanAttack && (!HasRangedSpell && InAttackRange() || NextMagicSpell == Spell.None && Owner.Info.HeroBehaviour == HeroBehaviour.Attack && TargetDistance == 1))
             {

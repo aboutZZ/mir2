@@ -61,7 +61,8 @@ namespace Server.MirDatabase
                 new BuffInfo { Type = BuffType.ClearRing, Properties = BuffProperty.None, StackType = BuffStackType.Infinite },
                 new BuffInfo { Type = BuffType.Transform, Properties = BuffProperty.None, StackType = BuffStackType.None },
                 new BuffInfo { Type = BuffType.Lover, Properties = BuffProperty.RemoveOnExit, StackType = BuffStackType.Infinite },
-                new BuffInfo { Type = BuffType.Rested, Properties = BuffProperty.None, StackType = BuffStackType.ResetDuration },
+                // ZZ 修改休息buff为安全区暂停
+                new BuffInfo { Type = BuffType.Rested, Properties = BuffProperty.PauseInSafeZone, StackType = BuffStackType.ResetDuration },
                 new BuffInfo { Type = BuffType.Prison, Properties = BuffProperty.None, StackType = BuffStackType.None }, //???
                 new BuffInfo { Type = BuffType.General, Properties = BuffProperty.None, StackType = BuffStackType.None }, //???
                 new BuffInfo { Type = BuffType.Newbie, Properties = BuffProperty.RemoveOnExit, StackType = BuffStackType.Infinite }, //???
@@ -71,6 +72,8 @@ namespace Server.MirDatabase
                 new BuffInfo { Type = BuffType.Drop, Properties = BuffProperty.PauseInSafeZone, StackType = BuffStackType.StackDuration },
                 new BuffInfo { Type = BuffType.Gold, Properties = BuffProperty.PauseInSafeZone, StackType = BuffStackType.StackDuration },
                 new BuffInfo { Type = BuffType.BagWeight, Properties = BuffProperty.None, StackType = BuffStackType.StackDuration },
+                // ZZ 增加准确药水BUFF
+                new BuffInfo { Type = BuffType.Accuracy, Properties = BuffProperty.None, StackType = BuffStackType.StackDuration },
                 new BuffInfo { Type = BuffType.Impact, Properties = BuffProperty.None, StackType = BuffStackType.StackDuration },
                 new BuffInfo { Type = BuffType.Magic, Properties = BuffProperty.None, StackType = BuffStackType.StackDuration },
                 new BuffInfo { Type = BuffType.Taoist, Properties = BuffProperty.None, StackType = BuffStackType.StackDuration },

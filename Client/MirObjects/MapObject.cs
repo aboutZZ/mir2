@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirScenes;
 using Client.MirSounds;
@@ -9,6 +9,7 @@ namespace Client.MirObjects
 {
     public abstract class MapObject
     {
+        // ZZ 聊天头上飘出的文字大小
         public static Font ChatFont = new Font(Settings.FontName, 10F);
         public static List<MirLabel> LabelList = new List<MirLabel>();
 
@@ -113,6 +114,7 @@ namespace Client.MirObjects
         public MLibrary BodyLibrary;
         public Color DrawColour = Color.White, NameColour = Color.White, LightColour = Color.White;
         public MirLabel NameLabel, ChatLabel, GuildLabel;
+        public MirLabel HealthHPLabel;
         public long ChatTime;
         public int DrawFrame, DrawWingFrame;
         public Point DrawLocation, Movement, FinalDrawLocation, OffSetMove;
@@ -223,6 +225,7 @@ namespace Client.MirObjects
                 ob = (PlayerObject)this;
             }
 
+            // ZZ 绘制Buff效果
             switch (type)
             {
                 case BuffType.Fury:
@@ -349,6 +352,7 @@ namespace Client.MirObjects
                 ChatLabel = null;
             }
 
+            // ZZ 聊天时人物头上飘的文字最大宽度
             const int chatWidth = 200;
             List<string> chat = new List<string>();
 
@@ -377,6 +381,8 @@ namespace Client.MirObjects
             };
             ChatTime = CMain.Time + 5000;
         }
+
+        // ZZ 绘制聊天发送时人物头上飘的文字
         public virtual void DrawChat()
         {
             if (ChatLabel == null || ChatLabel.IsDisposed) return;
@@ -427,7 +433,7 @@ namespace Client.MirObjects
             CreateLabel();
 
             if (NameLabel == null) return;
-            
+
             NameLabel.Text = Name;
             NameLabel.Location = new Point(DisplayRectangle.X + (50 - NameLabel.Size.Width) / 2, DisplayRectangle.Y - (32 - NameLabel.Size.Height / 2) + (Dead ? 35 : 8)); //was 48 -
             NameLabel.Draw();
@@ -462,9 +468,37 @@ namespace Client.MirObjects
         {
             return false;
         }
+      
+        //
+        public void DrawPlayerHealthHP(ObjectType race)
+        {
+            if (HealthHPLabel == null || HealthHPLabel.IsDisposed)
+            {
+                HealthHPLabel = new MirLabel
+                {
+                    AutoSize = true,
+                    BackColour = Color.Transparent,
+                    ForeColour = Color.White,
+                    OutLine = true,
+                    OutLineColour = Color.Black,
+                    DrawFormat = TextFormatFlags.HorizontalCenter,
+                };
+            }
+
+            HealthHPLabel.Text = string.Format("{0}/{1}", User.HP, User.Stats[Stat.HP]);
+            if(PercentHealth < 20) {
+                HealthHPLabel.ForeColour = Color.Red;
+            } else if (PercentHealth < 50) {
+                HealthHPLabel.ForeColour = Color.Orange;
+            } else {
+                HealthHPLabel.ForeColour = Color.SpringGreen;
+            }
+            HealthHPLabel.Location = new Point(DisplayRectangle.X + (50 - HealthHPLabel.Size.Width) / 2, DisplayRectangle.Y - 82);
+            HealthHPLabel.Draw();
+        }
         public void DrawHealth()
         {
-            string name = Name;            
+            string name = Name;
             if (Name.Contains("(")) name = Name.Substring(Name.IndexOf("(") + 1, Name.Length - Name.IndexOf("(") - 2);
 
             if (Dead) return;
@@ -482,6 +516,7 @@ namespace Client.MirObjects
             {
                 case ObjectType.Player:
                     if (GroupDialog.GroupList.Contains(name)) index = 10;
+                    this.DrawPlayerHealthHP(Race);
                     break;
                 case ObjectType.Monster:
                     if (GroupDialog.GroupList.Contains(name) || name == User.Name) index = 11;
@@ -489,11 +524,11 @@ namespace Client.MirObjects
                 case ObjectType.Hero:
                     if (GroupDialog.GroupList.Contains(MapObject.HeroObject?.OwnerName)) // Fails but not game breaking
                     {
-                            index = 11; 
+                            index = 11;
                     }
                     if (HeroObject.HeroObject?.OwnerName == User.Name)
                     {
-                        index = 1; 
+                        index = 1;
                         if ((MapObject.HeroObject.Class != MirClass.Warrior && HeroObject.Level > 7) || (MapObject.HeroObject.Class == MirClass.Warrior && HeroObject.Level > 25))
                         {
                            Libraries.Prguse2.Draw(10, new Rectangle(0, 0, (int)(32 * PercentMana / 100F), 4), new Point(DisplayRectangle.X + 8, DisplayRectangle.Y - 60), Color.White, false);
@@ -501,7 +536,6 @@ namespace Client.MirObjects
                     }
                     break;
             }
-
             Libraries.Prguse2.Draw(index, new Rectangle(0, 0, (int)(32 * PercentHealth / 100F), 4), new Point(DisplayRectangle.X + 8, DisplayRectangle.Y - 64), Color.White, false);
         }
 

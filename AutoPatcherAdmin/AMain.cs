@@ -18,6 +18,8 @@ namespace AutoPatcherAdmin
 
         public AMain()
         {
+            AutoScaleMode = AutoScaleMode.Dpi;
+
             InitializeComponent();
 
             ClientTextBox.Text = Settings.Client;

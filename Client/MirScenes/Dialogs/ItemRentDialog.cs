@@ -68,7 +68,7 @@ namespace Client.MirScenes.Dialogs
                 if (GameScene.SelectedCell != null || GameScene.Gold <= 0)
                     return;
 
-                var amountBox = new MirAmountBox("Rental fee:", 116, GameScene.Gold);
+                var amountBox = new MirAmountBox("租赁费用:", 116, GameScene.Gold);
 
                 amountBox.OKButton.Click += (c, a) =>
                 {
@@ -114,7 +114,7 @@ namespace Client.MirScenes.Dialogs
                         if (GameScene.SelectedCell != null || GameScene.Gold <= 0)
                             return;
 
-                        var amountBox = new MirAmountBox("Rental fee:", 116, GameScene.Gold);
+                        var amountBox = new MirAmountBox("租赁费用:", 116, GameScene.Gold);
 
                         amountBox.OKButton.Click += (c, a) =>
                         {
@@ -138,7 +138,7 @@ namespace Client.MirScenes.Dialogs
         public void RefreshInterface()
         {
             _nameLabel.Text = GameScene.User.Name;
-            _rentalPriceLabel.Text = $"Rental Fee: {GameScene.User.RentalGoldAmount:###,###,##0}";
+            _rentalPriceLabel.Text = $"租赁费用: {GameScene.User.RentalGoldAmount:###,###,##0}";
 
             GameScene.Scene.GuestItemRentingDialog.RefreshInterface();
             GameScene.Scene.GuestItemRentDialog.RefreshInterface();
@@ -159,7 +159,7 @@ namespace Client.MirScenes.Dialogs
         {
             GameScene.User.RentalGoldAmount = 0;
             GameScene.Scene.GuestItemRentDialog.Reset();
-            
+
             RefreshInterface();
             Unlock();
             Hide();
@@ -248,7 +248,7 @@ namespace Client.MirScenes.Dialogs
         public void RefreshInterface()
         {
             _nameLabel.Text = _guestName;
-            _rentalPriceLabel.Text = $"Rental Fee: {_guestGold:###,###,##0}";
+            _rentalPriceLabel.Text = $"租赁费用: {_guestGold:###,###,##0}";
 
             Redraw();
         }

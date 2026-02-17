@@ -225,7 +225,7 @@ namespace Client.MirObjects
                 MirDirection dir = Functions.DirectionFromPoint(CurrentLocation, p.FishingPoint);
 
                 if (p.Fishing)
-                {        
+                {
                     QueuedAction action = new QueuedAction { Action = MirAction.FishingCast, Direction = dir, Location = CurrentLocation };
                     ActionFeed.Add(action);
                 }
@@ -242,7 +242,7 @@ namespace Client.MirObjects
             if (!HasFishingRod)
             {
                 GameScene.Scene.FishingDialog.Hide();
-            }          
+            }
 
             FishingPoint = p.FishingPoint;
             FoundFish = p.FoundFish;
@@ -272,13 +272,13 @@ namespace Client.MirObjects
             if (TransformType > -1)
             {
                 #region Transform
-                
+
                 switch (TransformType)
                 {
                     case 4:
                     case 5:
                     case 7:
-                    case 8:                
+                    case 8:
                     case 26:
                     case 28:
                     case 29:
@@ -747,6 +747,9 @@ namespace Client.MirObjects
                     GameScene.CanRun = false;
             }
 
+            // ZZ 免助跑
+            GameScene.CanRun = true;
+
             SkipFrames = this != User && ActionFeed.Count > 0;
 
             ProcessFrames();
@@ -785,7 +788,7 @@ namespace Client.MirObjects
 
                     var i = 0;
                     if (CurrentAction == MirAction.MountRunning) i = 3;
-                    else if (CurrentAction == MirAction.Running) 
+                    else if (CurrentAction == MirAction.Running)
                         i = (Sprint && !Sneaking ? 3 : 2);
                     else i = 1;
 
@@ -1180,7 +1183,7 @@ namespace Client.MirObjects
                                     GameScene.SpellTime = CMain.Time + 1500; //Spell Delay
                                 }
                                 break;
-                            case Spell.DoubleShot:                          
+                            case Spell.DoubleShot:
                                 Frames.TryGetValue(MirAction.AttackRange2, out Frame);
                                 CurrentAction = MirAction.AttackRange2;
                                 if (this == User)
@@ -1261,7 +1264,7 @@ namespace Client.MirObjects
                                 Frames.TryGetValue(CurrentAction, out Frame);
                                 break;
                         }
-                        
+
                         break;
                     default:
                         Frames.TryGetValue(CurrentAction, out Frame);
@@ -1471,7 +1474,7 @@ namespace Client.MirObjects
                                     MapControl.NextAction = CMain.Time + 2500;
                                 }
                             }
-                            break;                         
+                            break;
                         case MirAction.Harvest:
                             if (ArcherLayTrap)
                             {
@@ -1572,7 +1575,7 @@ namespace Client.MirObjects
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                 break;
 
-                            
+
                         }
                         break;
                     case MirAction.Attack4:
@@ -2119,7 +2122,7 @@ namespace Client.MirObjects
                                 Effects.Add(new Effect(Libraries.Magic2, 2620 + (int)Direction * 20, 20, 20 * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10 + (Gender == MirGender.Male ? 0 : 1));
 
-                               
+
                                 break;
 
                             #endregion
@@ -2421,10 +2424,10 @@ namespace Client.MirObjects
                     }
 
                     UpdateWingEffect();
-                    break;  
+                    break;
 
 
-                case MirAction.FishingCast:             
+                case MirAction.FishingCast:
                 case MirAction.FishingReel:
                 case MirAction.FishingWait:
                     if (CMain.Time >= NextMotion)
@@ -2480,7 +2483,7 @@ namespace Client.MirObjects
                     }
 
                     UpdateWingEffect();
-                    break;     
+                    break;
 
                 case MirAction.Attack1:
                 case MirAction.Attack2:
@@ -2906,7 +2909,7 @@ namespace Client.MirObjects
                                     case Spell.HellFire:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
 
-                                        
+
                                         Point dest = CurrentLocation;
                                         for (int i = 0; i < 4; i++)
                                         {
@@ -3408,7 +3411,7 @@ namespace Client.MirObjects
                                                 };
                                             }
                                         }
-                                        
+
                                         break;
 
                                     #endregion
@@ -3677,11 +3680,11 @@ namespace Client.MirObjects
                             (index >= 210 && index <= 249) || (index >= 255 && index <= 259) || (index >= 265 && index <= 329) || (index >= 350 && index <= 404) ||
                             (index >= 410 && index <= 449) || (index >= 455 && index <= 459) || (index >= 465 && index <= 504) ||  (index >= 510 && index <= 549) ||
                             (index >= 555 && index <= 559) || (index >= 565 && index <= 574) || (index >= 581 && index <= 581) || (index >= 586 && index <= 587) ||
-                            (index >= 600 && index <= 604) || (index >= 610 && index <= 614) || (index >= 615 && index <= 649) || (index >= 655 && index <= 659) || 
-                            (index >= 665 && index <= 704) || (index >= 710 && index <= 749) || (index >= 755 && index <= 759) || (index >= 765 && index <= 824) || 
-                            (index >= 850 && index <= 874) || (index >= 900 && index <= 924) || (index >= 950 && index <= 974) || (index >= 1100 && index <= 1124) || 
-                            (index >= 1150 && index <= 1174) || (index >= 1200 && index <= 1204) || (index >= 1210 && index <= 1214) || (index >= 1255 && index <= 1259) || 
-                            (index >= 1300 && index <= 1324) || (index >= 1340 && index <= 1374) || (index >= 1560 && index <= 1604) || (index >= 1610 && index <= 1614) || 
+                            (index >= 600 && index <= 604) || (index >= 610 && index <= 614) || (index >= 615 && index <= 649) || (index >= 655 && index <= 659) ||
+                            (index >= 665 && index <= 704) || (index >= 710 && index <= 749) || (index >= 755 && index <= 759) || (index >= 765 && index <= 824) ||
+                            (index >= 850 && index <= 874) || (index >= 900 && index <= 924) || (index >= 950 && index <= 974) || (index >= 1100 && index <= 1124) ||
+                            (index >= 1150 && index <= 1174) || (index >= 1200 && index <= 1204) || (index >= 1210 && index <= 1214) || (index >= 1255 && index <= 1259) ||
+                            (index >= 1300 && index <= 1324) || (index >= 1340 && index <= 1374) || (index >= 1560 && index <= 1604) || (index >= 1610 && index <= 1614) ||
                             (index >= 1655 && index <= 1659) || (index >= 1665 && index <= 1674) || (index >= 1700 && index <= 1724) || (index >= 1750 && index <= 1774) ||
                             (index >= 1850 && index <= 1874) || (index >= 2050 && index <= 2074) || (index >= 2100 && index <= 2124) || (index >= 2150 && index <= 2174) ||
                             (index >= 2200 && index <= 2224) ||(index >= 2250 && index <= 2274) ||(index >= 2300 && index <= 2324) ||(index >= 2350 && index <= 2374) ||
@@ -4010,7 +4013,7 @@ namespace Client.MirObjects
                     break;
             }
             #endregion
-            
+
             index = (GameScene.Scene.MapControl.M2CellInfo[x, y].MiddleImage & 0x1FFFF) - 1;
 
             #region Middle Tiles
@@ -4906,7 +4909,7 @@ namespace Client.MirObjects
                 }
                 DrawHead();
             }
-            
+
 
             if (!RidingMount)
             {
@@ -5036,7 +5039,7 @@ namespace Client.MirObjects
         public void DrawBody()
         {
             bool oldGrayScale = DXManager.GrayScale;
-            Color drawColour = ApplyDrawColour();                     
+            Color drawColour = ApplyDrawColour();
 
             if (BodyLibrary != null)
                 BodyLibrary.Draw(DrawFrame + ArmourOffSet, DrawLocation, drawColour, true);

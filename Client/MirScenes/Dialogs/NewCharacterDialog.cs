@@ -30,29 +30,19 @@ namespace Client.MirScenes.Dialogs
 
         #region Descriptions
         public const string WarriorDescription =
-            "Warriors are a class of great strength and vitality. They are not easily killed in battle and have the advantage of being able to use" +
-            " a variety of heavy weapons and Armour. Therefore, Warriors favor attacks that are based on melee physical damage. They are weak in ranged" +
-            " attacks, however the variety of equipment that are developed specifically for Warriors complement their weakness in ranged combat.";
+            "战士是一种具有极高力量和生命力的职业。他们在战斗中不容易被杀死，并且有使用各种重型武器和装甲的优势。因此，战士喜欢基于近战物理伤害的攻击。他们在远程攻击上较弱，但是专门为战士开发的各种装备可以弥补他们在远程战斗中的弱点。";
 
         public const string WizardDescription =
-            "Wizards are a class of low strength and stamina, but have the ability to use powerful spells. Their offensive spells are very effective, but" +
-            " because it takes time to cast these spells, they're likely to leave themselves open for enemy's attacks. Therefore, the physically weak wizards" +
-            " must aim to attack their enemies from a safe distance.";
+            "法师是一种力量和耐力较低，但能使用强大法术的职业。他们的攻击性法术非常有效，但由于施法需要时间，他们可能会暴露在敌人的攻击下。因此，身体虚弱的法师必须目标是从安全的距离攻击他们的敌人。";
 
         public const string TaoistDescription =
-            "Taoists are well disciplined in the study of Astronomy, Medicine, and others aside from Mu-Gong. Rather then directly engaging the enemies, their" +
-            " specialty lies in assisting their allies with support. Taoists can summon powerful creatures and have a high resistance to magic, and is a class" +
-            " with well balanced offensive and defensive abilities.";
+            "道士在天文学、医学等领域的研究中有着良好的纪律性，除了武功之外。他们的特长不在于直接与敌人交战，而在于用支援来帮助他们的盟友。道士可以召唤强大的生物，并且对魔法有很高的抗性，是一种攻防平衡的职业。";
 
         public const string AssassinDescription =
-            "Assassins are members of a secret organization and their history is relatively unknown. They're capable of hiding themselves and performing attacks" +
-            " while being unseen by others, which naturally makes them excellent at making fast kills. It is necessary for them to avoid being in battles with" +
-            " multiple enemies due to their weak vitality and strength.";
+            "刺客是秘密组织的成员，他们的历史相对未知。他们能够隐藏自己并在其他人看不见的情况下进行攻击，这自然使他们擅长快速杀戮。由于他们的生命力和力量较弱，他们需要避免与多个敌人进行战斗。";
 
         public const string ArcherDescription =
-            "Archers are a class of great accuracy and strength, using their powerful skills with bows to deal extraordinary damage from range. Much like" +
-            " wizards, they rely on their keen instincts to dodge oncoming attacks as they tend to leave themselves open to frontal attacks. However, their" +
-            " physical prowess and deadly aim allows them to instil fear into anyone they hit.";
+            "弓箭手是一种具有极高精准度和力量的职业，他们利用弓箭的强大技能从远处造成巨大的伤害。就像法师一样，他们依赖于自己的敏锐直觉来躲避即将到来的攻击，因为他们往往会让自己暴露于正面攻击之下。然而，他们的身体力量和致命的瞄准能力使他们能够让任何被击中的人感到恐惧。";
 
         #endregion
 
@@ -295,7 +285,7 @@ namespace Client.MirScenes.Dialogs
             OKButton.Enabled = false;
 
             if (OnCreateCharacter != null)
-                OnCreateCharacter.Invoke(this, EventArgs.Empty);            
+                OnCreateCharacter.Invoke(this, EventArgs.Empty);
         }
 
         private void UpdateInterface()

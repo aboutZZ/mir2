@@ -483,7 +483,7 @@ namespace Server.MirObjects
                 case 223:
                     return new SepHighArcher(info); //TODO
 
-                case 255://Skill 
+                case 255://Skill
                     return new StoneTrap(info);
 
                 default:
@@ -548,11 +548,11 @@ namespace Server.MirObjects
         }
 
         public int HealthPercent
-        { 
-            get 
-            { 
-                return (Health * 100) / MaxHealth; 
-            } 
+        {
+            get
+            {
+                return (Health * 100) / MaxHealth;
+            }
         }
 
         public int HP;
@@ -597,7 +597,7 @@ namespace Server.MirObjects
         public int RoutePoint;
         public bool Waiting;
         public bool GMMade;
-        
+
         public List<MonsterObject> SlaveList = new List<MonsterObject>();
         public List<RouteInfo> Route = new List<RouteInfo>();
 
@@ -616,13 +616,13 @@ namespace Server.MirObjects
         {
             get
             {
-                return 
-                    !Dead && 
-                    Envir.Time > MoveTime && 
-                    Envir.Time > ActionTime && 
+                return
+                    !Dead &&
+                    Envir.Time > MoveTime &&
+                    Envir.Time > ActionTime &&
                     Envir.Time > ShockTime &&
-                    (Master == null || Master.PMode == PetMode.MoveOnly || Master.PMode == PetMode.Both || Master.PMode == PetMode.FocusMasterTarget) && 
-                    !CurrentPoison.HasFlag(PoisonType.Paralysis) && 
+                    (Master == null || Master.PMode == PetMode.MoveOnly || Master.PMode == PetMode.Both || Master.PMode == PetMode.FocusMasterTarget) &&
+                    !CurrentPoison.HasFlag(PoisonType.Paralysis) &&
                     !CurrentPoison.HasFlag(PoisonType.LRParalysis) &&
                     !CurrentPoison.HasFlag(PoisonType.Frozen) &&
                     (!CurrentPoison.HasFlag(PoisonType.Stun) || (Info.Light == 10 || Info.Light == 5));
@@ -632,7 +632,7 @@ namespace Server.MirObjects
         {
             get
             {
-                return 
+                return
                     !Dead &&
                     Envir.Time > AttackTime &&
                     Envir.Time > ActionTime &&
@@ -1066,7 +1066,7 @@ namespace Server.MirObjects
 
             foreach (var player in Envir.Players)
             {
-                player.ReceiveChat($"{Name} has dropped {item.FriendlyName}.", ChatType.System2);
+                player.ReceiveChat($"{Name} 爆出 {item.FriendlyName}", ChatType.System2);
             }
 
             return ob.Drop(Settings.DropRange);
@@ -1740,16 +1740,16 @@ namespace Server.MirObjects
                                     if (ob.Hidden && (!CoolEye || Level < ob.Level)) continue;
                                     if (this is TrapRock && ob.InTrapRock) continue;
 
-                                    if (ob.Race == ObjectType.Monster && 
+                                    if (ob.Race == ObjectType.Monster &&
                                         ob is StoneTrap)
                                     {
-                                        if (Target is null || 
+                                        if (Target is null ||
                                             (Target is not null &&
                                             Target is not StoneTrap))
                                         {
                                             Target = ob;
                                         }
-                                        
+
                                         return;
                                     }
                                     else
@@ -1757,7 +1757,7 @@ namespace Server.MirObjects
                                         Target ??= ob;
                                     }
                                     continue;
-                                    
+
                                 case ObjectType.Player:
 
                                     if (Target != null)
@@ -2266,7 +2266,7 @@ namespace Server.MirObjects
 
             if (attacker.Info.AI == 6 || attacker.Info.AI == 113) // Guard
             {
-                if (Info.AI != 1 && Info.AI != 2 && Info.AI != 3 && (Master == null || Master.PKPoints >= 200)) //Not Dear/Hen/Tree/Pets or Red Master 
+                if (Info.AI != 1 && Info.AI != 2 && Info.AI != 3 && (Master == null || Master.PKPoints >= 200)) //Not Dear/Hen/Tree/Pets or Red Master
                     return true;
             }
             else if (attacker.Info.AI == 58) // Tao Guard - attacks Pets
@@ -3452,7 +3452,7 @@ namespace Server.MirObjects
 
             var startPoints = new List<Point>
             {
-                CurrentLocation 
+                CurrentLocation
             };
 
             var half = (width - 1) / 2;
@@ -3622,9 +3622,9 @@ namespace Server.MirObjects
                         break;
                     }
                 }
-            }     
+            }
         }
-    
+
         protected virtual void ProjectileAttack(int damage, DefenceType type = DefenceType.ACAgility, int additionalDelay = 500)
         {
             int delay = Functions.MaxDistance(CurrentLocation, Target.CurrentLocation) * 50 + additionalDelay;
